@@ -13,7 +13,7 @@ jobs:
       - name: Write API Key & Export Plist
         run: |
           echo "$APPSTORE_API_KEY" > /tmp/AuthKey.p8
-          echo '{"method":"app-store","uploadSymbols":true}' > /tmp/export.plist
+          echo '{"method":"development","uploadSymbols":true}' > /tmp/export.plist
         env:
           APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
       - name: Build Archive & Export IPA
