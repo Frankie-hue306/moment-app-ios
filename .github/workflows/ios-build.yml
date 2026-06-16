@@ -7,12 +7,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: 20}
-      - run: npm install && npm run build && npx cap sync ios
+      - name: Install & Build
+        working-directory: moment-app
+        run: npm install && npm run build && npx cap sync ios
       - name: Write API Key
         run: echo "$APPSTORE_API_KEY" > /tmp/AuthKey.p8
         env:
           APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
       - name: Build Archive
+        working-directory: moment-app
         run: |
           cd ios/App
           xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release \
@@ -25,4 +28,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: archive
-          path: ios/App/build/App.xcarchive
+          path: moment-app/ios/App/build/App.xcarchive
