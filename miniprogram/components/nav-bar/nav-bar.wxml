@@ -1,0 +1,27 @@
+<!--
+  自定义导航栏组件
+-->
+<view
+  class="custom-navbar {{transparent ? 'transparent' : ''}}"
+  style="padding-top: {{statusBarHeight}}px; background: {{transparent ? 'transparent' : bgColor}};"
+>
+  <view class="navbar-inner">
+    <!-- 返回按钮 -->
+    <view class="nav-left" wx:if="{{showBack}}">
+      <view class="back-btn" bindtap="onBack">
+        <text class="back-icon" style="color: {{textColor === 'white' ? '#fff' : '#1C1C1E'}};">←</text>
+      </view>
+    </view>
+
+    <!-- 标题 -->
+    <view class="nav-center">
+      <text
+        class="nav-title"
+        style="color: {{textColor === 'white' ? '#fff' : '#1C1C1E'}};"
+      >{{title}}</text>
+    </view>
+
+    <!-- 占位（保持标题居中） -->
+    <view class="nav-right" wx:if="{{showBack}}"></view>
+  </view>
+</view>

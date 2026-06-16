@@ -1,0 +1,154 @@
+/*
+ * ========================================
+ *  美甲 DIY 小程序 — 全局样式
+ *  Apple HIG · iOS 原生质感
+ * ========================================
+ */
+
+@import './styles/design-tokens.wxss';
+
+/* ---------- 全局重置 ---------- */
+page {
+  background: var(--color-bg);
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Flex 工具 ---------- */
+.flex       { display: flex; }
+.flex-col   { display: flex; flex-direction: column; }
+.flex-center{ display: flex; align-items: center; justify-content: center; }
+.flex-between{display: flex; align-items: center; justify-content: space-between; }
+.flex-1     { flex: 1; }
+.items-center{ align-items: center; }
+.flex-wrap  { flex-wrap: wrap; }
+
+/* ---------- 文字工具 ---------- */
+.text-center   { text-align: center; }
+.text-left     { text-align: left; }
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary  { color: var(--color-text-tertiary); }
+
+/* ---------- iOS 风格列表分组 ---------- */
+.ios-group {
+  margin: var(--spacing-lg);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.ios-row {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  min-height: 88rpx;
+}
+.ios-row:not(:last-child) {
+  border-bottom: 0.5px solid var(--color-separator);
+}
+.ios-row:active {
+  background: #F2F2F7;
+}
+
+/* ---------- iOS 风格按钮 ---------- */
+.btn-accent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  background: var(--color-accent);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-callout);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-full);
+  border: none;
+  padding: 0 var(--spacing-xl);
+}
+.btn-accent:active {
+  opacity: 0.7;
+}
+
+.btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  background: transparent;
+  color: var(--color-accent);
+  font-size: var(--font-size-callout);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-accent);
+  padding: 0 var(--spacing-xl);
+}
+.btn-outline:active {
+  background: var(--color-accent-bg);
+}
+
+.btn-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-subhead);
+  border-radius: var(--radius-full);
+  border: none;
+}
+
+/* ---------- 空状态 ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx var(--spacing-xl);
+}
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.3;
+}
+.empty-title {
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+.empty-desc {
+  font-size: var(--font-size-subhead);
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+/* ---------- 动画 ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeInUp 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* ---------- 底部安全区 ---------- */
+.safe-pad {
+  padding-bottom: var(--safe-area-bottom);
+}
+
+/* ---------- 通用间距 ---------- */
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.p-md  { padding: var(--spacing-md); }
+.p-lg  { padding: var(--spacing-lg); }

@@ -1,0 +1,38 @@
+<!-- 个股详情 -->
+<view class="page">
+  <view class="stock-header">
+    <text class="stock-name">{{stockName}}</text>
+    <text class="stock-code-text">{{stockCode}}</text>
+  </view>
+
+  <view class="price-box">
+    <text class="big-price">{{stockData.price}}</text>
+    <text class="big-change {{parseFloat(stockData.change) >= 0 ? 'up' : 'down'}}">{{stockData.change}}%</text>
+  </view>
+
+  <view class="detail-grid">
+    <view class="detail-item">
+      <text class="dl">今开</text><text class="dv">{{stockData.open}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="dl">最高</text><text class="dv">{{stockData.high}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="dl">最低</text><text class="dv">{{stockData.low}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="dl">成交额</text><text class="dv">{{stockData.volume}}万</text>
+    </view>
+    <view class="detail-item">
+      <text class="dl">PE</text><text class="dv">{{stockData.pe}}</text>
+    </view>
+    <view class="detail-item">
+      <text class="dl">市值</text><text class="dv">{{stockData.mcap}}亿</text>
+    </view>
+  </view>
+
+  <view class="analysis-box">
+    <text class="analysis-title">🤖 AI分析</text>
+    <text class="analysis-text">{{analysis}}</text>
+  </view>
+</view>

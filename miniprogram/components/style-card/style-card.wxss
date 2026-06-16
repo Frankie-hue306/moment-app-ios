@@ -1,0 +1,131 @@
+/*
+ * 款式卡片组件 — Apple HIG 风格
+ */
+
+.style-card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.style-card:active {
+  opacity: 0.85;
+}
+
+/* Grid 模式 */
+.mode-grid .card-preview {
+  height: 210rpx;
+}
+.mode-grid .card-body {
+  padding: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+}
+
+/* List 模式 */
+.mode-list {
+  display: flex;
+}
+.mode-list .card-preview {
+  width: 190rpx;
+  min-height: 190rpx;
+  flex-shrink: 0;
+}
+.mode-list .card-body {
+  flex: 1;
+  padding: var(--spacing-md);
+}
+
+/* Compact 模式 */
+.mode-compact .card-preview {
+  height: 130rpx;
+}
+.mode-compact .card-body {
+  padding: var(--spacing-sm);
+}
+
+/* 预览区 */
+.card-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.preview-emoji {
+  font-size: 44rpx;
+}
+.mode-list .preview-emoji {
+  font-size: 60rpx;
+}
+
+/* 徽章 */
+.card-badge {
+  position: absolute;
+  top: var(--spacing-sm);
+  left: var(--spacing-sm);
+  padding: 2rpx 10rpx;
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+  font-size: 18rpx;
+  color: #fff;
+  font-weight: var(--font-weight-medium);
+}
+.card-badge.new {
+  font-size: 16rpx;
+}
+
+/* 收藏按钮 */
+.fav-btn {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 26rpx;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+}
+.fav-btn.active {
+  background: var(--color-accent-bg);
+}
+
+/* 信息区 */
+.card-name {
+  font-size: var(--font-size-subhead);
+  font-weight: var(--font-weight-semibold);
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.card-tags {
+  display: flex;
+  gap: 4rpx;
+  flex-wrap: wrap;
+  margin-bottom: 4rpx;
+}
+.card-tag {
+  font-size: var(--font-size-caption);
+  color: var(--color-accent);
+  padding: 2rpx 8rpx;
+  background: var(--color-accent-bg);
+  border-radius: var(--radius-full);
+}
+
+.card-desc {
+  font-size: var(--font-size-footnote);
+  color: var(--color-text-tertiary);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--spacing-sm);
+}
+
+.card-colors {
+  display: flex;
+  gap: 6rpx;
+}
+.color-dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 9rpx;
+  border: 1px solid rgba(0,0,0,0.08);
+}

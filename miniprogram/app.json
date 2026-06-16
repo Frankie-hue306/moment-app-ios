@@ -1,0 +1,67 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/tryon/tryon",
+    "pages/diy/diy",
+    "pages/gallery/gallery",
+    "pages/mine/mine",
+    "pages/style-detail/style-detail",
+    "pages/my-designs/my-designs",
+    "pages/my-favorites/my-favorites"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTitleText": "美甲DIY",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F2F2F7",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#AEAEB2",
+    "selectedColor": "#FF6B8A",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tabbar/home.png",
+        "selectedIconPath": "images/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/tryon/tryon",
+        "text": "试戴",
+        "iconPath": "images/tabbar/tryon.png",
+        "selectedIconPath": "images/tabbar/tryon-active.png"
+      },
+      {
+        "pagePath": "pages/diy/diy",
+        "text": "DIY",
+        "iconPath": "images/tabbar/diy.png",
+        "selectedIconPath": "images/tabbar/diy-active.png"
+      },
+      {
+        "pagePath": "pages/gallery/gallery",
+        "text": "图库",
+        "iconPath": "images/tabbar/gallery.png",
+        "selectedIconPath": "images/tabbar/gallery-active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "images/tabbar/mine.png",
+        "selectedIconPath": "images/tabbar/mine-active.png"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000
+  },
+  "permission": {
+    "scope.writePhotosAlbum": {
+      "desc": "保存你的美甲设计到相册"
+    }
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

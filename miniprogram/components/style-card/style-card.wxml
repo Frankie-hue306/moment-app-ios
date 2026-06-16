@@ -1,0 +1,49 @@
+<!--
+  款式卡片组件
+  支持 grid / list / compact 三种模式
+-->
+<view class="style-card mode-{{mode}}" bindtap="onTap">
+
+  <!-- 图片/色块预览区 -->
+  <view
+    class="card-preview"
+    style="background: linear-gradient(135deg, {{style.primaryColor || '#FFB3C6'}}20, {{style.primaryColor || '#FFB3C6'}}45);"
+  >
+    <text class="preview-emoji">💅</text>
+
+    <!-- 热/新标签 -->
+    <view class="card-badge" wx:if="{{style.isHot}}">🔥</view>
+    <view class="card-badge new" wx:elif="{{style.isNew}}">NEW</view>
+
+    <!-- 收藏按钮 -->
+    <view
+      class="fav-btn {{favorited ? 'active' : ''}}"
+      wx:if="{{showFavorite}}"
+      catchtap="onFavorite"
+    >
+      <text>{{favorited ? '❤️' : '🤍'}}</text>
+    </view>
+  </view>
+
+  <!-- 信息区 -->
+  <view class="card-body">
+    <text class="card-name text-ellipsis">{{style.name}}</text>
+
+    <view class="card-tags" wx:if="{{style.tags && style.tags.length > 0}}">
+      <text class="card-tag" wx:for="{{style.tags}}" wx:for-item="tag" wx:key="*this" wx:if="{{index < 2}}">{{tag}}</text>
+    </view>
+
+    <view class="card-footer" wx:if="{{mode === 'list'}}">
+      <text class="card-desc text-ellipsis-2 text-secondary">{{style.description}}</text>
+      <view class="card-colors" wx:if="{{style.colors}}">
+        <view
+          class="color-dot"
+          wx:for="{{style.colors}}"
+          wx:for-item="c"
+          wx:key="*this"
+          style="background: {{c}};"
+        ></view>
+      </view>
+    </view>
+  </view>
+</view>

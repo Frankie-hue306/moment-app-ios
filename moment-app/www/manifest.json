@@ -1,0 +1,17 @@
+{
+  "name": "此刻 · MOMENT",
+  "short_name": "此刻",
+  "description": "每天一次，随机时刻，拍下你面前真实的生活。反社交媒体档案。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>",
+      "sizes": "100x100",
+      "type": "image/svg+xml"
+    }
+  ]
+}

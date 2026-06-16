@@ -1,0 +1,7 @@
+{
+  "usingComponents": {},
+  "navigationBarTitleText": "款式图库",
+  "navigationBarBackgroundColor": "#FFFFFF",
+  "backgroundColor": "#F9F9FB",
+  "enablePullDownRefresh": true
+}

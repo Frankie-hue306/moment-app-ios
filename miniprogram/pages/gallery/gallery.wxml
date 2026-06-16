@@ -1,0 +1,127 @@
+<!--
+  款式图库页
+  布局：Tab切换 → 分类横滑 → 排序 → 瀑布流双列
+  卡片：专业色板展示，模拟美甲色卡
+-->
+<view class="page-gallery">
+
+  <!-- ====== 搜索栏 ====== -->
+  <view class="gallery-search">
+    <view class="search-row">
+      <view class="search-input-wrap" wx:if="{{showSearch}}">
+        <input
+          class="search-field"
+          placeholder="搜索款式、颜色..."
+          value="{{searchValue}}"
+          bindinput="onSearchInput"
+          focus="{{showSearch}}"
+        />
+      </view>
+      <view class="search-icon-btn" bindtap="onSearchToggle">
+        <text>{{showSearch ? '✕' : '🔍'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ====== Tab 切换 ====== -->
+  <view class="gallery-tabs">
+    <view class="gallery-tab {{activeTab === 'all' ? 'active' : ''}}" bindtap="onTabChange" data-tab="all">全部</view>
+    <view class="gallery-tab {{activeTab === 'hot' ? 'active' : ''}}" bindtap="onTabChange" data-tab="hot">🔥 热门</view>
+    <view class="gallery-tab {{activeTab === 'new' ? 'active' : ''}}" bindtap="onTabChange" data-tab="new">🆕 最新</view>
+  </view>
+
+  <!-- ====== 分类 + 排序 ====== -->
+  <view class="gallery-bar">
+    <scroll-view class="category-row" scroll-x enhanced show-scrollbar="{{false}}">
+      <view
+        class="category-chip {{activeCategory === item.id ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="id"
+        bindtap="onCategoryChange"
+        data-category="{{item.id}}"
+      ><text>{{item.icon}} {{item.name}}</text></view>
+    </scroll-view>
+    <view class="sort-toggle">
+      <view
+        class="sort-chip {{sortBy === item.id ? 'active' : ''}}"
+        wx:for="{{sortOptions}}"
+        wx:key="id"
+        bindtap="onSortChange"
+        data-sort="{{item.id}}"
+      ><text>{{item.label}}</text></view>
+    </view>
+  </view>
+
+  <!-- ====== 瀑布流 ====== -->
+  <scroll-view class="waterfall-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="waterfall">
+      <!-- 左列 -->
+      <view class="waterfall-column">
+        <view
+          class="wf-card animate-fade-in"
+          wx:for="{{leftColumn}}"
+          wx:key="_id"
+          bindtap="onStyleTap"
+          data-id="{{item._id}}"
+        >
+          <view class="wf-card-img" style="background: {{item.colors[3] || item.colors[0]}}18;">
+            <view class="wf-swatch-stack">
+              <view class="wf-swatch" wx:for="{{item.colors}}" wx:for-item="c" wx:key="*this" wx:if="{{index < 4}}" style="background: {{c}};">
+                <view class="wf-swatch-shine"></view>
+              </view>
+            </view>
+            <view class="wf-cat-tag">{{item.categoryName}}</view>
+            <view class="wf-fav-btn {{item.favorited ? 'favorited' : ''}}" catchtap="onFavorite" data-id="{{item._id}}">
+              <text>{{item.favorited ? '❤️' : '🤍'}}</text>
+            </view>
+            <view class="wf-badge" wx:if="{{item.isHot}}"><text>HOT</text></view>
+            <view class="wf-badge new" wx:elif="{{item.isNew}}"><text>NEW</text></view>
+          </view>
+          <view class="wf-card-body">
+            <text class="wf-card-name">{{item.name}}</text>
+            <view class="wf-card-tags">
+              <text class="wf-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" wx:if="{{index < 2}}">{{tag}}</text>
+              <text class="wf-likes">❤ {{item.likes}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 右列 -->
+      <view class="waterfall-column">
+        <view
+          class="wf-card animate-fade-in"
+          wx:for="{{rightColumn}}"
+          wx:key="_id"
+          bindtap="onStyleTap"
+          data-id="{{item._id}}"
+        >
+          <view class="wf-card-img" style="background: {{item.colors[3] || item.colors[0]}}18;">
+            <view class="wf-swatch-stack">
+              <view class="wf-swatch" wx:for="{{item.colors}}" wx:for-item="c" wx:key="*this" wx:if="{{index < 4}}" style="background: {{c}};">
+                <view class="wf-swatch-shine"></view>
+              </view>
+            </view>
+            <view class="wf-cat-tag">{{item.categoryName}}</view>
+            <view class="wf-fav-btn {{item.favorited ? 'favorited' : ''}}" catchtap="onFavorite" data-id="{{item._id}}">
+              <text>{{item.favorited ? '❤️' : '🤍'}}</text>
+            </view>
+            <view class="wf-badge" wx:if="{{item.isHot}}"><text>HOT</text></view>
+            <view class="wf-badge new" wx:elif="{{item.isNew}}"><text>NEW</text></view>
+          </view>
+          <view class="wf-card-body">
+            <text class="wf-card-name">{{item.name}}</text>
+            <view class="wf-card-tags">
+              <text class="wf-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this" wx:if="{{index < 2}}">{{tag}}</text>
+              <text class="wf-likes">❤ {{item.likes}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="load-more" wx:if="{{loading}}"><text>加载中...</text></view>
+    <view class="load-end" wx:if="{{!hasMore && (leftColumn.length > 0 || rightColumn.length > 0)}}">— 已加载全部 —</view>
+    <view class="bottom-spacer"></view>
+  </scroll-view>
+</view>

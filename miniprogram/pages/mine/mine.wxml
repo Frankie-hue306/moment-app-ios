@@ -1,0 +1,95 @@
+<!--
+  我的页 — 个人中心
+-->
+<view class="page-mine">
+
+  <!-- ====== 自定义导航栏 ====== -->
+  <view class="mine-navbar" style="padding-top: {{statusBarHeight}}px;">
+    <view class="navbar-content">
+      <text class="navbar-title">我的</text>
+    </view>
+  </view>
+
+  <!-- ====== 用户信息卡片 ====== -->
+  <view class="user-card">
+    <!-- 已登录 -->
+    <view class="user-info" wx:if="{{userInfo}}">
+      <image class="user-avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+      <view class="user-detail">
+        <text class="user-name">{{userInfo.nickName}}</text>
+        <text class="user-desc text-secondary">发现灵感，创造美丽 ✨</text>
+      </view>
+    </view>
+
+    <!-- 未登录 -->
+    <view class="user-info" wx:else>
+      <view class="user-avatar-placeholder">
+        <text>👤</text>
+      </view>
+      <view class="user-detail">
+        <text class="user-name">未登录</text>
+        <text class="user-desc text-secondary">登录后可保存你的设计</text>
+      </view>
+    </view>
+
+    <!-- 微信登录按钮（未登录时显示） -->
+    <button
+      class="login-btn"
+      wx:if="{{!userInfo}}"
+      open-type="getUserInfo"
+      bindgetuserinfo="onGetUserInfo"
+    >
+      <text>微信一键登录</text>
+    </button>
+  </view>
+
+  <!-- ====== 统计卡片 ====== -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-num">{{stats.designs}}</text>
+      <text class="stat-label text-tertiary">设计</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.favorites}}</text>
+      <text class="stat-label text-tertiary">收藏</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.tryons}}</text>
+      <text class="stat-label text-tertiary">试戴</text>
+    </view>
+  </view>
+
+  <!-- ====== 功能菜单 ====== -->
+  <view class="menu-group" wx:for="{{menuGroups}}" wx:key="title">
+    <text class="menu-group-title">{{item.title}}</text>
+    <view class="menu-list card">
+      <view
+        class="menu-item"
+        wx:for="{{item.items}}"
+        wx:for-item="menu"
+        wx:key="id"
+        bindtap="onMenuTap"
+        data-path="{{menu.path}}"
+        data-id="{{menu.id}}"
+      >
+        <text class="menu-icon">{{menu.icon}}</text>
+        <view class="menu-text">
+          <text class="menu-label">{{menu.label}}</text>
+          <text class="menu-desc text-tertiary" wx:if="{{menu.desc}}">{{menu.desc}}</text>
+        </view>
+        <text class="menu-arrow text-tertiary">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ====== 底部品牌 ====== -->
+  <view class="mine-footer">
+    <text class="footer-text">💅 美甲DIY v1.0.0</text>
+    <text class="footer-sub text-tertiary">Design Your Own Nail Art</text>
+  </view>
+
+  <!-- ====== 安全区 ====== -->
+  <view class="bottom-spacer"></view>
+</view>

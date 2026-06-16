@@ -1,0 +1,178 @@
+/*
+ * 我的页 — Apple HIG 风格
+ */
+
+.page-mine {
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+/* ===== 导航栏 ===== */
+.mine-navbar {
+  background: var(--color-bg);
+}
+.mine-navbar .navbar-content {
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.navbar-title {
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ===== 用户卡片 ===== */
+.user-card {
+  margin: var(--spacing-lg);
+  padding: var(--spacing-xl);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+.user-avatar-placeholder {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 56rpx;
+  background: var(--color-bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+}
+.user-detail {
+  flex: 1;
+}
+.user-name {
+  font-size: var(--font-size-title3);
+  font-weight: var(--font-weight-bold);
+  display: block;
+}
+.user-desc {
+  font-size: var(--font-size-footnote);
+  color: var(--color-text-tertiary);
+  margin-top: 4rpx;
+  display: block;
+}
+.login-btn {
+  margin-top: var(--spacing-lg);
+  height: 72rpx;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: var(--font-size-callout);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+.login-btn::after { border: none; }
+
+/* ===== 统计 ===== */
+.stats-card {
+  display: flex;
+  margin: 0 var(--spacing-lg) var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+}
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+.stat-num {
+  font-size: var(--font-size-title2);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-accent);
+}
+.stat-label {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-tertiary);
+}
+.stat-divider {
+  width: 0.5px;
+  background: var(--color-separator);
+  margin: var(--spacing-sm) 0;
+}
+
+/* ===== 菜单组 ===== */
+.menu-group {
+  margin: 0 var(--spacing-lg) var(--spacing-md);
+}
+.menu-group-title {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5rpx;
+  margin-bottom: var(--spacing-sm);
+  display: block;
+  padding-left: var(--spacing-sm);
+}
+.menu-list {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  min-height: 88rpx;
+  gap: var(--spacing-md);
+}
+.menu-item:not(:last-child) {
+  border-bottom: 0.5px solid var(--color-separator);
+}
+.menu-item:active {
+  background: var(--color-bg-secondary);
+}
+.menu-icon {
+  font-size: var(--font-size-headline);
+  width: 48rpx;
+  text-align: center;
+}
+.menu-text {
+  flex: 1;
+}
+.menu-label {
+  font-size: var(--font-size-callout);
+  font-weight: var(--font-weight-medium);
+  display: block;
+}
+.menu-desc {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-tertiary);
+  margin-top: 2rpx;
+}
+.menu-arrow {
+  font-size: var(--font-size-headline);
+  color: var(--color-text-quaternary);
+}
+
+/* ===== 底部 ===== */
+.mine-footer {
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+.footer-text {
+  font-size: var(--font-size-footnote);
+  color: var(--color-text-tertiary);
+  display: block;
+}
+.footer-sub {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-quaternary);
+  margin-top: 4rpx;
+  display: block;
+}
+.bottom-spacer {
+  height: calc(var(--tabbar-height) + var(--safe-area-bottom));
+}

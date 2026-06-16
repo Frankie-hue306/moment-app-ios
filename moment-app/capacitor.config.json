@@ -1,0 +1,14 @@
+{
+  "appId": "com.moment.app",
+  "appName": "此刻",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_notification",
+      "iconColor": "#000000"
+    }
+  }
+}

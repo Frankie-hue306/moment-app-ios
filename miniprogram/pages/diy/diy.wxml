@@ -1,0 +1,212 @@
+<!--
+  DIY 设计页
+  布局：顶部工具切换 → 中间画布预览 → 底部工具面板
+-->
+<view class="page-diy">
+
+  <!-- ====== 顶部工具切换 ====== -->
+  <view class="diy-toolbar">
+    <view
+      class="tool-item {{tool === item.id ? 'active' : ''}}"
+      wx:for="{{tools}}"
+      wx:key="id"
+      bindtap="onToolChange"
+      data-tool="{{item.id}}"
+    >
+      <text class="tool-icon">{{item.icon}}</text>
+      <text class="tool-label">{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- ====== 画布区域 ====== -->
+  <view class="canvas-container">
+    <!-- 指甲画布 -->
+    <view class="nail-canvas" style="background: {{baseColor}};">
+      <!-- 指甲形状 -->
+      <view class="nail-shape nail-{{nailShape}}">
+        <!-- 放置的元素 -->
+        <view
+          class="canvas-element"
+          wx:for="{{elements}}"
+          wx:key="id"
+          style="left: {{item.x}}rpx; top: {{item.y}}rpx; transform: scale({{item.scale}}) rotate({{item.rotate}}deg);"
+        >
+          <text>{{item.content || '⭐'}}</text>
+        </view>
+
+        <!-- 空画布提示 -->
+        <view class="canvas-hint" wx:if="{{elements.length === 0}}">
+          <text class="hint-icon">🎨</text>
+          <text class="hint-text">选择下方工具开始创作</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 形状选择器 -->
+    <view class="shape-selector">
+      <text class="selector-label">甲型：</text>
+      <view
+        class="shape-option {{nailShape === item.id ? 'active' : ''}}"
+        wx:for="{{nailShapes}}"
+        wx:key="id"
+        bindtap="onShapeChange"
+        data-shape="{{item.id}}"
+      >
+        <text>{{item.emoji}} {{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- 底色选择器 -->
+    <view class="color-strip">
+      <text class="selector-label">底色：</text>
+      <scroll-view scroll-x enhanced show-scrollbar="{{false}}" class="color-scroll">
+        <view
+          class="base-color-item {{baseColor === item ? 'active' : ''}}"
+          wx:for="{{['#FFF5F5','#FFFFFF','#FFF8F0','#F8F0FF','#F0FFF4','#FFFBE6','#F5F0FF','#FFE4E6','#F0F9FF','#FEF2F2']}}"
+          wx:key="*this"
+          style="background: {{item}};"
+          bindtap="onBaseColorPick"
+          data-color="{{item}}"
+        ></view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <!-- ====== 底部工具面板 ====== -->
+  <view class="tool-panel">
+    <!-- 涂色模式：颜色选择 -->
+    <view wx:if="{{tool === 'paint'}}" class="panel-content">
+      <text class="panel-title">选择颜色</text>
+      <!-- 最近使用 -->
+      <view class="recent-colors">
+        <view
+          class="recent-color {{currentColor === item ? 'active' : ''}}"
+          wx:for="{{recentColors}}"
+          wx:key="*this"
+          style="background: {{item}};"
+          bindtap="onColorPick"
+          data-color="{{item}}"
+        ></view>
+      </view>
+      <!-- 色板分组 -->
+      <scroll-view scroll-y enhanced show-scrollbar="{{false}}" class="palette-scroll">
+        <view class="palette-group" wx:for="{{colorPalettes}}" wx:key="name">
+          <text class="palette-name">{{item.name}}</text>
+          <view class="palette-colors">
+            <view
+              class="palette-color {{currentColor === color ? 'active' : ''}}"
+              wx:for="{{item.colors}}"
+              wx:for-item="color"
+              wx:key="*this"
+              style="background: {{color}};"
+              bindtap="onColorPick"
+              data-color="{{color}}"
+            ></view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 贴纸模式 -->
+    <scroll-view wx:if="{{tool === 'sticker'}}" class="panel-content" scroll-y enhanced show-scrollbar="{{false}}">
+      <text class="panel-title">选择贴纸</text>
+      <view class="item-grid">
+        <view
+          class="grid-item"
+          wx:for="{{stickers}}"
+          wx:key="id"
+          bindtap="onAddSticker"
+          data-id="{{item.id}}"
+          data-emoji="{{item.emoji}}"
+        >
+          <text class="grid-emoji">{{item.emoji}}</text>
+          <text class="grid-label">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 花纹模式 -->
+    <scroll-view wx:if="{{tool === 'pattern'}}" class="panel-content" scroll-y enhanced show-scrollbar="{{false}}">
+      <text class="panel-title">选择花纹</text>
+      <view class="item-grid">
+        <view
+          class="grid-item"
+          wx:for="{{patterns}}"
+          wx:key="id"
+          bindtap="onAddPattern"
+          data-id="{{item.id}}"
+        >
+          <text class="grid-emoji">{{item.icon}}</text>
+          <text class="grid-label">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 装饰模式 -->
+    <scroll-view wx:if="{{tool === 'decor'}}" class="panel-content" scroll-y enhanced show-scrollbar="{{false}}">
+      <text class="panel-title">选择装饰</text>
+      <view class="item-grid">
+        <view
+          class="grid-item"
+          wx:for="{{decors}}"
+          wx:key="id"
+          bindtap="onAddDecor"
+          data-id="{{item.id}}"
+          data-emoji="{{item.emoji}}"
+        >
+          <text class="grid-emoji">{{item.emoji}}</text>
+          <text class="grid-label">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 擦除模式 -->
+    <view wx:if="{{tool === 'eraser'}}" class="panel-content">
+      <text class="panel-title">擦除工具</text>
+      <view class="eraser-actions">
+        <view class="btn-secondary" bindtap="onUndo">
+          <text>↩ 撤销</text>
+        </view>
+        <view class="btn-secondary" bindtap="onClearCanvas">
+          <text>🗑 清空画布</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ====== 底部操作栏 ====== -->
+  <view class="diy-bottom-bar">
+    <view class="bottom-btn" bindtap="onUndo">
+      <text>↩</text>
+    </view>
+    <view class="bottom-count text-tertiary">
+      <text>{{elements.length}} 个元素</text>
+    </view>
+    <view class="btn-primary bottom-export" bindtap="onExport">
+      <text>导出 💾</text>
+    </view>
+  </view>
+
+  <!-- ====== 导出弹窗 ====== -->
+  <view class="export-modal {{showExportOptions ? 'show' : ''}}" catchtap="onCloseExport">
+    <view class="export-sheet animate-fade-scale" catchtap="">
+      <text class="export-title">导出设计</text>
+      <input
+        class="input-base export-input"
+        placeholder="给你的设计起个名字..."
+        value="{{designName}}"
+        bindinput="onDesignNameInput"
+      />
+      <view class="btn-primary" bindtap="onSaveDesign">
+        <text>保存到我的设计</text>
+      </view>
+      <view class="btn-secondary mt-md" bindtap="onSaveAsImage">
+        <text>保存为图片</text>
+      </view>
+      <view class="btn-ghost mt-sm" bindtap="onCloseExport">
+        <text>取消</text>
+      </view>
+    </view>
+  </view>
+
+</view>

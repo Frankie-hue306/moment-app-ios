@@ -1,0 +1,20 @@
+.page { padding: 20px; background: #fff; min-height: 100vh; }
+.stock-header { text-align: center; margin-bottom: 16px; }
+.stock-name { font-size: 22px; font-weight: 900; }
+.stock-code-text { font-size: 12px; color: #999; display: block; }
+
+.price-box { text-align: center; margin: 20px 0; }
+.big-price { font-size: 48px; font-weight: 900; }
+.big-change { font-size: 20px; font-weight: 700; margin-left: 10px; }
+
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 20px 0; }
+.detail-item { background: #f8f8f8; border-radius: 10px; padding: 12px; text-align: center; }
+.dl { font-size: 11px; color: #999; display: block; }
+.dv { font-size: 16px; font-weight: 700; display: block; margin-top: 4px; }
+
+.analysis-box { background: #f0f4ff; border-radius: 14px; padding: 16px; margin-top: 20px; }
+.analysis-title { font-size: 15px; font-weight: 700; display: block; margin-bottom: 8px; }
+.analysis-text { font-size: 13px; color: #555; line-height: 1.8; white-space: pre-line; }
+
+.up { color: #e74c3c; }
+.down { color: #27ae60; }
