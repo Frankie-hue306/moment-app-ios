@@ -1,4 +1,4 @@
-name: iOS Build
+name: iOS Build & Upload to TestFlight
 on:
   push:
     branches: [main]
@@ -9,18 +9,23 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Setup API Key
+        run: |
+          echo "${{ secrets.APPSTORE_API_KEY }}" > AuthKey.p8
+          cp AuthKey.p8 ios/fastlane/AuthKey.p8
+      
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          
       - run: npm install
       - run: npm run build
       - run: npx cap sync ios
-      - name: Build IPA
+      
+      - name: Build and Upload to TestFlight
         run: |
-          cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release archive -archivePath $PWD/build/App.xcarchive CODE_SIGNING_ALLOWED=NO
-          xcodebuild -exportArchive -archivePath $PWD/build/App.xcarchive -exportPath $PWD/build -exportOptionsPlist <(echo '{"method":"development"}')
-      - uses: actions/upload-artifact@v4
-        with:
-          name: moment-ios-build
-          path: ios/App/build/*.ipa
+          cd ios
+          bundle exec fastlane beta
+        env:
+          FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}

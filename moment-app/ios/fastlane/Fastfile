@@ -1,0 +1,23 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    build_app(
+      workspace: "App.xcworkspace",
+      scheme: "App",
+      export_method: "app-store",
+      export_options: {
+        manageAppVersionAndBuildNumber: false
+      }
+    )
+    upload_to_testflight(
+      api_key_path: "../../AuthKey.p8",
+      api_key: {
+        key_id: "42KU5BWP3V",
+        issuer_id: "0ee2ecb7-2003-4cda-a6d2-493545d5cc5e"
+      },
+      skip_waiting_for_build_processing: true
+    )
+  end
+end
