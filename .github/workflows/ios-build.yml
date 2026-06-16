@@ -10,8 +10,10 @@ jobs:
       - name: Install & Build
         working-directory: moment-app
         run: npm install && npm run build && npx cap sync ios
-      - name: Write API Key
-        run: echo "$APPSTORE_API_KEY" > /tmp/AuthKey.p8
+      - name: Write API Key & Export Plist
+        run: |
+          echo "$APPSTORE_API_KEY" > /tmp/AuthKey.p8
+          echo '{"method":"app-store","uploadSymbols":true}' > /tmp/export.plist
         env:
           APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
       - name: Build Archive & Export IPA
@@ -34,9 +36,7 @@ jobs:
             -authenticationKeyID 42KU5BWP3V \
             -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
             2>&1 | tail -5
-          ls -la $PWD/build/*.ipa 2>/dev/null && echo "IPA BUILT!" || echo "NO IPA"
-      - name: Create export plist
-        run: echo '{"method":"app-store","uploadSymbols":true}' > /tmp/export.plist
+          ls -la $PWD/build/*.ipa && echo "IPA READY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
