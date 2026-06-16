@@ -1,4 +1,4 @@
-name: iOS Build
+name: iOS Build & Upload to TestFlight
 on: [workflow_dispatch]
 jobs:
   build:
@@ -14,7 +14,7 @@ jobs:
         run: echo "$APPSTORE_API_KEY" > /tmp/AuthKey.p8
         env:
           APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
-      - name: Build Archive
+      - name: Build & Export IPA
         working-directory: moment-app
         run: |
           cd ios/App
@@ -24,8 +24,22 @@ jobs:
             -authenticationKeyPath /tmp/AuthKey.p8 \
             -authenticationKeyID 42KU5BWP3V \
             -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
-            archive 2>&1 | tail -40
+            archive
+          xcodebuild -exportArchive \
+            -archivePath $PWD/build/App.xcarchive \
+            -exportPath $PWD/build \
+            -exportOptionsPlist /dev/stdin \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath /tmp/AuthKey.p8 \
+            -authenticationKeyID 42KU5BWP3V \
+            -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
+            <<< '{"method":"app-store"}'
+      - name: Upload to TestFlight
+        working-directory: moment-app
+        run: |
+          xcrun altool --upload-app -f ios/App/build/App.ipa -t ios \
+            --apiKey 42KU5BWP3V --apiIssuer 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e
       - uses: actions/upload-artifact@v4
         with:
-          name: archive
-          path: moment-app/ios/App/build/App.xcarchive
+          name: app-ipa
+          path: moment-app/ios/App/build/App.ipa
