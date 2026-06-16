@@ -1,4 +1,4 @@
-name: iOS Build IPA
+name: iOS Build .xcarchive
 on: [workflow_dispatch]
 jobs:
   build:
@@ -10,20 +10,16 @@ jobs:
       - name: Install & Build
         working-directory: moment-app
         run: npm install && npm run build && npx cap sync ios
-      - name: Build Archive & Export IPA
+      - name: Build Archive
         working-directory: moment-app
         run: |
           cd ios/App
           xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release \
             -archivePath $PWD/build/App.xcarchive \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
-            archive 2>&1 | tail -3
-          xcodebuild -exportArchive -archivePath $PWD/build/App.xcarchive \
-            -exportPath $PWD/build -exportOptionsPlist /dev/stdin \
-            CODE_SIGNING_ALLOWED=NO \
-            <<< '{"method":"development","signingStyle":"manual"}'
-          ls -la $PWD/build/App.ipa && echo "IPA READY"
+            archive 2>&1 | tail -5
+          echo "ARCHIVE DONE"
       - uses: actions/upload-artifact@v4
         with:
-          name: moment-ios-ipa
-          path: moment-app/ios/App/build/*.ipa
+          name: app-xcarchive
+          path: moment-app/ios/App/build/App.xcarchive
