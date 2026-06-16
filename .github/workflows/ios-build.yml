@@ -1,50 +1,32 @@
-name: iOS Build & Upload to TestFlight
-on:
-  workflow_dispatch:
-
+name: iOS Build
+on: [workflow_dispatch]
 jobs:
   build:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup API Key
-        run: |
-          echo "${{ secrets.APPSTORE_API_KEY }}" > /tmp/AuthKey.p8
-      
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          
+        with: {node-version: 20}
       - run: npm install
       - run: npm run build
       - run: npx cap sync ios
-      
-      - name: Build & Upload to TestFlight
+      - name: Build IPA
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App \
-            -sdk iphoneos -configuration Release \
+          xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release \
             -archivePath $PWD/build/App.xcarchive \
             -allowProvisioningUpdates \
             -authenticationKeyPath /tmp/AuthKey.p8 \
             -authenticationKeyID 42KU5BWP3V \
             -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
-            archive
-          xcodebuild -exportArchive \
-            -archivePath $PWD/build/App.xcarchive \
-            -exportPath $PWD/build \
-            -exportOptionsPlist /dev/stdin \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath /tmp/AuthKey.p8 \
-            -authenticationKeyID 42KU5BWP3V \
-            -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
-            <<< '{"method":"app-store","uploadSymbols":true}'
-          # Upload to TestFlight
-          xcrun altool --upload-app -f $PWD/build/App.ipa \
-            -t ios --apiKey 42KU5BWP3V \
-            --apiIssuer 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e
+            archive 2>&1 | tail -30
+        env:
+          AUTH_KEY: ${{ secrets.APPSTORE_API_KEY }}
+      - name: Write API Key
+        run: echo "$AUTH_KEY" > /tmp/AuthKey.p8
+        env:
+          AUTH_KEY: ${{ secrets.APPSTORE_API_KEY }}
       - uses: actions/upload-artifact@v4
         with:
-          name: moment-ios-release
-          path: ios/App/build/App.ipa
+          name: app-archive
+          path: ios/App/build/App.xcarchive
