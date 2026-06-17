@@ -1,0 +1,28 @@
+name: Unsigned IPA for Testing
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 20}
+      - name: Install & Build
+        working-directory: moment-app
+        run: npm install && npm run build && npx cap sync ios
+      - name: Build Archive
+        working-directory: moment-app
+        run: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release \
+            -archivePath $PWD/build/App.xcarchive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
+            archive
+      - name: Create IPA
+        run: |
+          APP=$(find moment-app/ios/App/build -name "*.app" -type d | head -1)
+          mkdir Payload && cp -R "$APP" Payload/ && zip -r App.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-ipa
+          path: App.ipa
