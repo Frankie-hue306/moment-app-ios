@@ -12,18 +12,22 @@ jobs:
         run: npm install && npm run build && npx cap sync ios
       - name: Create Plist & Write Key
         run: |
-          echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>method</key><string>app-store</string><key>uploadSymbols</key><true/></dict></plist>' > /tmp/export.plist
+          echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>method</key><string>app-store</string><key>teamID</key><string>LB37T6L2B3</string><key>uploadSymbols</key><true/></dict></plist>' > /tmp/export.plist
           echo "$APPSTORE_API_KEY" > /tmp/AuthKey.p8
         env:
           APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
-      - name: Build Archive (unsigned)
+      - name: Build Archive
         working-directory: moment-app
         run: |
           cd ios/App
           xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release \
             -archivePath $PWD/build/App.xcarchive \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO \
-            archive 2>&1 | tail -10
+            DEVELOPMENT_TEAM=LB37T6L2B3 \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath /tmp/AuthKey.p8 \
+            -authenticationKeyID 42KU5BWP3V \
+            -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
+            archive 2>&1 | tail -5
           ls -la $PWD/build/App.xcarchive && echo "ARCHIVE OK"
       - name: Export Signed IPA
         working-directory: moment-app
@@ -38,7 +42,7 @@ jobs:
             -authenticationKeyID 42KU5BWP3V \
             -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
             2>&1 | tail -15
-          ls -la $PWD/build/*.ipa && echo "SIGNED IPA OK"
+          ls -la $PWD/build/*.ipa && echo "✅ SIGNED IPA READY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
