@@ -1,0 +1,70 @@
+name: Deploy to VPS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'moment-server/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Install Node.js and dependencies on VPS
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
+            echo '=== Installing packages ===' &&
+            apt-get update -qq &&
+            apt-get install -y -qq nodejs npm nginx git &&
+            node -v && npm -v &&
+            echo '=== PACKAGES INSTALLED ==='
+          "
+
+      - name: Upload server code to VPS
+        run: |
+          cd moment-server
+          tar czf /tmp/server.tar.gz server.js package.json
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' scp -o StrictHostKeyChecking=accept-new /tmp/server.tar.gz root@107.172.157.172:/opt/moment/
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
+            cd /opt/moment &&
+            tar xzf server.tar.gz &&
+            npm install --production 2>&1 | tail -5 &&
+            echo '=== CODE DEPLOYED ==='
+          "
+
+      - name: Setup systemd and nginx
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
+            cat > /etc/systemd/system/moment.service << 'SVC'
+          [Unit]
+          Description=Moment Server
+          After=network.target
+          [Service]
+          Type=simple
+          User=root
+          WorkingDirectory=/opt/moment
+          ExecStart=/usr/bin/node /opt/moment/server.js
+          Restart=always
+          RestartSec=3
+          [Install]
+          WantedBy=multi-user.target
+          SVC
+            systemctl daemon-reload &&
+            systemctl enable moment &&
+            systemctl restart moment &&
+            echo '=== SERVICE STARTED ==='
+          "
+
+      - name: Verify deployment
+        run: |
+          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
+            curl -s http://localhost:3000/health &&
+            echo '' &&
+            systemctl status moment --no-pager | head -10
+          "
