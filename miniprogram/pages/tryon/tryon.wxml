@@ -1,212 +1,49 @@
-<!--
-  虚拟试戴页
-  流程：上传照片 → 选款式/颜色 → 调整指甲位置 → 预览保存
--->
-<view class="page-tryon">
-
-  <!-- ====== 步骤指示器 ====== -->
-  <view class="step-indicator">
-    <view
-      class="step-item {{step >= item.num ? 'active' : ''}} {{step > item.num ? 'done' : ''}}"
-      wx:for="{{steps}}"
-      wx:key="num"
-    >
-      <view class="step-num">{{step > item.num ? '✓' : item.num}}</view>
-      <text class="step-label">{{item.label}}</text>
-      <view class="step-line" wx:if="{{item.num < 4}}"></view>
-    </view>
+<!-- AI全自动试戴 -->
+<view class="pg">
+  <view class="top" style="padding-top:{{sH}}px">
+    <text class="top-t">{{selStyle?selStyle.name:'AI试戴'}}</text>
+    <view class="top-close" bindtap="onBack">✕</view>
   </view>
 
-  <!-- ====== 步骤 1：上传照片 ====== -->
-  <view class="step-content" wx:if="{{step === 1}}">
-    <view class="upload-area card-padded" bindtap="onChoosePhoto">
-      <text class="upload-icon">📸</text>
-      <text class="upload-title">上传你的手部照片</text>
-      <text class="upload-hint text-tertiary">建议：手掌平放在浅色背景上，手指自然张开</text>
-      <view class="btn-secondary" style="margin-top: 24rpx;">
-        <text>从相册选择 / 拍摄</text>
+  <!-- 手部照片 -->
+  <view class="hand-area" wx:if="{{hand}}">
+    <image class="hand-img" src="{{hand}}" mode="aspectFit"></image>
+    <!-- 检测结果标记 -->
+    <view class="nail-dots" wx:if="{{detected}}">
+      <view class="nd" wx:for="{{nails}}" wx:key="id" wx:if="{{item.v}}" style="left:{{item.x}}%;top:{{item.y}}%;transform:translate(-50%,-50%) rotate({{item.r}}deg) scale({{item.s}});">
+        <view class="nd-dot" style="background:{{item.c}};box-shadow:0 0 0 3px rgba(255,255,255,.8),0 0 12px {{item.c}};"></view>
       </view>
     </view>
-    <!-- 示例图说明 -->
-    <view class="guide-card card-padded mt-lg">
-      <text class="guide-title">💡 拍照小贴士</text>
-      <view class="guide-item">✋ 手指自然分开，指甲区域清晰可见</view>
-      <view class="guide-item">📐 光线充足，避免阴影遮盖指甲</view>
-      <view class="guide-item">🎨 纯色背景效果最佳（白色/浅色桌面上）</view>
-    </view>
-    <view class="btn-primary mt-lg" bindtap="onNextStep">
-      <text>跳过，直接选款式</text>
-    </view>
+    <view class="hand-status" wx:if="{{status}}"><text>{{status}}</text></view>
   </view>
 
-  <!-- ====== 步骤 2：选择款式/颜色 ====== -->
-  <scroll-view class="step-content style-select" wx:if="{{step === 2}}" scroll-y enhanced show-scrollbar="{{false}}">
-    <!-- 已选照片预览 -->
-    <view class="photo-preview card" wx:if="{{handImage}}">
-      <image src="{{handImage}}" mode="aspectFit" class="hand-preview-img" />
-      <view class="preview-overlay">
-        <text class="text-white">已上传</text>
-      </view>
-    </view>
+  <!-- 空状态 -->
+  <view class="hand-empty" wx:if="{{!hand}}" bindtap="onCamera">
+    <text class="he-ico">&#x1F590;</text>
+    <text class="he-t">点击拍照</text>
+    <text class="he-sub">AI自动识别指甲 · 一拍即合</text>
+  </view>
 
-    <!-- 颜色选择器 -->
-    <view class="section-title mt-lg">🎨 选择颜色</view>
-    <view class="color-grid">
-      <view
-        class="color-item {{selectedColor === item ? 'selected' : ''}}"
-        wx:for="{{colorPalette}}"
-        wx:key="*this"
-        style="background: {{item}};"
-        bindtap="onColorPick"
-        data-color="{{item}}"
-      >
-        <text class="color-check" wx:if="{{selectedColor === item}}">✓</text>
-      </view>
-    </view>
-
-    <!-- 推荐款式 -->
-    <view class="section-title mt-lg">✨ 推荐款式</view>
-    <view class="style-grid-small">
-      <view
-        class="style-mini-card {{currentStyle && currentStyle._id === item._id ? 'selected-card' : ''}}"
-        wx:for="{{styleList}}"
-        wx:key="_id"
-        bindtap="onSelectStyle"
-        data-id="{{item._id}}"
-      >
-        <view class="style-mini-preview" style="background: linear-gradient(135deg, {{item.primaryColor}}20, {{item.primaryColor}}40);">
-          <text>{{item.emoji}}</text>
-        </view>
-        <text class="style-mini-name text-ellipsis">{{item.name}}</text>
-        <view class="style-mini-colors">
-          <view
-            class="mini-color-dot"
-            wx:for="{{item.colors}}"
-            wx:for-item="c"
-            wx:key="*this"
-            style="background: {{c}};"
-          ></view>
-        </view>
-      </view>
-    </view>
+  <!-- 颜色条 -->
+  <scroll-view class="c-strip" scroll-x enhanced show-scrollbar="{{false}}" wx:if="{{hand}}">
+    <view class="cs {{selColor===c?'on':''}}" wx:for="{{colors}}" wx:key="*this" bindtap="onColor" data-c="{{item}}" style="background:{{item}};"></view>
   </scroll-view>
 
-  <!-- ====== 步骤 3：调整指甲位置 ====== -->
-  <view class="step-content" wx:if="{{step === 3}}">
-    <!-- 指甲选择器 -->
-    <view class="nail-selector">
-      <view
-        class="nail-tab {{activeNailIndex === index ? 'active' : ''}} {{!item.visible ? 'hidden-nail' : ''}}"
-        wx:for="{{nails}}"
-        wx:key="id"
-        bindtap="onSelectNail"
-        data-index="{{index}}"
-      >
-        <view class="nail-tab-color" style="background: {{item.color}};"></view>
-        <text class="nail-tab-name">{{item.name}}</text>
-      </view>
-    </view>
+  <!-- 操作 -->
+  <view class="act-bar" wx:if="{{hand}}">
+    <view class="ab-btn" bindtap="onCamera">拍照</view>
+    <view class="ab-btn" bindtap="onDetect">检测</view>
+    <view class="btn btn-fill" style="flex:2;height:72rpx;" bindtap="onComposite">合成效果</view>
+  </view>
 
-    <!-- 模式切换 -->
-    <view class="adjust-modes">
-      <view
-        class="mode-btn {{adjustMode === 'move' ? 'active' : ''}}"
-        bindtap="onSwitchMode"
-        data-mode="move"
-      >↕ 移动</view>
-      <view
-        class="mode-btn {{adjustMode === 'scale' ? 'active' : ''}}"
-        bindtap="onSwitchMode"
-        data-mode="scale"
-      >🔍 缩放</view>
-      <view
-        class="mode-btn {{adjustMode === 'rotate' ? 'active' : ''}}"
-        bindtap="onSwitchMode"
-        data-mode="rotate"
-      >↻ 旋转</view>
-    </view>
-
-    <!-- 方向键控制 -->
-    <view class="direction-pad">
-      <view class="dir-row">
-        <view class="dir-btn" bindtap="onNailMove" data-direction="up">▲</view>
-      </view>
-      <view class="dir-row">
-        <view class="dir-btn" bindtap="onNailMove" data-direction="left">◀</view>
-        <view class="dir-center">
-          <text class="text-tertiary">{{nails[activeNailIndex].name}}</text>
-        </view>
-        <view class="dir-btn" bindtap="onNailMove" data-direction="right">▶</view>
-      </view>
-      <view class="dir-row">
-        <view class="dir-btn" bindtap="onNailMove" data-direction="down">▼</view>
-      </view>
-    </view>
-
-    <!-- 缩放/旋转控制 -->
-    <view class="sr-controls" wx:if="{{adjustMode === 'scale'}}">
-      <view class="sr-btn" bindtap="onNailMove" data-direction="out">− 缩小</view>
-      <text class="text-secondary">缩放: {{nails[activeNailIndex].scale.toFixed(2)}}x</text>
-      <view class="sr-btn" bindtap="onNailMove" data-direction="in">+ 放大</view>
-    </view>
-    <view class="sr-controls" wx:if="{{adjustMode === 'rotate'}}">
-      <view class="sr-btn" bindtap="onNailMove" data-direction="ccw">↺ 逆时针</view>
-      <text class="text-secondary">角度: {{nails[activeNailIndex].rotate}}°</text>
-      <view class="sr-btn" bindtap="onNailMove" data-direction="cw">↻ 顺时针</view>
-    </view>
-
-    <!-- 当前指甲操作 -->
-    <view class="nail-actions">
-      <view class="action-btn" bindtap="onToggleNail" data-index="{{activeNailIndex}}">
-        <text>{{nails[activeNailIndex].visible ? '👁 显示' : '🚫 隐藏'}}</text>
-      </view>
-      <view class="action-btn" bindtap="onResetNail">
-        <text>🔄 重置</text>
-      </view>
-    </view>
-
-    <!-- 预览区域 -->
-    <view class="preview-area card mt-lg" wx:if="{{handImage}}">
-      <text class="preview-label">预览效果</text>
-      <image src="{{handImage}}" mode="widthFix" class="preview-hand" />
-      <!-- 指甲叠加层（模拟） -->
-      <view class="nail-overlay" wx:for="{{nails}}" wx:key="id" wx:if="{{item.visible}}">
-        <view
-          class="nail-overlay-item"
-          style="background: {{item.color}}; opacity: 0.7;"
-        ></view>
-      </view>
+  <!-- 结果 -->
+  <view class="result" wx:if="{{result}}">
+    <image class="r-img" src="{{result}}" mode="widthFix"></image>
+    <view class="r-acts">
+      <view class="btn btn-fill" style="flex:1;" bindtap="onSave">保存</view>
+      <view class="btn btn-line" style="flex:1;" bindtap="onRetry">重拍</view>
     </view>
   </view>
 
-  <!-- ====== 步骤 4：完成预览 ====== -->
-  <view class="step-content" wx:if="{{step === 4}}">
-    <view class="result-area">
-      <text class="result-emoji">✨</text>
-      <text class="result-title">试戴效果预览</text>
-      <text class="result-hint text-tertiary">v2 版本将实现精准的指甲贴合渲染</text>
-    </view>
-    <view class="result-preview card-padded" wx:if="{{handImage}}">
-      <image src="{{handImage}}" mode="widthFix" class="result-hand" />
-    </view>
-    <view class="result-actions mt-xl">
-      <view class="btn-primary" bindtap="onSaveResult">
-        <text>💾 保存到相册</text>
-      </view>
-      <view class="btn-secondary mt-md" bindtap="onRestart">
-        <text>重新试戴</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- ====== 底部操作栏 ====== -->
-  <view class="bottom-bar" wx:if="{{step < 4}}">
-    <view class="btn-ghost" wx:if="{{step > 1}}" bindtap="onPrevStep">
-      <text>← 上一步</text>
-    </view>
-    <view class="btn-primary flex-1" bindtap="onNextStep">
-      <text>{{step === 3 ? '生成预览 →' : '下一步 →'}}</text>
-    </view>
-  </view>
-
+  <canvas type="2d" id="tc" style="position:fixed;left:0;top:0;width:750rpx;height:1000rpx;opacity:0;pointer-events:none;z-index:-1;"></canvas>
 </view>

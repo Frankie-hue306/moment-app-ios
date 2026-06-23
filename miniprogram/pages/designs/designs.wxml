@@ -1,0 +1,20 @@
+<!-- 我的设计列表 -->
+<view class="pg">
+  <view class="hd"><text class="hd-t">我的设计</text><text class="hd-n" wx:if="{{list.length}}">{{list.length}} 件</text></view>
+  <view class="empty" wx:if="{{!list.length}}"><text class="empty-ico">&#9674;</text><text class="empty-t">暂无设计</text><text class="empty-d">去 DIY 工坊创作你的美甲</text></view>
+  <view class="grid" wx:else>
+    <view class="gc" wx:for="{{list}}" wx:key="_id">
+      <view class="gc-prev" style="background:{{item.color}};border-radius:{{item.shapeR||'44% 44% 34% 34%/14% 14% 22% 22%'}};box-shadow:0 4rpx 16rpx rgba(0,0,0,.06);">
+        <view class="gc-shine"></view>
+        <view class="gc-decor" wx:if="{{item.decor}}">{{item.decor.e}}</view>
+      </view>
+      <text class="gc-name ell">{{item.shapeName}} · {{item.decorName}}</text>
+      <text class="gc-time">{{item.createdAt}}</text>
+      <view class="gc-acts">
+        <view class="gca" bindtap="onTryon" data-i="{{index}}">试戴</view>
+        <view class="gca del" bindtap="onDel" data-i="{{index}}">删除</view>
+      </view>
+    </view>
+  </view>
+  <view class="bot"></view>
+</view>

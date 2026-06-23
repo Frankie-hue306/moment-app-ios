@@ -1,0 +1,9 @@
+- generic [ref=e2]:
+  - table [ref=e4]:
+    - rowgroup [ref=e5]:
+      - 'row "noVNC ready: native WebSockets, canvas rendering Send CtrlAltDel" [ref=e6]':
+        - 'cell "noVNC ready: native WebSockets, canvas rendering" [ref=e7]':
+          - generic [ref=e8]: "noVNC ready: native WebSockets, canvas rendering"
+        - cell "Send CtrlAltDel" [ref=e9]:
+          - button "Send CtrlAltDel" [disabled] [ref=e11]
+  - generic [ref=e12]: Canvas not supported.

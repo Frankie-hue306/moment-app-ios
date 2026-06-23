@@ -1,0 +1,15 @@
+- generic [ref=e2]:
+  - generic [ref=e5]:
+    - heading "Login" [level=2] [ref=e6]
+    - textbox "Username" [active] [ref=e9]
+    - textbox "Password" [ref=e12]
+    - button "Login" [ref=e13] [cursor=pointer]
+  - link "Forgot Password?" [ref=e15] [cursor=pointer]:
+    - /url: lostpassword.php
+  - combobox [ref=e17] [cursor=pointer]:
+    - option "English" [selected]
+    - option "German"
+    - option "Persian"
+    - option "Polish"
+    - option "Portugues-Brasil"
+    - option "Spanish"

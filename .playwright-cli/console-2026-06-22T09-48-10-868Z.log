@@ -1,0 +1,16 @@
+[     881ms] [WARNING] WebSocket on-close event @ https://nerdvm.racknerd.com/include/util.js:217
+[     972ms] [ERROR]  Msg: Server disconnected (code: 1006) @ https://nerdvm.racknerd.com/include/util.js:219
+[     972ms] [ERROR] Error while connected. @ https://nerdvm.racknerd.com/include/util.js:219
+[    1260ms] [WARNING]  @ https://nerdvm.racknerd.com/include/util.js:217
+[    1764ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://nerdvm.racknerd.com/login.php:0
+[   18028ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://nerdvm.racknerd.com/control.php?_v=t284y27464c4t2y2s22464b4:0
+[   36155ms] [WARNING]  Msg: noVNC ready: native WebSockets, canvas rendering @ https://nerdvm.racknerd.com/include/util.js:217
+[   36155ms] [WARNING]  @ https://nerdvm.racknerd.com/include/util.js:217
+[   36940ms] [WARNING]  Msg: Starting VNC handshake @ https://nerdvm.racknerd.com/include/util.js:217
+[   37038ms] [WARNING]  Msg: Sent ProtocolVersion: 003.008 @ https://nerdvm.racknerd.com/include/util.js:217
+[   37358ms] [WARNING]  Msg: Authenticating using scheme: 2 @ https://nerdvm.racknerd.com/include/util.js:217
+[   37667ms] [WARNING]  @ https://nerdvm.racknerd.com/include/util.js:217
+[   37978ms] [WARNING]  Msg: Authentication OK @ https://nerdvm.racknerd.com/include/util.js:217
+[   37979ms] [WARNING]  Msg: Authentication OK @ https://nerdvm.racknerd.com/include/util.js:217
+[   38279ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://nerdvm.racknerd.com/include/display.js:256
+[   38282ms] [WARNING]  Msg: Connected (encrypted) to: QEMU (kvm560452) @ https://nerdvm.racknerd.com/include/util.js:217

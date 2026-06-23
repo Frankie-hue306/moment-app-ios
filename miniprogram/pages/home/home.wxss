@@ -1,0 +1,26 @@
+.pg{min-height:100vh;background:#FFF}
+.nav{padding:0 24rpx;position:sticky;top:0;z-index:10;background:#FFF}.nav-t{font-size:40rpx;font-weight:700;letter-spacing:-.5rpx;line-height:88rpx}
+
+/* Hero */
+.hero{display:flex;align-items:center;justify-content:center;padding:60rpx 0 48rpx}
+.hero-btn{width:280rpx;height:280rpx;border-radius:140rpx;background:#FBF8F6;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid #F0E8E0}
+.hero-btn:active{background:#F5EFEA}.hb-ico{font-size:52rpx;color:var(--accent);margin-bottom:8rpx}.hb-t{font-size:32rpx;font-weight:700;color:#1C1C1E}.hb-sub{font-size:22rpx;color:var(--t3);margin-top:6rpx}.hb-ico{font-size:48rpx;color:var(--accent)}
+
+/* 区块 */
+.sec{padding:0 24rpx;margin-bottom:40rpx}.sec-t{font-size:32rpx;font-weight:700;margin-bottom:20rpx;display:block}
+
+/* 排行 */
+.rank-scroll{white-space:nowrap}
+.rc{display:inline-flex;flex-direction:column;width:170rpx;margin-right:20rpx;position:relative}.rc:last-child{margin-right:0}
+.rc-num{position:absolute;top:6rpx;left:6rpx;z-index:2;width:32rpx;height:32rpx;border-radius:16rpx;background:var(--accent);color:#FFF;font-size:20rpx;font-weight:700;display:flex;align-items:center;justify-content:center}
+.rc-prev{height:190rpx;border-radius:var(--r);display:flex;align-items:center;justify-content:center;margin-bottom:12rpx}
+.rc-nail{width:66rpx;height:104rpx;border-radius:44% 44% 34% 34%/14% 14% 22% 22%;position:relative;overflow:hidden}
+.rc-shine{position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 60% 40% at 50% 22%,rgba(255,255,255,.4),transparent 60%);border-radius:inherit}
+.rc-name{font-size:24rpx;font-weight:500;display:block}.rc-price{font-size:22rpx;color:var(--t3);margin-top:4rpx}
+
+/* 分类入口 */
+.cats{display:flex;flex-wrap:wrap;gap:12rpx}
+.cat{padding:14rpx 28rpx;border-radius:40rpx;font-size:26rpx;color:var(--t2);background:#F5F5F5}
+.cat:active{background:#EBEBEB}
+
+.bot{height:calc(98rpx + env(safe-area-inset-bottom,0rpx) + 32rpx)}

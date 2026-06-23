@@ -7,7 +7,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Prevent webview from overlapping status bar
+        if let vc = window?.rootViewController as? CAPBridgeViewController {
+            vc.webView?.scrollView.contentInsetAdjustmentBehavior = .automatic
+        }
         return true
     }
 

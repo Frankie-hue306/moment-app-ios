@@ -1,0 +1,37 @@
+<!-- 款式详情 + 转化路径 -->
+<view class="pg" wx:if="{{s}}">
+  <view class="hero" style="background:{{s.c[2]||s.c[0]}}08;">
+    <view class="hero-nails">
+      <view class="hn" wx:for="{{s.c}}" wx:key="*this" wx:if="{{index<3}}" style="background:linear-gradient(180deg,{{item}},{{s.c[index+1]||item}});box-shadow:0 6rpx 20rpx rgba(0,0,0,.06);">
+        <view class="hn-shine"></view>
+      </view>
+    </view>
+    <text class="hero-price">¥{{s.price}}</text>
+  </view>
+
+  <view class="body">
+    <view class="fx fb"><text class="body-name">{{s.name}}</text><text class="body-cat">{{s.catName}}</text></view>
+    <text class="body-desc" wx:if="{{s.desc}}">{{s.desc}}</text>
+    <view class="tags"><view class="t" wx:for="{{s.tags}}" wx:key="*this">{{item}}</view></view>
+
+    <text class="sec-t">配色</text>
+    <view class="colors"><view class="co" wx:for="{{s.c}}" wx:key="*this" style="background:{{item}};"><text class="co-hex">{{item}}</text></view></view>
+
+    <text class="sec-t">相似推荐</text>
+    <scroll-view scroll-x class="sim-scroll">
+      <view class="sim" wx:for="{{sim}}" wx:key="id" bindtap="onSim" data-id="{{item.id}}">
+        <view class="sim-prev" style="background:{{item.c[2]||item.c[0]}}08;">
+          <view class="sim-nail" style="background:linear-gradient(180deg,{{item.c[0]}},{{item.c[1]||item.c[0]}});box-shadow:0 3rpx 8rpx rgba(0,0,0,.06);"><view class="sim-shine"></view></view>
+        </view>
+        <text class="sim-name ell">{{item.name}}</text>
+      </view>
+    </scroll-view>
+    <view style="height:160rpx;"></view>
+  </view>
+
+  <!-- 底部转化按钮 -->
+  <view class="bot-bar">
+    <view class="btn btn-fill" style="flex:1;" bindtap="onTryon">试戴同款</view>
+    <view class="btn btn-line" style="flex:1;" bindtap="onGet">获取同款</view>
+  </view>
+</view>

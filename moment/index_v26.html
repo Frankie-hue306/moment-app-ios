@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>此刻 v26</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#000;--card:#1c1c1e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65)}
+body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;-webkit-font-smoothing:antialiased}
+.app{width:100%;max-width:428px;padding:80px 24px 100px;text-align:center}
+h1{font-size:34px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;color:var(--text);text-align:left}
+.subhead{font-size:15px;color:var(--muted);text-align:left;margin-bottom:40px;letter-spacing:-.2px}
+.btn{
+  display:block;width:100%;padding:18px;border:none;
+  background:var(--card);color:var(--text);font-size:17px;font-weight:400;
+  letter-spacing:-.4px;cursor:pointer;border-radius:14px;margin-bottom:10px;
+  text-align:left;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:active{background:#2c2c2e;transform:scale(.99)}
+.btn .icon{margin-right:12px;font-size:20px}
+img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-radius:20px;margin:20px auto;display:block}
+.ti{
+  width:100%;padding:14px 16px;border:none;border-radius:12px;
+  background:var(--card);color:var(--text);font-size:17px;text-align:left;
+  outline:none;margin:0 auto;display:block;letter-spacing:-.3px
+}
+.ti:focus{background:#2c2c2e}
+.ti::placeholder{color:var(--muted)}
+@keyframes br{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes tilt{0%,100%{transform:perspective(500px) rotateY(0deg)}25%{transform:perspective(500px) rotateY(2deg)}75%{transform:perspective(500px) rotateY(-2deg)}}
+.depth3d{
+  animation:tilt 6s ease-in-out infinite;
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.08) !important;
+  border-radius:20px !important;
+  position:relative;
+}
+.depth3d::after{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.4) 100%);
+  pointer-events:none;border-radius:inherit;
+}
+.depth-btn{background:var(--accent) !important;color:#fff !important;text-align:center !important}
+</style>
+</head>
+<body>
+<div id="writeOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);z-index:1000;flex-direction:column;align-items:center;justify-content:center">
+  <img id="woImg" src="" style="width:160px;height:160px;object-fit:cover;border-radius:20px;margin-bottom:24px;background:var(--card)">
+  <div style="color:var(--text);font-size:17px;font-weight:600;margin-bottom:16px;letter-spacing:-.3px">此刻想说点什么？</div>
+  <input id="woInput" maxlength="20" placeholder="写下感想（20字内）" style="width:260px;padding:14px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-size:17px;text-align:center;outline:none;margin-bottom:20px">
+  <button class="btn" onclick="confirmWrite()" style="width:260px;text-align:center;background:var(--accent);color:#fff;margin-bottom:8px">保存并记录</button>
+  <button class="btn" onclick="skipWrite()" style="width:260px;text-align:center;background:transparent;color:var(--muted)">跳过</button>
+</div>
+
+<div class="app">
+  <h1>此刻 v26</h1>
+  <div id="home">
+    <div class="subhead">记录真实的每一刻</div>
+    <button class="btn" onclick="pick()" style="animation:br 3s ease-in-out infinite"><span class="icon">📸</span>拍摄此刻</button>
+    <button class="btn" onclick="gallery()"><span class="icon">📂</span>我的档案</button>
+    <button class="btn" onclick="strangers()"><span class="icon">🌍</span>看世界</button>
+    <input type="file" id="pkr" accept="image/*" style="display:none" onchange="gotPhoto(event)">
+  </div>
+  <div id="captured" style="display:none">
+    <div style="font-size:12px;color:#888;margin-bottom:8px">已记录</div>
+    <img id="ph" class="pv" src="" alt="">
+    <div id="st" style="font-size:12px;color:rgba(237,237,239,.4);margin-bottom:16px"></div>
+    <input class="ti" id="th" placeholder="此刻想说点什么？(20字)" maxlength="20" oninput="saveTh()">
+    <div style="font-size:10px;color:#555;margin-bottom:12px"><span id="cc">0</span>/20</div>
+    <button class="btn depth-btn" onclick="toggle3D()" id="btn3d" style="text-align:center">✨ 3D景深</button>
+    <button class="btn dim" onclick="home()">返回</button>
+  </div>
+  <div id="strangers" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0a0f;z-index:100">
+    <div style="text-align:center;padding:16px;color:rgba(255,255,255,.4);letter-spacing:3px;font-size:13px">世界上的其他人</div>
+    <div id="cs" style="position:absolute;top:40px;left:0;right:0;bottom:60px"></div>
+    <div style="position:absolute;bottom:16px;left:0;right:0;text-align:center"><button class="btn dim" onclick="home()">返回主页</button></div>
+  </div>
+  <div id="photos" style="display:none">
+    <div style="font-size:13px;color:#888;margin-bottom:12px">档案 (<span id="pc">0</span>)</div>
+    <div id="gr" style="display:grid;grid-template-columns:repeat(4,48px);gap:2px;justify-content:center"></div>
+    <button class="btn dim" onclick="home()" style="margin-top:16px">返回</button>
+  </div>
+</div>
+<script>
+var D={m:[],c:0,i:-1};
+try{var s=localStorage.getItem('mv21');if(s)D=JSON.parse(s)}catch(e){}
+function save(){localStorage.setItem('mv21',JSON.stringify(D))}
+function pick(){document.getElementById('pkr').click()}
+var pendingPhoto=null;
+function gotPhoto(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    pendingPhoto=ev.target.result;
+    document.getElementById('woImg').src=ev.target.result;
+    document.getElementById('writeOverlay').style.display='flex';
+    document.getElementById('woInput').value='';
+    setTimeout(function(){document.getElementById('woInput').focus()},300);
+  };r.readAsDataURL(f);e.target.value='';
+}
+function confirmWrite(){
+  var t=document.getElementById('woInput').value.slice(0,20);
+  if(!pendingPhoto)return;
+  D.c++;D.m.unshift({u:pendingPhoto,t:t,d:Date.now()});D.i=0;save();
+  document.getElementById('ph').src=pendingPhoto;
+  document.getElementById('th').value=t;document.getElementById('cc').textContent=t.length;
+  document.getElementById('st').textContent=D.c;
+  pendingPhoto=null;document.getElementById('writeOverlay').style.display='none';
+  home();
+}
+function skipWrite(){
+  if(!pendingPhoto)return;
+  D.c++;D.m.unshift({u:pendingPhoto,t:'',d:Date.now()});D.i=0;save();
+  document.getElementById('ph').src=pendingPhoto;
+  document.getElementById('th').value='';document.getElementById('cc').textContent='0';
+  document.getElementById('st').textContent=D.c;
+  pendingPhoto=null;document.getElementById('writeOverlay').style.display='none';
+  home();
+}
+var is3D=false;
+function toggle3D(){
+  is3D=!is3D;var img=document.getElementById('ph');var btn=document.getElementById('btn3d');
+  if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='#0a84ff'}
+  else{img.classList.remove('depth3d');btn.textContent='✨ 3D景深';btn.style.background='var(--accent)'}
+}
+function saveTh(){if(D.i>=0&&D.i<D.m.length){D.m[D.i].t=document.getElementById('th').value.slice(0,20);save()}}
+function sw(id){['home','captured','strangers','photos'].forEach(function(x){document.getElementById(x).style.display=x===id?'block':'none'})}
+function home(){sw('home');clearInterval(T)}
+function gallery(){
+  document.getElementById('pc').textContent=D.m.length;
+  var g=document.getElementById('gr');
+  g.innerHTML=D.m.length?D.m.map(function(m,i){return '<img src="'+m.u+'" onclick="view('+i+')" style="width:48px;height:48px;object-fit:cover;background:#111">'}).join(''):'<div style="grid-column:1/-1;color:#555;font-size:12px;text-align:center;padding:20px">还没有记录</div>';
+  sw('photos')
+}
+function view(i){D.i=i;var m=D.m[i];document.getElementById('ph').src=m.u;document.getElementById('th').value=m.t||'';document.getElementById('cc').textContent=(m.t||'').length;sw('captured')}
+var demo=[{u:gen('1a1a2e','888','月','凌晨的书桌'),t:'方案写完了',l:12},{u:gen('2d1b00','f0a500','阳','午后的阳光'),t:'喝咖啡晒太阳',l:8},{u:gen('1a0030','e040fb','夜','傍晚的街角'),t:'下班看晚霞',l:21},{u:gen('0d0d0d','aaa','雨','雨天的窗外'),t:'在家听雨声',l:5},{u:gen('1b0d00','ff6f00','咖','深夜的厨房'),t:'煮碗面犒劳自己',l:15}];
+function gen(bg,fg,emoji,tt){
+  return 'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect fill="#'+bg+'" width="300" height="300"/><text fill="#'+fg+'" x="150" y="120" text-anchor="middle" font-size="60">'+emoji+'</text><text fill="#666" x="150" y="180" text-anchor="middle" font-size="14">'+tt+'</text></svg>')
+}
+var T=null,F=null;
+function strangers(){sw('strangers');document.getElementById('cs').innerHTML='';clearInterval(T);spawn();T=setInterval(spawn,2200)}
+function spawn(){
+  var i=Math.floor(Math.random()*demo.length);var p=demo[i];
+  var c=document.getElementById('cs');if(c.children.length>8)c.removeChild(c.firstChild);
+  var shapes=['50%','14px','4px 24px 4px 24px','24px 4px 24px 4px','8px 20px 20px 8px','2px 30px 2px 30px','40% 10% 40% 10%','10% 40% 10% 40%','50% 50% 0 0'];
+  var sh=shapes[Math.floor(Math.random()*shapes.length)];
+  var hue=Math.random()*360;var gc='hsla('+hue+',60%,50%,.25)';
+  var lft=5+Math.random()*70;var tp=10+Math.random()*60;
+  var sz=140+Math.floor(Math.random()*80);var rot=Math.random()*20-10;
+  var card=document.createElement('div');card.setAttribute('data-idx',i);
+  card.style.cssText='position:absolute;left:'+lft+'%;top:'+tp+'%;width:'+sz+'px;background:rgba(255,255,255,.05);border-radius:'+sh+';overflow:hidden;box-shadow:0 0 30px '+gc+',0 8px 24px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);transform:translate(-50%,-50%) scale(0) rotate('+rot+'deg);opacity:0;transition:all .8s cubic-bezier(0.16,1,0.3,1);z-index:'+(10+c.children.length)+';filter:saturate(1.2) contrast(1.05)';
+  card.innerHTML='<img src="'+p.u+'" style="width:100%;aspect-ratio:1;object-fit:cover">';
+  card.onclick=function(e){e.stopPropagation();if(F)return;F=card;
+    card.style.left='50%';card.style.top='50%';card.style.width='260px';card.style.zIndex='999';
+    card.style.transition='all .4s cubic-bezier(0.16,1,0.3,1)';
+    card.style.transform='translate(-50%,-50%) scale(1) rotate(0deg)';card.style.opacity='1';
+    card.innerHTML='<img src="'+p.u+'" style="width:100%;aspect-ratio:1;object-fit:cover"><div style="padding:12px"><div style="color:rgba(237,237,239,.7);font-size:12px;text-align:center;margin-bottom:8px">'+p.t+'</div><button onclick="event.stopPropagation();lk('+i+')" style="width:100%;padding:8px;background:rgba(94,106,210,.2);border:1px solid #5E6AD2;border-radius:12px;color:#ededef;font-size:13px;cursor:pointer">LIKE <span id="dl'+i+'">'+p.l+'</span></button></div>';
+    setTimeout(function(){card.style.opacity='0';card.style.transform='translate(-50%,-50%) scale(0.3)';setTimeout(function(){if(card.parentNode)card.parentNode.removeChild(card);F=null},400)},3000)};
+  c.appendChild(card);
+  // Dramatic fly-in animation with slight bounce
+  setTimeout(function(){
+    card.style.left=endLft+'%';card.style.top=endTp+'%';
+    card.style.transition='all 1s cubic-bezier(0.34,1.56,0.64,1)'; // spring bounce
+    card.style.transform='translate(-50%,-50%) scale(1) rotate(0deg)';
+    card.style.opacity='.88';
+  },80);
+  // Settle into natural position
+  setTimeout(function(){
+    card.style.transition='all 3s ease-out';
+    card.style.transform='translate(-50%,-50%) scale(1) rotate('+(Math.random()*6-3)+'deg)';
+  },1200);
+  // Auto remove if never clicked
+  setTimeout(function(){if(card!==F&&card.parentNode)card.parentNode.removeChild(card)},8000)
+}
+function lk(i){demo[i].l++;document.getElementById('dl'+i).textContent=demo[i].l}
+</script>
+</body>
+</html>

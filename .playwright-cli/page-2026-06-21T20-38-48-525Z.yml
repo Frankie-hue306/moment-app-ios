@@ -1,0 +1,312 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: DISCOUNT
+      - generic [ref=e6]:
+        - text: "Save 15% off for life on all dedicated servers using promo code:"
+        - strong [ref=e7]: 15OFFDEDI
+      - generic [ref=e8]:
+        - link "E@ sales@racknerd.com" [ref=e9] [cursor=pointer]:
+          - /url: mailto:sales@racknerd.com
+        - link "#> MY ACCOUNT" [ref=e10] [cursor=pointer]:
+          - /url: https://my.racknerd.com/clientarea.php
+    - generic [ref=e11]:
+      - link "Logo" [ref=e12] [cursor=pointer]:
+        - /url: https://www.racknerd.com/
+        - img "Logo" [ref=e13]
+      - generic [ref=e15]:
+        - list:
+          - listitem [ref=e16]:
+            - link "Home" [ref=e17] [cursor=pointer]:
+              - /url: https://www.racknerd.com/
+          - listitem [ref=e18]:
+            - link "Hosting" [ref=e19] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e20]:
+            - link "VPS" [ref=e21] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e22]:
+            - link "Dedicated Servers" [ref=e23] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e24]:
+            - link "Colocation" [ref=e25] [cursor=pointer]:
+              - /url: https://www.racknerd.com/colocation
+          - listitem [ref=e26]:
+            - link "Partners" [ref=e27] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e28]:
+            - link "Datacenters" [ref=e29] [cursor=pointer]:
+              - /url: "#"
+          - listitem [ref=e30]:
+            - link "About Us" [ref=e31] [cursor=pointer]:
+              - /url: "#"
+  - generic [ref=e32]:
+    - generic [ref=e38]: My Products & Services
+    - navigation [ref=e40]:
+      - generic [ref=e42]:
+        - list [ref=e43]:
+          - listitem [ref=e44]:
+            - link "Home" [ref=e45] [cursor=pointer]:
+              - /url: /clientarea.php
+          - listitem [ref=e46]:
+            - link "Services" [ref=e47] [cursor=pointer]:
+              - /url: "#"
+              - text: Services
+          - listitem [ref=e49]:
+            - link "Domains" [ref=e50] [cursor=pointer]:
+              - /url: "#"
+              - text: Domains
+          - listitem [ref=e52]:
+            - link "Billing" [ref=e53] [cursor=pointer]:
+              - /url: "#"
+              - text: Billing
+          - listitem [ref=e55]:
+            - link "Support" [ref=e56] [cursor=pointer]:
+              - /url: "#"
+              - text: Support
+          - listitem [ref=e58]:
+            - link "Open Ticket" [ref=e59] [cursor=pointer]:
+              - /url: /submitticket.php
+          - listitem [ref=e60]:
+            - link "Affiliates" [ref=e61] [cursor=pointer]:
+              - /url: /affiliates.php
+          - listitem [ref=e62]:
+            - link "View Email Log" [ref=e63] [cursor=pointer]:
+              - /url: https://my.racknerd.com/clientarea.php?action=emails
+        - list [ref=e64]:
+          - listitem [ref=e65]:
+            - link "Hello, Frankie!" [ref=e66] [cursor=pointer]:
+              - /url: "#"
+              - text: Hello, Frankie!
+    - list [ref=e70]:
+      - listitem [ref=e71]:
+        - link "English" [ref=e72] [cursor=pointer]:
+          - /url: "#"
+          - text: English
+      - listitem [ref=e74]:
+        - link "Notifications" [ref=e75] [cursor=pointer]:
+          - /url: "#"
+          - text: Notifications
+      - listitem [ref=e77]:
+        - link "Logout" [ref=e78] [cursor=pointer]:
+          - /url: /logout.php
+    - generic [ref=e81]:
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - heading "Available Credit " [level=3] [ref=e86]:
+            - text: Available Credit
+            - generic [ref=e87] [cursor=pointer]: 
+          - link "$0.00 USD" [ref=e89] [cursor=pointer]:
+            - /url: /clientarea.php?action=addfunds
+            - heading "$0.00 USD" [level=4] [ref=e90]
+          - link " Add Funds" [ref=e92] [cursor=pointer]:
+            - /url: clientarea.php?action=addfunds
+            - generic [ref=e93]: 
+            - text: Add Funds
+        - generic [ref=e94]:
+          - heading " View " [level=3] [ref=e96]:
+            - generic [ref=e97]: 
+            - text: View
+            - generic [ref=e98] [cursor=pointer]: 
+          - generic [ref=e99]:
+            - link "1  Active" [ref=e100] [cursor=pointer]:
+              - /url: /clientarea.php?action=services#
+              - generic [ref=e101]: "1"
+              - generic [ref=e102]: 
+              - text: Active
+            - link "0  Pending" [ref=e103] [cursor=pointer]:
+              - /url: /clientarea.php?action=services#
+              - generic [ref=e104]: "0"
+              - generic [ref=e105]: 
+              - text: Pending
+            - link "0  Suspended" [ref=e106] [cursor=pointer]:
+              - /url: /clientarea.php?action=services#
+              - generic [ref=e107]: "0"
+              - generic [ref=e108]: 
+              - text: Suspended
+            - link "0  Terminated" [ref=e109] [cursor=pointer]:
+              - /url: /clientarea.php?action=services#
+              - generic [ref=e110]: "0"
+              - generic [ref=e111]: 
+              - text: Terminated
+            - link "0  Cancelled" [ref=e112] [cursor=pointer]:
+              - /url: /clientarea.php?action=services#
+              - generic [ref=e113]: "0"
+              - generic [ref=e114]: 
+              - text: Cancelled
+      - generic [ref=e116]:
+        - generic [ref=e117]:
+          - generic [ref=e118]:
+            - searchbox [ref=e121]
+            - status [ref=e122]: Showing 1 to 1 of 1 entries
+            - grid [ref=e123]:
+              - rowgroup [ref=e124]:
+                - 'row "Product/Service: activate to sort column descending Pricing: activate to sort column ascending Next Due Date: activate to sort column ascending Status: activate to sort column ascending" [ref=e125]':
+                  - columnheader [ref=e126]
+                  - 'columnheader "Product/Service: activate to sort column descending" [ref=e127] [cursor=pointer]': Product/Service 
+                  - 'columnheader "Pricing: activate to sort column ascending" [ref=e128] [cursor=pointer]': Pricing 
+                  - 'columnheader "Next Due Date: activate to sort column ascending" [ref=e129] [cursor=pointer]': Next Due Date 
+                  - 'columnheader "Status: activate to sort column ascending" [ref=e130] [cursor=pointer]': Status 
+                  - text: 
+              - rowgroup [ref=e131]:
+                - row "1 GB KVM VPS Special 107.172.157.172 - racknerd-c859c77 $21.99 USD Annually 06/21/2027 Active" [ref=e132]:
+                  - gridcell [ref=e133]
+                  - gridcell "1 GB KVM VPS Special 107.172.157.172 - racknerd-c859c77" [ref=e134]:
+                    - strong [ref=e135]: 1 GB KVM VPS Special
+                    - text: 107.172.157.172 - racknerd-c859c77
+                  - gridcell "$21.99 USD Annually" [ref=e136]:
+                    - text: $21.99 USD
+                    - text: Annually
+                  - gridcell "06/21/2027" [ref=e137]
+                  - gridcell "Active" [ref=e138]:
+                    - generic [ref=e139]: Active
+          - list [ref=e141]:
+            - listitem:
+              - link "Previous" [ref=e142]:
+                - /url: "#"
+            - listitem:
+              - link "1" [ref=e143]:
+                - /url: "#"
+            - listitem:
+              - link "Next" [ref=e144]:
+                - /url: "#"
+          - generic [ref=e146]:
+            - text: Show
+            - combobox "Show entries" [ref=e147]:
+              - option "10" [selected]
+              - option "25"
+              - option "50"
+              - option "All"
+            - text: entries
+        - text: 
+      - generic [ref=e149]:
+        - heading " Actions " [level=3] [ref=e151]:
+          - generic [ref=e152]: 
+          - text: Actions
+          - generic [ref=e153] [cursor=pointer]: 
+        - generic [ref=e154]:
+          - link " Place a New Order" [ref=e155] [cursor=pointer]:
+            - /url: /cart.php
+            - generic [ref=e156]: 
+            - text: Place a New Order
+          - link " View Available Addons" [ref=e157] [cursor=pointer]:
+            - /url: /cart.php?gid=addons
+            - generic [ref=e158]: 
+            - text: View Available Addons
+    - text: 
+    - generic: 
+  - generic [ref=e161]:
+    - generic [ref=e162]:
+      - list [ref=e163]:
+        - listitem [ref=e164]: HOSTING SERVICES
+        - listitem [ref=e165]:
+          - link "Shared Hosting" [ref=e166] [cursor=pointer]:
+            - /url: https://www.racknerd.com/shared-hosting
+        - listitem [ref=e167]:
+          - link "Reseller Hosting" [ref=e168] [cursor=pointer]:
+            - /url: https://www.racknerd.com/reseller-hosting
+        - listitem [ref=e169]:
+          - link "KVM VPS" [ref=e170] [cursor=pointer]:
+            - /url: https://www.racknerd.com/kvm-vps
+        - listitem [ref=e171]:
+          - link "AMD Ryzen VPS" [ref=e172] [cursor=pointer]:
+            - /url: https://www.racknerd.com/ryzen-vps
+        - listitem [ref=e173]:
+          - link "Windows VPS" [ref=e174] [cursor=pointer]:
+            - /url: https://www.racknerd.com/windows-vps
+        - listitem [ref=e175]:
+          - link "Hybrid Dedicated Servers" [ref=e176] [cursor=pointer]:
+            - /url: https://www.racknerd.com/hybrid-dedicated-servers
+        - listitem [ref=e177]:
+          - link "Dedicated Servers" [ref=e178] [cursor=pointer]:
+            - /url: https://www.racknerd.com/dedicated-servers
+        - listitem [ref=e179]:
+          - link "AMD Ryzen Dedicated Servers" [ref=e180] [cursor=pointer]:
+            - /url: https://www.racknerd.com/amd-ryzen-dedicated-servers
+        - listitem [ref=e181]:
+          - link "10Gbps Unmetered Servers" [ref=e182] [cursor=pointer]:
+            - /url: https://www.racknerd.com/10gbps-unmetered-servers
+        - listitem [ref=e183]:
+          - link "20Gbps Unmetered Servers" [ref=e184] [cursor=pointer]:
+            - /url: https://www.racknerd.com/20gbps-unmetered-servers
+        - listitem [ref=e185]:
+          - link "40Gbps Unmetered Servers" [ref=e186] [cursor=pointer]:
+            - /url: https://www.racknerd.com/40gbps-unmetered-servers
+        - listitem [ref=e187]:
+          - link "SEO Dedicated Servers" [ref=e188] [cursor=pointer]:
+            - /url: https://www.racknerd.com/seo-dedicated-servers
+        - listitem [ref=e189]:
+          - link "Colocation" [ref=e190] [cursor=pointer]:
+            - /url: https://www.racknerd.com/colocation
+      - list [ref=e191]:
+        - listitem [ref=e192]: COMPANY
+        - listitem [ref=e193]:
+          - link "Blog" [ref=e194] [cursor=pointer]:
+            - /url: https://blog.racknerd.com/
+        - listitem [ref=e195]:
+          - link "About Us" [ref=e196] [cursor=pointer]:
+            - /url: https://www.racknerd.com/about
+        - listitem [ref=e197]:
+          - link "Datacenters" [ref=e198] [cursor=pointer]:
+            - /url: https://www.racknerd.com/datacenters
+        - listitem [ref=e199]:
+          - link "Contact Us" [ref=e200] [cursor=pointer]:
+            - /url: https://www.racknerd.com/contact-us
+        - listitem [ref=e201]:
+          - link "Affiliate Program" [ref=e202] [cursor=pointer]:
+            - /url: https://www.racknerd.com/affiliates
+        - listitem [ref=e203]:
+          - link "Reseller Program" [ref=e204] [cursor=pointer]:
+            - /url: https://www.racknerd.com/reseller-program
+      - list [ref=e205]:
+        - listitem [ref=e206]: LEGAL
+        - listitem [ref=e207]:
+          - link "Terms of Service" [ref=e208] [cursor=pointer]:
+            - /url: https://www.racknerd.com/terms-of-service
+        - listitem [ref=e209]:
+          - link "Affiliates Terms of Service" [ref=e210] [cursor=pointer]:
+            - /url: https://www.racknerd.com/affiliates-terms-of-service
+        - listitem [ref=e211]:
+          - link "Acceptable Use Policy" [ref=e212] [cursor=pointer]:
+            - /url: https://www.racknerd.com/terms-of-service
+        - listitem [ref=e213]:
+          - link "Privacy Policy" [ref=e214] [cursor=pointer]:
+            - /url: https://www.racknerd.com/privacy-policy
+        - listitem [ref=e215]:
+          - link "Service Level Agreement" [ref=e216] [cursor=pointer]:
+            - /url: https://www.racknerd.com/service-level-agreement
+      - list [ref=e217]:
+        - listitem [ref=e218]: CLIENTS
+        - listitem [ref=e219]:
+          - link "Client Login" [ref=e220] [cursor=pointer]:
+            - /url: https://my.racknerd.com/
+        - listitem [ref=e221]:
+          - link "Submit Support Ticket" [ref=e222] [cursor=pointer]:
+            - /url: https://my.racknerd.com/submitticket.php
+        - listitem [ref=e223]:
+          - link "View Announcements" [ref=e224] [cursor=pointer]:
+            - /url: https://my.racknerd.com/announcements.php
+        - listitem [ref=e225]:
+          - link "Network Status" [ref=e226] [cursor=pointer]:
+            - /url: https://my.racknerd.com/serverstatus.php
+    - generic [ref=e227]:
+      - generic [ref=e229]:
+        - link "twitter" [ref=e230] [cursor=pointer]:
+          - /url: https://twitter.com/racknerd
+        - link "facebook" [ref=e231] [cursor=pointer]:
+          - /url: https://www.facebook.com/racknerd
+        - link "linkedin" [ref=e232] [cursor=pointer]:
+          - /url: https://www.linkedin.com/company/racknerd/about/
+        - link "instagram" [ref=e233] [cursor=pointer]:
+          - /url: https://instagram.com/racknerd
+        - link "TikTok" [ref=e234] [cursor=pointer]:
+          - /url: https://tiktok.com/@racknerd
+      - generic [ref=e235]: "#> connect --social"
+      - generic [ref=e236]:
+        - link "sales@racknerd.com" [ref=e237] [cursor=pointer]:
+          - /url: mailto:sales@racknerd.com
+        - link "+1 (888) 881-NERD" [ref=e238] [cursor=pointer]:
+          - /url: tel:+18888816373
+      - generic [ref=e239]:
+        - img "Logo" [ref=e241]
+        - generic [ref=e242]: © 2025 RackNerd, All Rights Reserved.

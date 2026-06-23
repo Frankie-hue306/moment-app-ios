@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>RealNail · 3D 试戴</title>
+<style>
+:root{--accent:#DDBEA9;--bg:#FFF;--bg2:#F5F5F5;--sep:#EBEBEB;--t1:#1C1C1E;--t2:#6D6D72;--t3:#B0B0B0;--r:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'SF Pro Text','PingFang SC',sans-serif;background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;font-size:15px;max-width:430px;margin:0 auto;min-height:100vh;overflow-x:hidden}
+.tab-bar{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);width:100%;max-width:430px;display:flex;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-top:.5px solid var(--sep);z-index:9999;padding-bottom:env(safe-area-inset-bottom,0);min-height:56px;pointer-events:auto}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;padding:6px 0 10px;font-size:11px;color:var(--t3);border:none;background:none;cursor:pointer;min-height:50px}.tab.on{color:var(--accent)}.tab svg{width:22px;height:22px;margin-bottom:2px}
+.page{display:none;padding-bottom:100px;pointer-events:none}.page.on{display:block}.page.on>*{pointer-events:auto}
+.top-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(20px)}.top-nav-t{font-size:24px;font-weight:700}
+.btn{display:flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:24px;font-size:15px;font-weight:590;cursor:pointer;border:none}.btn-fill{background:var(--accent);color:#FFF}.btn-line{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}.btn-fill:active,.btn-line:active{opacity:.8}
+.sec{padding:0 16px;margin-bottom:28px}.sec-t{font-size:20px;font-weight:700;margin-bottom:14px;display:block}
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.75);color:#FFF;padding:10px 24px;border-radius:20px;font-size:14px;z-index:300;pointer-events:none;opacity:0;transition:opacity .3s}.toast.on{opacity:1}
+/* 3D */
+.three-container{width:100%;height:380px;background:linear-gradient(180deg,#FAFAFA,#F0F0F0);border-radius:16px;margin:0 16px 12px;overflow:hidden;cursor:grab}.three-container:active{cursor:grabbing}
+/* DIY */
+.diy-photo{width:calc(100% - 32px);margin:0 16px 12px;border-radius:16px;position:relative;overflow:hidden;min-height:300px;background:#FBF5F0}
+.diy-photo img{width:100%;display:block}
+.placed-nails{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}.placed-nails>div{pointer-events:auto}
+.pn-item{position:absolute;transform:translate(-50%,-50%);cursor:pointer}
+.pn-cap{border-radius:44% 44% 34% 34%/14% 14% 22% 22%;box-shadow:0 3px 12px rgba(0,0,0,.15);position:relative;overflow:hidden}
+.pn-shine{position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 60% 40% at 50% 22%,rgba(255,255,255,.4),transparent 60%)}
+.pn-decor{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px;z-index:2}
+/* Nail tabs */
+.nail-tabs{display:flex;gap:6px;padding:0 16px 8px;overflow-x:auto}.nt{padding:8px 18px;border-radius:20px;font-size:13px;background:var(--bg2);color:var(--t2);border:none;cursor:pointer;white-space:nowrap}.nt.on{background:var(--accent);color:#FFF;font-weight:600}
+/* Controls */
+.color-grid{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 8px}.cg{width:36px;height:36px;border-radius:18px;cursor:pointer;border:3px solid transparent}.cg.on{border-color:var(--accent);transform:scale(1.12)}
+.tool-cats{display:flex;gap:6px;padding:0 16px 8px;overflow-x:auto}.tc{padding:7px 14px;border-radius:18px;font-size:12px;background:var(--bg2);color:var(--t2);border:none;cursor:pointer;white-space:nowrap}.tc.on{background:var(--accent);color:#FFF;font-weight:600}
+.item-grid{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px}.ig{width:calc(20% - 5px);text-align:center;padding:6px 2px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;background:var(--bg2);font-size:10px;color:var(--t2)}.ig.on{border-color:var(--accent);background:#FFF}
+/* Profile */
+.pcard{margin:16px;padding:32px;border-radius:var(--r);background:#FBF8F6;text-align:center}.pcard h2{font-size:20px;margin-bottom:16px}.pstats{display:flex;justify-content:center;gap:48px}.pstat{text-align:center}.pstat b{font-size:28px;color:var(--accent);display:block}.pstat span{font-size:12px;color:var(--t3)}
+.menu{margin:0 16px;border-radius:var(--r);overflow:hidden}.mitem{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;font-size:16px;background:#FFF;border:none;width:100%;cursor:pointer;color:var(--t1)}.mitem:not(:last-child){border-bottom:.5px solid var(--sep)}.mitem:active{background:#FBF8F6}.marr{color:var(--t3);font-size:20px}
+/* Showcase */
+.sc-grid{display:flex;flex-wrap:wrap;padding:4px;gap:4px}.sc-card{width:calc(33.333% - 3px);position:relative}.sc-card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block}.sc-like{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.5);color:#FFF;border:none;border-radius:12px;padding:4px 10px;font-size:12px;cursor:pointer}
+/* Designs */
+.d-grid{display:flex;flex-wrap:wrap;padding:0 8px;gap:12px}.dg{width:calc(33.33% - 8px);text-align:center}.dg-prev{width:90px;height:140px;margin:0 auto 8px;border-radius:44% 44% 34% 34%/14% 14% 22% 22%;box-shadow:0 4px 14px rgba(0,0,0,.06);position:relative;overflow:hidden}.dg-shine{position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 60% 40% at 50% 22%,rgba(255,255,255,.35),transparent 60%)}.dg-decor{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px}.dg-btns button{padding:4px 10px;border-radius:10px;font-size:11px;border:none;cursor:pointer;margin:2px}.dgb-try{background:#FBF8F6;color:var(--accent)}.dgb-del{background:#FFF0F0;color:#FF3B30}
+.back-btn{padding:6px 12px;border-radius:20px;background:var(--bg2);border:none;font-size:14px;cursor:pointer;color:var(--t2)}
+.rank-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}.rank-scroll::-webkit-scrollbar{display:none}
+.rc{min-width:140px;cursor:pointer;position:relative}.rc-num{position:absolute;top:4px;left:4px;z-index:2;width:26px;height:26px;border-radius:13px;background:var(--accent);color:#FFF;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.rc-prev{height:160px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.rc-nail{width:60px;height:94px;border-radius:44% 44% 34% 34%/14% 14% 22% 22%;position:relative;overflow:hidden}.rc-shine{position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 60% 40% at 50% 22%,rgba(255,255,255,.4),transparent 60%)}
+.rc-name{font-size:14px;font-weight:500;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rc-price{font-size:12px;color:var(--t3)}
+/* Camera */
+.cam-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:200;display:none;flex-direction:column}
+.cam-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;position:absolute;top:0;left:0;right:0;z-index:10}
+.cam-overlay video{width:100%;height:100%;object-fit:cover}
+.cam-bottom{position:absolute;bottom:50px;left:0;right:0;display:flex;justify-content:center;z-index:10}
+.cam-btn{width:70px;height:70px;border-radius:35px;background:rgba(255,255,255,.9);border:3px solid #FFF;font-size:30px;cursor:pointer}.cam-btn:active{transform:scale(.92)}
+.cam-result{position:absolute;top:0;left:0;right:0;bottom:0;z-index:20;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center}
+.cam-result img{width:100%;max-height:80vh;object-fit:contain}
+.cam-r-acts{position:absolute;bottom:0;left:0;right:0;display:flex;gap:16px;padding:24px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0))}
+.cam-guide{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:5}
+.cam-frame{width:200px;height:280px;border:2px solid rgba(255,255,255,.5);border-radius:24px;margin-bottom:12px}.cam-guide span{color:#FFF;font-size:14px}
+.hero{display:flex;align-items:center;justify-content:center;padding:20px 0}.hero-btn{width:180px;height:180px;border-radius:90px;background:#FBF8F6;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid #F0E8E0;cursor:pointer}.hero-btn:active{transform:scale(.96)}.hero-t{font-size:18px;font-weight:700}.hero-sub{font-size:12px;color:var(--t3);margin-top:4px}
+</style>
+</head>
+<body><div id=testbar style=position:fixed;top:0;left:0;right:0;background:#FF6B8A;color:#FFF;padding:6px 12px;z-index:9999;font-size:11px;text-align:center onclick=this.remove()>✅ 页面加载成功 | 点击此处关闭 | 若看不到此条=页面未加载</div>
+
+<svg style="display:none"><symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol></svg>
+
+<nav class="tab-bar">
+  <button class="tab on" data-tab="gallery" onclick="goTab('gallery')"><svg><use href="#i-grid"/></svg>DIY</button>
+  <button class="tab" data-tab="home" onclick="goTab('home')"><svg><use href="#i-home"/></svg>试戴</button>
+  <button class="tab" data-tab="showcase" onclick="goTab('showcase')"><svg><use href="#i-grid"/></svg>展示</button>
+  <button class="tab" data-tab="profile" onclick="goTab('profile')"><svg><use href="#i-user"/></svg>我的</button>
+</nav>
+
+<!-- ====== DIY ====== -->
+<div class="page on" id="page-gallery">
+  <div class="top-nav"><span class="top-nav-t">DIY 设计</span><button style="background:red;color:#FFF;border:none;padding:4px 10px;border-radius:8px;font-size:12px" onclick="alert(1)">测</button></div>
+  <!-- 5指甲展示区 -->
+  <div style="display:flex;justify-content:center;gap:10px;padding:20px 16px;flex-wrap:wrap" id="nail-display"></div>
+  <!-- 指位选择 -->
+  <div class="nail-tabs" id="nail-tabs"></div>
+  <!-- 甲片形状 -->
+  <div style="padding:0 16px 8px"><span style="font-size:12px;color:var(--t3)">甲片形状</span></div>
+  <div class="tool-cats" id="shape-cats"></div>
+  <!-- 颜色 -->
+  <div class="color-grid" id="quick-colors"></div>
+  <!-- 装饰分类 -->
+  <div class="tool-cats" id="quick-cats"></div>
+  <!-- 装饰 -->
+  <div class="item-grid" id="decor-items"></div>
+  <!-- 保存/重置 -->
+  <div style="padding:8px 16px 24px">
+    <button class="btn-fill" style="width:100%;height:52px;font-size:16px;margin-bottom:8px;border-radius:16px" onclick="saveDesign()">保存设计</button>
+    <button class="btn-line" style="width:100%;height:44px;font-size:14px;border-radius:16px" onclick="resetAll()">重置</button>
+  </div>
+</div>
+
+<!-- ====== 试戴 ====== -->
+<div class="page" id="page-home">
+  <div class="top-nav"><span class="top-nav-t">3D 试戴</span></div>
+  <div class="three-container" id="three-container"></div>
+  <div style="padding:8px 16px 16px;display:flex;gap:8px">
+    <button class="btn-fill" style="flex:1;height:44px;font-size:15px" onclick="openCamera()">📷 扫描试戴</button>
+    <select id="design-select" onchange="loadDesignTo3D(this.value)" style="flex:1;border-radius:16px;border:1.5px solid var(--sep);padding:0 12px;font-size:14px">
+      <option value="">选已保存设计</option>
+    </select>
+  </div>
+  <div class="sec"><span class="sec-t">热门款式</span><div class="rank-scroll" id="rank-sec"></div></div>
+</div>
+
+<!-- ====== 展示 ====== -->
+<div class="page" id="page-showcase">
+  <div class="top-nav"><span class="top-nav-t">展示墙</span><button class="btn-fill" style="padding:6px 16px;font-size:13px" onclick="uploadShowcase()">+ 上传</button></div>
+  <div class="sc-grid" id="sc-grid"><div style="text-align:center;padding:60px;color:var(--t3);font-size:14px">暂无作品</div></div>
+</div>
+
+<!-- ====== 我的 ====== -->
+<div class="page" id="page-profile">
+  <div class="top-nav"><span class="top-nav-t">我的</span></div>
+  <div class="pcard"><h2>美甲爱好者</h2><div class="pstats"><div class="pstat"><b id="sd">0</b><span>设计</span></div></div></div>
+  <div class="menu">
+    <button class="mitem" onclick="showDesigns()">我的设计<span class="marr">›</span></button>
+    <button class="mitem" onclick="alert('RealNail v3 · 3D试戴')">关于<span class="marr">›</span></button>
+  </div>
+</div>
+
+<!-- 设计子页 -->
+<div class="page" id="page-designs">
+  <div class="top-nav"><button class="back-btn" onclick="switchTab('profile')">←</button><span class="top-nav-t">我的设计</span></div>
+  <div id="designs-content"></div>
+</div>
+
+<!-- 相机覆盖 -->
+<div class="cam-overlay" id="cam-overlay">
+  <div class="cam-top"><button class="back-btn" style="color:#FFF;background:rgba(255,255,255,.15)" onclick="closeCamera()">←</button><span style="color:#FFF;font-size:18px;font-weight:600">3D 扫描</span><span style="width:56px"></span></div>
+  <video id="cam-video" autoplay playsinline></video>
+  <div class="cam-guide"><div class="cam-frame"></div><span>将手放入框内</span></div>
+  <div class="cam-bottom"><button class="cam-btn" onclick="capturePhoto()">📷</button></div>
+  <div class="cam-result" id="cam-result">
+    <img id="cam-result-img" src="">
+    <div class="cam-r-acts"><button class="btn-fill" style="flex:1" onclick="saveCamResult()">保存</button><button class="btn-line" style="flex:1;border-color:#FFF;color:#FFF" onclick="retakeCam()">重拍</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================
+// DATA
+// ============================================
+// 12 甲片形状
+const SHAPES=[
+  {k:'square',   n:'方形',   br:'8%',                desc:'90°直角·个性时尚'},
+  {k:'round',    n:'圆形',   br:'50%',               desc:'完美圆弧·百搭不挑'},
+  {k:'oval',     n:'椭圆形', br:'44% 44% 34% 34%/14% 14% 22% 22%', desc:'优雅椭圆·视觉拉长'},
+  {k:'squoval',  n:'方圆形', br:'20%',               desc:'方圆结合·万能百搭'},
+  {k:'almond',   n:'杏仁形', br:'44% 44% 34% 34%/12% 12% 24% 24%', desc:'杏仁收窄·修长气质'},
+  {k:'trapezoid',n:'梯形',   br:'20% 20% 8% 8%/8% 8% 16% 16%', desc:'倒梯形·显瘦利器'},
+  {k:'coffin',   n:'芭蕾形', br:'18% 18% 10% 10%/8% 8% 14% 14%', desc:'芭蕾舞鞋·欧美ins'},
+  {k:'stiletto', n:'水滴形', br:'44% 44% 15% 15%/8% 8% 28% 28%', desc:'水滴尖形·时尚个性'},
+  {k:'sharp',    n:'尖形',   br:'45% 45% 10% 10%/5% 5% 35% 35%', desc:'极致尖锋·戏剧浮夸'},
+  {k:'lipstick', n:'唇膏形', br:'40% 40% 5% 30%/10% 10% 20% 30%', desc:'口红切角·抽象几何'},
+  {k:'flare',    n:'喇叭形', br:'30% 30% 45% 45%/10% 10% 18% 18%', desc:'扇形扩展·前卫艺术'},
+  {k:'edge',     n:'尖缘形', br:'40% 40% 20% 20%/5% 5% 45% 45%', desc:'犀利棱线·夸张造型'},
+];
+const COLORS=[{c:'#F5EDE6',n:'奶白'},{c:'#D4C5B9',n:'奶茶裸'},{c:'#FFB3C1',n:'柔雾粉'},{c:'#FF6B8A',n:'蜜桃粉'},{c:'#D4A9AD',n:'豆沙'},{c:'#E05575',n:'玫瑰粉'},{c:'#722F37',n:'酒红'},{c:'#8B1A2B',n:'安可拉红'},{c:'#A08070',n:'摩卡'},{c:'#A8BFCF',n:'雾霾蓝'},{c:'#1B4D3E',n:'墨绿'},{c:'#A855F7',n:'香芋紫'},{c:'#D4AF37',n:'香槟金'},{c:'#C0C0C0',n:'镜面银'},{c:'#1C1C1E',n:'曜石黑'},{c:'#FFF',n:'纯白'}];
+const DECORS=[{cat:'gem',n:'钻饰',items:[{e:'💎',n:'水钻'},{e:'💠',n:'方钻'},{e:'🔷',n:'马眼'},{e:'💍',n:'爱心钻'}]},{cat:'pearl',n:'珍珠',items:[{e:'⚪',n:'圆珠'},{e:'🫧',n:'巴洛克'}]},{cat:'star',n:'星星',items:[{e:'⭐',n:'五角星'},{e:'✨',n:'四角星'},{e:'🌙',n:'月亮'}]},{cat:'flower',n:'花卉',items:[{e:'🌸',n:'樱花'},{e:'🌼',n:'雏菊'},{e:'🌷',n:'郁金香'},{e:'🍀',n:'四叶草'}]},{cat:'metal',n:'金属',items:[{e:'●',n:'圆铆钉'},{e:'■',n:'方铆钉'},{e:'▲',n:'三角钉'}]},{cat:'foil',n:'金箔',items:[{e:'🟨',n:'金箔'},{e:'⬜',n:'银箔'}]},{cat:'sticker',n:'贴纸',items:[{e:'🦋',n:'蝴蝶'},{e:'🍒',n:'樱桃'},{e:'🎀',n:'蝴蝶结'},{e:'❤',n:'爱心'}]}];
+const nailNames=['拇指','食指','中指','无名','小指'];
+const STYLES=[{n:'裸粉釉面',c:['#F5EDE6','#FAF5F0'],p:198},{n:'豆沙玫瑰',c:['#D4A9AD','#E8D5D7'],p:198},{n:'深蓝猫眼',c:['#1B2838','#2D4A7A'],p:328},{n:'酒红琥珀',c:['#722F37','#A0525A'],p:348},{n:'经典法式',c:['#FFF5F5','#FFE0E0'],p:238},{n:'蜜桃腮红',c:['#FDE0D9','#FAAE9C'],p:258},{n:'祖母绿钻',c:['#1B4D3E','#2E6B5A'],p:398},{n:'冰透粉晶',c:['#F5E6E8','#FADDE0'],p:198}];
+
+// ============================================
+// STATE
+// ============================================
+let activeNail=2,decorCat='gem';
+let nailDesigns=[{shape:'oval',color:'#DDBEA9',decor:null},{shape:'oval',color:'#DDBEA9',decor:null},{shape:'oval',color:'#DDBEA9',decor:null},{shape:'oval',color:'#DDBEA9',decor:null},{shape:'oval',color:'#DDBEA9',decor:null}];
+let nailPos=[{x:18,y:60},{x:34,y:30},{x:50,y:22},{x:66,y:28},{x:80,y:52}];
+let threeScene,threeNails=[],threePalm;
+let handLandmarker=null,handLandmarksDetected=false,lastHandLandmarks=null;
+
+// ============================================
+// MEDIAPIPE HAND LANDMARKER
+// ============================================
+async function initMediaPipe(){
+  if(handLandmarker)return handLandmarker;
+  try{
+    const {HandLandmarker,FilesetResolver}=window;
+    if(!HandLandmarker||!FilesetResolver){console.warn('MediaPipe not loaded yet');return null}
+    const vision=await FilesetResolver.forVisionTasks(
+    );
+    handLandmarker=await HandLandmarker.createFromOptions(vision,{
+      baseOptions:{
+        modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task',
+        delegate:'GPU'
+      },
+      runningMode:'IMAGE',
+      numHands:1
+    });
+    return handLandmarker;
+  }catch(e){console.warn('MediaPipe init failed:',e);return null}
+}
+
+async function detectHandAndFitAll(){
+  const img=document.getElementById('diy-hand-img');
+  if(!img||!img.complete||!img.src)return;
+  // Skip placeholder SVG
+  if(img.src.startsWith('data:image/svg'))return;
+  const lm=await initMediaPipe();
+  if(!lm)return;
+  try{
+    const result=lm.detect(img);
+    if(!result||!result.landmarks||!result.landmarks.length){
+      console.log('No hand detected in image');
+      return;
+    }
+    lastHandLandmarks=result.landmarks;
+    handLandmarksDetected=true;
+    applyLandmarksToAllNails(result.landmarks[0]);
+    renderNailDisplay();
+    toast('AI 已自动定位 5 个指甲');
+  }catch(e){console.warn('Hand detection failed:',e)}
+}
+
+function applyLandmarksToAllNails(landmarks){
+  // MediaPipe hand landmarks: tip/DIP for thumb(4/3), index(8/7), middle(12/11), ring(16/15), pinky(20/19)
+  const tips=[4,8,12,16,20];
+  const dips=[3,7,11,15,19];
+  const img=document.getElementById('diy-hand-img');
+  const iw=img.naturalWidth||img.width||400;
+  const ih=img.naturalHeight||img.height||500;
+
+  for(let i=0;i<5;i++){
+    const tip=landmarks[tips[i]], dip=landmarks[dips[i]];
+    if(!tip||!dip)continue;
+    // Nail center: midpoint of fingertip and DIP joint, scaled to percentage
+    nailPos[i].x=Math.round(((tip.x+dip.x)/2)*100);
+    nailPos[i].y=Math.round(((tip.y+dip.y)/2)*100);
+    // Nail dimensions from tip-to-DIP distance in pixels
+    const dx=(tip.x-dip.x)*iw, dy=(tip.y-dip.y)*ih;
+    const nailPx=Math.sqrt(dx*dx+dy*dy);
+    const nw=Math.round(nailPx*0.55);
+    const nh=Math.round(nailPx*0.90);
+    const d=nailDesigns[i];
+    d.fitW=Math.max(36,Math.min(85,nw));
+    d.fitH=Math.max(48,Math.min(115,nh));
+    // Border radius by aspect ratio: >1.6=pointed, >1.35=oval, else=squoval
+    const ratio=d.fitH/Math.max(d.fitW,1);
+    if(ratio>1.6)d.fitBR='45% 45% 20% 20%/10% 10% 30% 30%';
+    else if(ratio>1.35)d.fitBR='44% 44% 34% 34%/12% 12% 24% 24%';
+    else d.fitBR='44% 44% 34% 34%/14% 14% 22% 22%';
+  }
+}
+
+function fitSingleNailFromLandmarks(i){
+  if(!handLandmarksDetected||!lastHandLandmarks)return false;
+  const lm=lastHandLandmarks[0];if(!lm)return false;
+  const tips=[4,8,12,16,20],dips=[3,7,11,15,19];
+  const tip=lm[tips[i]],dip=lm[dips[i]];if(!tip||!dip)return false;
+
+  // MediaPipe 定位中心
+  nailPos[i].x=Math.round(((tip.x+dip.x)/2)*100);
+  nailPos[i].y=Math.round(((tip.y+dip.y)/2)*100);
+
+  // Canvas 像素扫描找真实指甲边界
+  const img=document.getElementById('diy-hand-img');
+  const c=document.createElement('canvas'),ctx=c.getContext('2d');
+  c.width=img.naturalWidth||400;c.height=img.naturalHeight||500;
+  ctx.drawImage(img,0,0,c.width,c.height);
+  const cx=Math.round((nailPos[i].x/100)*c.width),cy=Math.round((nailPos[i].y/100)*c.height);
+  const R=Math.round(Math.min(c.width,c.height)*0.07);
+  const sx=Math.max(0,cx-R),sy=Math.max(0,cy-R),sw=Math.min(R*2,c.width-sx),sh=Math.min(R*2,c.height-sy);
+  if(sw<6||sh<6)return false;
+  const data=ctx.getImageData(sx,sy,sw,sh).data;
+  const mx=Math.min(sw-1,Math.round(cx-sx)),my=Math.min(sh-1,Math.round(cy-sy));
+
+  // 像素分类：亮白冷调=指甲 暖暗=皮肤
+  function score(r,g,b){const B=(r+g+b)/3,W=r-Math.max(g,b);if(B>170&&W<20)return 255;if(B>150&&W<15)return 180;if(W>30||B<85)return 0;return 80}
+  const scores=new Uint8Array(sw*sh);
+  for(let y=0;y<sh;y++)for(let x=0;x<sw;x++){const idx=(y*sw+x)*4;scores[y*sw+x]=score(data[idx],data[idx+1],data[idx+2])}
+  const cs=scores[my*sw+mx]||100;
+  const th=cs>150?Math.max(50,cs-80):Math.max(15,cs-25);
+  const dirs=[[0,-1],[1,0],[0,1],[-1,0]]; // 上下左右
+  let t=0,b=0,l=0,r=0;
+  for(let d=0;d<4;d++){const dx=dirs[d][0],dy=dirs[d][1];let ex=mx,ey=my;while(ex>=0&&ex<sw&&ey>=0&&ey<sh){const s=scores[ey*sw+ex];if(s<th&&s<cs*0.6)break;ex+=dx;ey+=dy}const dist=Math.sqrt((ex-mx)**2+(ey-my)**2);if(d===0)t=dist;if(d===1)r=dist;if(d===2)b=dist;if(d===3)l=dist}
+  if(t<2||b<2||l<2||r<2)return false;
+
+  const nw=Math.round((l+r)*0.85),nh=Math.round((t+b)*0.8);
+  const d=nailDesigns[i];
+  d.fitW=Math.max(36,Math.min(85,nw));d.fitH=Math.max(48,Math.min(115,nh));
+  const ratio=d.fitH/Math.max(d.fitW,1);
+  if(ratio>1.65)d.fitBR='45% 45% 20% 20%/10% 10% 30% 30%';
+  else if(ratio>1.35)d.fitBR='44% 44% 34% 34%/12% 12% 24% 24%';
+  else d.fitBR='44% 44% 34% 34%/14% 14% 22% 22%';
+  return true;
+}
+
+// ============================================
+// NAV
+// ============================================
+function goTab(t){try{switchTab(t)}catch(e){alert("切换失败:"+e.message)}};function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const pg=document.getElementById('page-'+tab);if(pg)pg.classList.add('on');
+  if(tab==='gallery')renderDIY();if(tab==='home'){render3D();renderHome();}if(tab==='showcase')renderShowcase();if(tab==='profile')renderProfile();
+  window.scrollTo(0,0);
+}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));document.getElementById(id).classList.add('on');window.scrollTo(0,0)}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),1500)}
+
+// ============================================
+// DIY
+// ============================================
+function renderDIY(){
+  renderNailDisplay();renderNailTabs();renderShapeCats();renderColors();renderCats();renderDecors();
+}
+function renderNailDisplay(){
+  document.getElementById('nail-display').innerHTML=nailDesigns.map((d,i)=>{
+    const s=SHAPES.find(x=>x.k===d.shape)||SHAPES[2];
+    const fw=d.fitW||60,fh=d.fitH||90;
+    return`<div style="text-align:center;cursor:pointer;padding:4px;border-radius:12px;border:2px solid ${activeNail===i?'var(--accent)':'transparent'}" onclick="selectN(${i})">
+      <div style="width:${fw}px;height:${fh}px;border-radius:${s.br};background:linear-gradient(180deg,${d.color},${d.color}dd);box-shadow:0 3px 12px rgba(0,0,0,.1);position:relative;overflow:hidden;margin:0 auto">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 60% 40% at 50% 22%,rgba(255,255,255,.4),transparent 60%)"></div>
+        ${d.decor?`<span style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:18px">${d.decor.e}</span>`:''}
+      </div>
+      <span style="font-size:10px;color:var(--t3);margin-top:4px;display:block">${nailNames[i]}</span>
+    </div>`;
+  }).join('');
+}
+function renderShapeCats(){
+  document.getElementById('shape-cats').innerHTML=SHAPES.map(s=>{
+    const d=nailDesigns[activeNail];
+    return`<button class="tc ${d.shape===s.k?'on':''}" onclick="setShape('${s.k}')" title="${s.desc}">${s.n}</button>`;
+  }).join('');
+}
+function setShape(k){nailDesigns[activeNail].shape=k;renderNailDisplay();renderShapeCats()}
+function renderColors(){
+  const d=nailDesigns[activeNail];
+  document.getElementById('quick-colors').innerHTML=COLORS.map(x=>`<div class="cg ${d.color===x.c?'on':''}" style="background:${x.c}" title="${x.n}" onclick="setCC('${x.c}')"></div>`).join('');
+}
+function renderCats(){
+  document.getElementById('quick-cats').innerHTML=DECORS.map(dc=>`<button class="tc ${decorCat===dc.cat?'on':''}" onclick="decorCat='${dc.cat}';renderCats();renderDecors()">${dc.n}</button>`).join('');
+}
+function renderDecors(){
+  const dc=DECORS.find(x=>x.cat===decorCat)||DECORS[0];const d=nailDesigns[activeNail];
+  document.getElementById('decor-items').innerHTML=dc.items.map(it=>`<div class="ig ${d.decor&&d.decor.e===it.e?'on':''}" onclick="setDD('${it.e}','${it.n}')"><div style="font-size:24px">${it.e}</div>${it.n}</div>`).join('');
+}
+function setCC(c){nailDesigns[activeNail].color=c;renderNailDisplay();renderColors()}
+function setDD(e,n){const d=nailDesigns[activeNail];if(d.decor&&d.decor.e===e){d.decor=null}else{d.decor={e,n}};renderNailDisplay();renderDecors()}
+function renderNailTabs(){
+  document.getElementById('nail-tabs').innerHTML=nailNames.map((n,i)=>`<button class="nt ${activeNail===i?'on':''}" onclick="selectN(${i})">${n}</button>`).join('');
+}
+let dragNailIdx=-1,dragStartPos=null;
+function selectN(i){activeNail=i;renderNailTabs();renderNailDisplay();renderShapeCats();renderColors();renderCats();renderDecors()}
+function uploadHandModel(){
+  const input=document.createElement("input");input.type="file";input.accept="image/*";
+  input.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{document.getElementById("diy-hand-img").src=ev.target.result;toast("手模已更新")};
+    reader.readAsDataURL(f);
+  };input.click();
+}
+// ============================================
+// 3D HAND
+// ============================================
+function render3D(){if(typeof THREE==="undefined"){var c=document.getElementById("three-container");if(c)c.innerHTML="<div style=padding:80px;text-align:center;color:var(--t3)>3D引擎加载中...</div>";return}
+  const el=document.getElementById('three-container');
+  if(threeScene){update3DNails();return}
+  const W=el.clientWidth,H=el.clientHeight;
+  threeScene=new THREE.Scene();threeScene.background=new THREE.Color(0xf5f5f5);
+  const cam=new THREE.PerspectiveCamera(45,W/H,1,1000);cam.position.set(0,1.5,8);cam.lookAt(0,0,0);
+  const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(W,H);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.shadowMap.enabled=true;el.appendChild(renderer.domElement);
+  const light=new THREE.DirectionalLight(0xffffff,1.2);light.position.set(5,5,5);threeScene.add(light);
+  threeScene.add(new THREE.AmbientLight(0xffffff,.6));
+  // Palm
+  const palmGeo=new THREE.BoxGeometry(1.8,2.2,0.3,8,8,1);
+  palmGeo.vertices.forEach(v=>{v.x*=1-Math.abs(v.y)/2.5;v.y*=1-Math.abs(v.x)/3});
+  const palmMat=new THREE.MeshStandardMaterial({color:0xF0DDCA,roughness:.7});
+  threePalm=new THREE.Mesh(palmGeo,palmMat);threePalm.castShadow=true;threeScene.add(threePalm);
+  // Fingers
+  const fingerConfigs=[
+    {x:-0.7,y:1.0,z:0.05,r:0.25,l:1.4,rx:0.3},
+    {x:-0.22,y:1.15,z:0.05,r:0.22,l:1.6,rx:0.1},
+    {x:0.22,y:1.15,z:0.05,r:0.22,l:1.6,rx:-0.1},
+    {x:0.7,y:1.0,z:0.05,r:0.2,l:1.35,rx:-0.3},
+    {x:-1.1,y:0.3,z:0.2,r:0.25,l:1.2,rx:0.7,rz:0.5},
+  ];
+  threeNails=[];
+  fingerConfigs.forEach((f,i)=>{
+    const geo=new THREE.CylinderGeometry(f.r,f.r*0.85,f.l,12);
+    geo.translate(0,f.l/2,0);
+    const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:0xF0DDCA,roughness:.7}));
+    mesh.position.set(f.x,f.y,f.z);mesh.rotation.z=f.rx||0;mesh.rotation.x=f.rz||0;mesh.castShadow=true;
+    threeScene.add(mesh);
+    // Nail cap
+    const d=nailDesigns[i];
+    const nailGeo=new THREE.CylinderGeometry(f.r*0.85,f.r*0.80,0.25,8);
+    nailGeo.translate(0,f.l-0.05,0);
+    const nailMat=new THREE.MeshStandardMaterial({color:new THREE.Color(d.color),roughness:.4,metalness:.1});
+    const nailMesh=new THREE.Mesh(nailGeo,nailMat);
+    nailMesh.position.copy(mesh.position);nailMesh.rotation.copy(mesh.rotation);
+    threeScene.add(nailMesh);threeNails.push({mesh:nailMesh,mat:nailMat,config:f,geo:nailGeo});
+  });
+  // Controls
+  let isDragging=false,prevX,prevY;
+  el.addEventListener('mousedown',e=>{isDragging=true;prevX=e.clientX;prevY=e.clientY});
+  el.addEventListener('mousemove',e=>{if(!isDragging)return;const dx=e.clientX-prevX,dy=e.clientY-prevY;threePalm.rotation.y+=dx*0.01;threePalm.rotation.x+=dy*0.005;prevX=e.clientX;prevY=e.clientY;fingerConfigs.forEach((f,i)=>{if(threeNails[i]){threeNails[i].mesh.rotation.copy(threePalm.rotation)}})});
+  el.addEventListener('mouseup',()=>{isDragging=false});
+  el.addEventListener('touchstart',e=>{if(e.touches.length===1){isDragging=true;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY}});
+  el.addEventListener('touchmove',e=>{if(!isDragging)return;const dx=e.touches[0].clientX-prevX,dy=e.touches[0].clientY-prevY;threePalm.rotation.y+=dx*0.01;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY});
+  el.addEventListener('touchend',()=>{isDragging=false});
+  function animate(){requestAnimationFrame(animate);renderer.render(threeScene,cam)}animate();
+}
+function update3DNails(){
+  threeNails.forEach((n,i)=>{
+    const d=nailDesigns[i];n.mat.color.set(d.color);
+  });
+}
+
+// ============================================
+// TRY-ON / HOME
+// ============================================
+function renderHome(){
+  document.getElementById('rank-sec').innerHTML='<div class="rank-scroll">'+STYLES.map((s,i)=>`<div class="rc" onclick="applyStyle(${i})"><div class="rc-num">${i+1}</div><div class="rc-prev" style="background:${s.c[1]||s.c[0]}10"><div class="rc-nail" style="background:linear-gradient(180deg,${s.c[0]},${s.c[1]||s.c[0]});box-shadow:0 3px 10px rgba(0,0,0,.06)"><div class="rc-shine"></div></div></div><span class="rc-name">${s.n}</span><span class="rc-price">¥${s.p}</span></div>`).join('')+'</div>';
+  // Update design select
+  const designs=JSON.parse(localStorage.getItem('myDesigns')||'[]');
+  document.getElementById('design-select').innerHTML='<option value="">选已保存设计</option>'+designs.map((d,i)=>`<option value="${i}">设计 ${i+1} · ${d.time}</option>`).join('');
+}
+function applyStyle(i){const s=STYLES[i];nailDesigns=nailDesigns.map(d=>({...d,color:s.c[0],decor:null}));update3DNails();renderNailDisplay();toast('已应用 '+s.n)}
+function loadDesignTo3D(i){if(i==='')return;const designs=JSON.parse(localStorage.getItem('myDesigns')||'[]');if(designs[i]){nailDesigns=designs[i].nailDesigns;nailPos=designs[i].nailPos;update3DNails();renderNailDisplay();toast('设计已加载')}}
+
+let camStream=null,camPhoto=null;
+async function openCamera(){
+  try{
+    document.getElementById('cam-overlay').style.display='flex';
+    document.getElementById('cam-result').style.display='none';
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}}});
+    document.getElementById('cam-video').srcObject=camStream;
+  }catch(e){toast('无法访问相机')}
+}
+function closeCamera(){if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null}document.getElementById('cam-overlay').style.display='none'}
+function capturePhoto(){
+  if(!camStream)return;const v=document.getElementById('cam-video');
+  const c=document.createElement('canvas');c.width=v.videoWidth;c.height=v.videoHeight;
+  c.getContext('2d').drawImage(v,0,0);camPhoto=c.toDataURL('image/jpeg',0.9);
+  camStream.getTracks().forEach(t=>t.stop());camStream=null;
+  compositePhoto(c);
+}
+function compositePhoto(canvas){
+  const img=new Image();img.onload=()=>{
+    const ctx=canvas.getContext('2d');canvas.width=img.width;canvas.height=img.height;ctx.drawImage(img,0,0);
+    nailPos.forEach((n,i)=>{
+      const d=nailDesigns[i];ctx.save();
+      const cx=(n.x/100)*img.width,cy=(n.y/100)*img.height;
+      const fw=(d.fitW||54)*(img.width/400),fh=(d.fitH||78)*(img.height/500);
+      ctx.translate(cx,cy);const x=-fw/2,y=-fh/2,r=fw*.45;
+
+      // 指甲轮廓——贴合实际弧度
+      ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+fw-r,y);ctx.arcTo(x+fw,y,x+fw,y+r,r);
+      ctx.lineTo(x+fw,y+fh-r*1.3);ctx.arcTo(x+fw,y+fh,x+fw-r,y+fh,r*1.3);ctx.lineTo(x+r,y+fh);
+      ctx.arcTo(x,y+fh,x,y+fh-r*1.3,r*1.3);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+
+      // 底色
+      ctx.save();ctx.clip();
+      ctx.fillStyle=d.color;ctx.fill();
+
+      // PBR 光泽层：顶光高光
+      const sg=ctx.createRadialGradient(x+fw*.35,y+fh*.15,0,x+fw*.35,y+fh*.15,fw*.7);
+      sg.addColorStop(0,'rgba(255,255,255,.45)');sg.addColorStop(.3,'rgba(255,255,255,.15)');sg.addColorStop(.7,'rgba(255,255,255,.02)');sg.addColorStop(1,'rgba(0,0,0,.05)');
+      ctx.fillStyle=sg;ctx.fill();
+
+      // 珠光微粒效果（随机微点）
+      for(let p=0;p<8;p++){ctx.fillStyle='rgba(255,255,255,'+(.08+Math.random()*.1)+')';ctx.beginPath();ctx.arc(x+Math.random()*fw,y+Math.random()*fh,Math.random()*3+1,0,Math.PI*2);ctx.fill()}
+
+      // 边缘羽化（柔化过渡）
+      const eg=ctx.createRadialGradient(0,0,Math.min(fw,fh)*.35,0,0,Math.max(fw,fh)*.7);
+      eg.addColorStop(0,'rgba(0,0,0,0)');eg.addColorStop(1,'rgba(0,0,0,.12)');
+      ctx.fillStyle=eg;ctx.fill();
+      ctx.restore();
+
+      // 甲片轮廓线（微妙的边）
+      ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=fw*.03;ctx.stroke();
+      ctx.restore();
+    });
+    const url=canvas.toDataURL('image/jpeg',0.92);
+    document.getElementById('cam-result-img').src=url;
+    document.getElementById('cam-result').style.display='flex';
+    const h=JSON.parse(localStorage.getItem('tryonHistory')||'[]');h.unshift({url,time:new Date().toLocaleString()});
+    if(h.length>20)h.length=20;localStorage.setItem('tryonHistory',JSON.stringify(h));
+  };img.src=camPhoto;
+}
+function saveCamResult(){const a=document.createElement('a');a.href=document.getElementById('cam-result-img').src;a.download='realnail_'+Date.now()+'.jpg';a.click();toast('已保存')}
+function retakeCam(){document.getElementById('cam-result').style.display='none';openCamera()}
+
+// ============================================
+// SHOWCASE
+// ============================================
+function renderShowcase(){
+  const items=JSON.parse(localStorage.getItem('showcase')||'[]');const el=document.getElementById('sc-grid');
+  if(!items.length){el.innerHTML='<div style="text-align:center;padding:60px;color:var(--t3);font-size:14px">还没有人上传作品</div>';return}
+  el.innerHTML=items.map((x,i)=>`<div class="sc-card" onclick="viewSC(${i})"><img src="${x.img}" loading="lazy"><button class="sc-like" onclick="event.stopPropagation();likeSC(${i})">❤ ${x.likes||0}</button></div>`).join('');
+}
+function uploadShowcase(){
+  const input=document.createElement('input');input.type='file';input.accept='image/*';
+  input.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const items=JSON.parse(localStorage.getItem('showcase')||'[]');items.unshift({img:ev.target.result,likes:0,time:new Date().toLocaleString()});if(items.length>50)items.length=50;localStorage.setItem('showcase',JSON.stringify(items));renderShowcase();toast('上传成功')};r.readAsDataURL(f)};input.click();
+}
+function likeSC(i){const items=JSON.parse(localStorage.getItem('showcase')||'[]');if(items[i]){items[i].likes=(items[i].likes||0)+1;localStorage.setItem('showcase',JSON.stringify(items));renderShowcase()}}
+function viewSC(i){const items=JSON.parse(localStorage.getItem('showcase')||'[]');if(items[i]){const w=window.open('','_blank');w.document.write('<img src="'+items[i].img+'" style="max-width:100%">')}}
+
+// ============================================
+// PROFILE
+// ============================================
+function renderProfile(){const d=JSON.parse(localStorage.getItem('myDesigns')||'[]');document.getElementById('sd').textContent=d.length}
+function showDesigns(){showPage('page-designs');const d=JSON.parse(localStorage.getItem('myDesigns')||'[]');const el=document.getElementById('designs-content');
+  if(!d.length){el.innerHTML='<div style="text-align:center;padding:80px;color:var(--t3)">暂无设计</div>';return}
+  el.innerHTML='<div class="d-grid">'+d.map((x,i)=>`<div class="dg"><div class="dg-prev" style="background:${x.nailDesigns[2].color}"><div class="dg-shine"></div>${x.nailDesigns[2].decor?`<span class="dg-decor">${x.nailDesigns[2].decor.e}</span>`:''}</div><span style="font-size:12px">${x.time}</span><div class="dg-btns"><button class="dgb-try" onclick="loadDesign(${i})">加载</button><button class="dgb-del" onclick="delDesign(${i})">删除</button></div></div>`).join('')+'</div>';
+}
+function loadDesign(i){const d=JSON.parse(localStorage.getItem('myDesigns')||'[]');if(d[i]){nailDesigns=d[i].nailDesigns;nailPos=d[i].nailPos;update3DNails();renderNailDisplay();switchTab('gallery');toast('设计已加载')}}
+function delDesign(i){let d=JSON.parse(localStorage.getItem('myDesigns')||'[]');d.splice(i,1);localStorage.setItem('myDesigns',JSON.stringify(d));showDesigns();toast('已删除')}
+
+// INIT
+switchTab('gallery');
+</script>
+</body>
+</html>

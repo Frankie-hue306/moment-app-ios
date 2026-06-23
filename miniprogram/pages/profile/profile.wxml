@@ -1,0 +1,21 @@
+<!-- 我的 -->
+<view class="pg">
+  <view class="nav" style="padding-top:{{sH}}px"><text class="nav-t">我的</text></view>
+
+  <view class="card">
+    <text class="card-name">美甲爱好者</text>
+    <view class="stats">
+      <view class="st"><text class="st-n">{{stats.designs}}</text><text class="st-l">设计</text></view>
+      <view class="st"><text class="st-n">{{stats.tryons}}</text><text class="st-l">试戴</text></view>
+      <view class="st"><text class="st-n">{{stats.favs}}</text><text class="st-l">收藏</text></view>
+    </view>
+  </view>
+
+  <view class="menus">
+    <view class="m" bindtap="onNav" data-p="designs"><text>我的设计</text><text class="ma">›</text></view>
+    <view class="m" bindtap="onNav" data-p="history"><text>试戴记录</text><text class="ma">›</text></view>
+    <view class="m" bindtap="onNav" data-p="favs"><text>我的收藏</text><text class="ma">›</text></view>
+    <view class="m" bindtap="onAbout"><text>关于 RealNail</text><text class="ma">›</text></view>
+  </view>
+  <view class="bot"></view>
+</view>

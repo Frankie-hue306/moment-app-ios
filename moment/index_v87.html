@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="此刻">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>此刻 v87</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85)}
+body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+.app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh}
+.btn{
+  display:block;width:100%;padding:18px;border:none;
+  background:var(--card);color:var(--text);font-size:17px;font-weight:400;
+  letter-spacing:-.4px;cursor:pointer;border-radius:14px;margin-bottom:10px;
+  text-align:left;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn:active{background:#2c2c2e;transform:scale(.97)}
+.btn .icon{margin-right:12px;font-size:20px}
+img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-radius:20px;margin:20px auto;display:block}
+.ti{
+  width:100%;padding:14px 16px;border:none;border-radius:12px;
+  background:var(--card);color:var(--text);font-size:17px;text-align:left;
+  outline:none;margin:0 auto;display:block;letter-spacing:-.3px
+}
+.ti:focus{background:#2c2c2e}
+.ti::placeholder{color:var(--muted)}
+@keyframes br{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes tilt{0%,100%{transform:perspective(800px) rotateY(-5deg) rotateX(1deg) scale(.97)}25%{transform:perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)}50%{transform:perspective(800px) rotateY(5deg) rotateX(-1deg) scale(.97)}75%{transform:perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)}}
+.depth3d{
+  animation:tilt 4s ease-in-out infinite;
+  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 5px rgba(255,255,255,.1),0 0 30px rgba(10,132,255,.08) !important;
+  border-radius:20px !important;
+  position:relative;
+  transform-style:preserve-3d;
+}
+.depth3d::after{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.5) 100%);
+  pointer-events:none;border-radius:inherit;
+}
+.depth-btn{background:var(--accent) !important;color:#fff !important;text-align:center !important}
+/* New layout styles */
+.topbar{position:sticky;top:0;z-index:200}
+.bottom-nav{position:sticky;bottom:0;z-index:100}
+.nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0}
+.nav-item.active{opacity:1}
+.nav-item .nav-icon{font-size:24px;transition:transform .2s}
+.nav-item.active .nav-icon{transform:scale(1.1)}
+.nav-item .nav-label{font-size:10px;letter-spacing:-.2px}
+#mainActionBtn{
+  width:180px;height:180px;border-radius:50%;border:none;
+  background:var(--accent);color:#fff;font-size:20px;font-weight:600;
+  letter-spacing:-.3px;cursor:pointer;box-shadow:0 8px 32px rgba(10,132,255,.35);
+  transition:all .25s;display:flex;align-items:center;justify-content:center;text-align:center;
+  line-height:1.4;-webkit-tap-highlight-color:transparent;
+  animation:br 3s ease-in-out infinite;
+}
+#mainActionBtn:active{transform:scale(.94);box-shadow:0 4px 16px rgba(10,132,255,.2)}
+#mainActionBtn.taken{animation:none;background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+#sideMenu{
+  position:fixed;top:0;left:-280px;bottom:0;width:280px;background:var(--menu-bg);z-index:4000;
+  transition:transform .25s ease;overflow-y:auto;padding:30px 20px;
+  display:flex;flex-direction:column;
+}
+#sideMenu.open{transform:translateX(280px)}
+#quickSettings{
+  position:fixed;top:0;right:0;bottom:0;width:280px;background:var(--menu-bg);z-index:4000;
+  transition:transform .25s ease;overflow-y:auto;padding:30px 20px;
+  transform:translateX(280px);
+}
+#quickSettings.open{transform:translateX(0)}
+#menuOverlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;background:var(--overlay-alpha);
+  z-index:3999;display:none;
+}
+.menu-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0;border-bottom:1px solid var(--menu-sep);
+  color:var(--text);font-size:16px;letter-spacing:-.3px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.menu-row:active{opacity:.7}
+.menu-row.danger{color:rgba(255,80,80,.8)}
+.menu-row .menu-arrow{color:var(--muted);font-size:14px}
+.section-title{color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:24px 0 8px}
+.wf-card{break-inside:avoid;margin-bottom:8px;background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wf-card:active{opacity:.85}
+.wf-card img{width:100%;display:block;background:#111}
+.wf-card .wf-info{padding:8px 10px}
+.wf-card .wf-time{font-size:11px;color:var(--muted)}
+.wf-card .wf-thought{font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;margin-top:2px;line-height:1.3}
+/* Immersive breathing & ripple */
+@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(var(--rz))}50%{transform:translate(-50%,calc(-50% - 3px)) scale(1) rotate(calc(var(--rz) + 1deg))}}
+@keyframes ripple{0%{width:0;height:0;opacity:.4}100%{width:200px;height:200px;opacity:0}}
+.card-breathing{animation:breathe 4s ease-in-out infinite}
+/* Filmstrip scroll */
+@keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes scroll-right{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.film-track{display:flex;gap:10px;position:absolute;height:160px;will-change:transform}
+.film-track.left{animation:scroll-left 35s linear infinite}
+.film-track.right{animation:scroll-right 35s linear infinite}
+.film-photo{flex-shrink:0;width:160px;height:160px;border-radius:12px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.15);cursor:pointer;position:relative;transition:transform .15s;border:1.5px solid rgba(255,255,255,.8)}
+.film-photo:active{transform:scale(.96)}
+.film-photo img{width:100%;height:100%;object-fit:cover}
+.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:rgba(255,255,255,.7);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
+.film-photo .film-time-label{color:#a0a0a0;font-size:10px;flex-shrink:0}
+/* Bubble mode */
+@keyframes bubble-float{0%{transform:translateY(0) translateX(0) rotate(0deg);opacity:1}100%{transform:translateY(-120vh) translateX(15px) rotate(5deg);opacity:0}}
+@keyframes bubble-sway{0%,100%{margin-left:0}50%{margin-left:15px}}
+.bubble{position:absolute;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 12px rgba(0,0,0,.3),inset 0 1px 3px rgba(255,255,255,.2);cursor:pointer;transition:opacity .3s}
+.bubble img{width:100%;height:100%;object-fit:cover}
+.bubble::after{content:'';position:absolute;top:8%;left:15%;width:60%;height:35%;background:radial-gradient(ellipse,rgba(255,255,255,.35),transparent);border-radius:50%;pointer-events:none}
+/* Glow mode */
+@keyframes glow-pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.05);opacity:1}}
+.glow-circle{position:absolute;border-radius:50%;overflow:visible;cursor:pointer;transition:opacity .5s;mix-blend-mode:lighten}
+.glow-circle .glow-img-wrap{width:100%;height:100%;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.6);position:relative;z-index:1;opacity:.85}
+.glow-circle img{width:100%;height:100%;object-fit:cover}
+.glow-circle .glow-halo{position:absolute;top:-18px;left:-18px;right:-18px;bottom:-18px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.15) 40%,rgba(255,255,255,.05) 60%,transparent 75%);pointer-events:none;z-index:0;animation:glow-pulse 1.5s ease-in-out infinite}
+/* Pulse dot */
+@keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
+.pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4CD964;margin-left:4px;vertical-align:middle;animation:pulse-dot 1s ease-in-out infinite}
+</style>
+</head>
+<body>
+<!-- Overlays -->
+<div id="welcomeScreen" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:2100;flex-direction:column;align-items:center;justify-content:center;padding:30px">
+  <div style="font-size:64px;margin-bottom:20px;animation:br 3s ease-in-out infinite">📸</div>
+  <h1 style="color:var(--text);font-size:38px;font-weight:700;margin-bottom:16px;letter-spacing:-.5px">此刻</h1>
+  <div style="color:var(--muted);font-size:16px;line-height:1.8;text-align:center;max-width:280px;margin-bottom:12px;letter-spacing:-.2px">每天一次，随机时刻</div>
+  <div style="color:rgba(255,255,255,.25);font-size:14px;line-height:2;text-align:center;max-width:280px;margin-bottom:40px;letter-spacing:-.1px">你只有60秒<br>拍下你面前的东西<br>没有滤镜 &nbsp; 没有粉丝 &nbsp; 可以点赞<br>只是你真实的生活</div>
+  <button class="btn" onclick="startApp()" style="width:240px;text-align:center;background:var(--accent);color:#fff;font-size:18px;font-weight:500">✨ 开始</button>
+</div>
+<div id="loginScreen" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:2000;flex-direction:column;align-items:center;justify-content:center;padding:40px">
+  <div style="font-size:56px;margin-bottom:24px">📸</div>
+  <h1 style="color:var(--text);font-size:32px;font-weight:700;margin-bottom:12px;letter-spacing:-.5px">此刻</h1>
+  <div style="color:var(--muted);font-size:16px;line-height:1.6;text-align:center;max-width:260px;margin-bottom:40px;letter-spacing:-.2px">每天一次，随机时刻<br>拍下你面前真实的生活<br>反社交媒体档案</div>
+  <input id="loginPhone" type="tel" maxlength="11" placeholder="输入手机号" style="width:280px;padding:16px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:20px;text-align:center;outline:none;letter-spacing:4px;margin-bottom:16px">
+  <button class="btn" onclick="doLogin()" style="width:280px;text-align:center;background:var(--accent);color:#fff;font-size:17px">登录 / 注册</button>
+  <button class="btn" onclick="skipLogin()" style="width:280px;text-align:center;background:transparent;color:var(--muted);font-size:15px;margin-top:8px">跳过，先体验</button>
+  <div id="loginMsg" style="color:#ff6b6b;font-size:13px;margin-top:16px"></div>
+</div>
+<!-- Side Menu -->
+<div id="menuOverlay" onclick="closeAllPanels()"></div>
+<div id="sideMenu">
+  <div id="sideMenuUser" style="margin-bottom:16px">
+    <div id="sideMenuLoginPrompt" style="font-size:17px;font-weight:600;color:var(--accent);cursor:pointer;letter-spacing:-.3px" onclick="showLogin();closeAllPanels()">登录同步数据 →</div>
+    <div id="sideMenuLoggedIn" style="display:none">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div id="sideMenuAvatar" onclick="pickAvatar()" style="width:48px;height:48px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;overflow:hidden;background-size:cover;background-position:center">👤</div>
+        <input type="file" id="avatarPicker" accept="image/*" style="display:none" onchange="gotAvatar(event)">
+        <div>
+          <div style="font-size:16px;font-weight:600;letter-spacing:-.3px;cursor:pointer" id="sideMenuNick" onclick="editNickname()" title="点击修改用户名"></div>
+          <div style="color:var(--muted);font-size:12px;margin-top:2px" id="sideMenuPhoneSmall"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:20px;color:var(--muted);font-size:13px" id="sideMenuStats"></div>
+    </div>
+  </div>
+  <div style="height:1px;background:var(--menu-sep);margin:8px 0 12px"></div>
+  <div class="menu-row" onclick="closeAllPanels();navTo('photos')">
+    <span>📁 我的档案</span><span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-row" onclick="closeAllPanels();openTimeFragment()">
+    <span>✨ 时光碎片</span><span class="menu-arrow">›</span>
+  </div>
+  <div class="menu-row" onclick="toggleDailyPick()" style="border-bottom:none">
+    <span>📸 每日精选推送</span>
+    <span id="dailyPickState" style="color:var(--accent);font-size:13px">已开启</span>
+  </div>
+  <div style="flex:1"></div>
+  <div style="display:flex;gap:12px;padding:16px 0;border-bottom:none">
+    <span class="menu-row danger" onclick="doLogout()" style="flex:1;border-bottom:none;padding:0">退出登录</span>
+    <span style="color:rgba(255,80,80,.5);cursor:pointer;font-size:14px;white-space:nowrap" onclick="deleteAccount()">注销账号</span>
+  </div>
+</div>
+<!-- Settings Page -->
+<div id="quickSettings">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+    <span style="font-size:18px;font-weight:600;letter-spacing:-.3px">设置</span>
+    <span style="font-size:22px;cursor:pointer;color:var(--muted)" onclick="closeAllPanels()">✕</span>
+  </div>
+  <!-- Group 1: 通知 -->
+  <div style="margin-bottom:24px">
+    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">通知</div>
+    <div class="menu-row" onclick="toggleNotify()">
+      <span>🔔 通知总开关</span>
+      <span id="notifyState" style="color:var(--muted);font-size:13px">已关闭</span>
+    </div>
+  </div>
+  <!-- Group 2: 隐私与安全 -->
+  <div style="margin-bottom:24px">
+    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">隐私与安全</div>
+    <div class="menu-row" onclick="alert('请前往系统设置管理位置权限')">
+      <span>📍 位置权限</span><span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-row" onclick="togglePhotoPublic()" style="border-bottom:none">
+      <span>🌐 照片默认公开</span>
+      <span id="photoPublicState" style="color:var(--muted);font-size:13px">已开启</span>
+    </div>
+  </div>
+  <!-- Group 3: 通用 -->
+  <div style="margin-bottom:24px">
+    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">通用</div>
+    <div class="menu-row" onclick="openDarkModeSheet()">
+      <span>🌓 深色模式</span>
+      <span id="darkModeState" style="color:var(--muted);font-size:13px">跟随系统</span>
+    </div>
+    <div class="menu-row" onclick="toggleImageQuality()">
+      <span>📶 图片加载策略</span>
+      <span id="imgQualityState" style="color:var(--muted);font-size:13px">省流量</span>
+    </div>
+    <div class="menu-row" onclick="toggleImmersiveFX()">
+      <span>✨ 沉浸特效</span>
+      <span id="immersiveFXState" style="color:var(--accent);font-size:13px;flex-shrink:0;margin-left:8px">已开启</span>
+    </div>
+    <div class="menu-row" onclick="togglePureBlack()">
+      <span>⬛ 纯黑背景模式</span>
+      <span id="pureBlackState" style="color:var(--muted);font-size:13px;flex-shrink:0;margin-left:8px">已关闭</span>
+    </div>
+    <div class="menu-row" onclick="doClearCache()" style="border-bottom:none">
+      <span>🗑️ 清除缓存</span><span class="menu-arrow">›</span>
+    </div>
+  </div>
+  <!-- Group 4: 支持 -->
+  <div style="margin-bottom:24px">
+    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">支持</div>
+    <div class="menu-row" onclick="alert('常见问题：\n1. 如何删除照片？在档案中点照片进入详情，点击删除\n2. 如何切换模式？在看世界页面左右滑动\n\n联系开发者：moment.app@163.com')">
+      <span>❓ 帮助与反馈</span><span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-row" onclick="showAbout()">
+      <span>ℹ️ 关于我们</span><span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-row" onclick="alert('用户协议：\n此刻App是一款个人生活记录工具。用户上传内容需遵守社区规范，不得发布违法违规内容。')">
+      <span>📄 用户协议</span><span class="menu-arrow">›</span>
+    </div>
+    <div class="menu-row" onclick="alert('隐私政策：\n你的照片和数据仅存储在本地和你的账号中。公开照片会显示在看世界模块。')" style="border-bottom:none">
+      <span>🔒 隐私政策</span><span class="menu-arrow">›</span>
+    </div>
+  </div>
+  <!-- Group 5: 危险操作 -->
+  <div>
+    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">危险操作</div>
+    <div class="menu-row danger" onclick="closeAllPanels();showClearConfirm()" style="border-bottom:none">
+      <span>清空全部记录</span>
+    </div>
+  </div>
+</div>
+
+<!-- Dark Mode Picker Sheet -->
+<div id="darkModeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 30px;transform:translateY(100%);transition:transform .3s ease">
+  <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">深色模式</div>
+  <div class="menu-row" onclick="setDarkMode('auto')" style="padding-left:20px;padding-right:20px">跟随系统 <span id="dm-check-auto" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="setDarkMode('light')" style="padding-left:20px;padding-right:20px">浅色模式 <span id="dm-check-light" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="setDarkMode('dark')" style="padding-left:20px;padding-right:20px;border-bottom:none">深色模式 <span id="dm-check-dark" style="color:var(--accent);display:none">✓</span></div>
+  <button class="btn" onclick="closeDarkModeSheet()" style="margin:12px 20px 0;text-align:center">取消</button>
+</div>
+
+<!-- Report Action Sheet -->
+<div id="reportSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 30px;transform:translateY(100%);transition:transform .3s ease">
+  <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep);letter-spacing:-.2px">举报内容</div>
+  <div class="menu-row" onclick="submitReport('porn')" style="padding-left:20px;padding-right:20px">色情低俗</div>
+  <div class="menu-row" onclick="submitReport('violence')" style="padding-left:20px;padding-right:20px">暴力血腥</div>
+  <div class="menu-row" onclick="submitReport('harassment')" style="padding-left:20px;padding-right:20px">骚扰辱骂</div>
+  <div class="menu-row" onclick="submitReport('spam')" style="padding-left:20px;padding-right:20px">垃圾广告</div>
+  <div class="menu-row" onclick="submitReport('privacy')" style="padding-left:20px;padding-right:20px">隐私侵犯</div>
+  <div class="menu-row" onclick="submitReport('other')" style="padding-left:20px;padding-right:20px;border-bottom:none">其他</div>
+  <button class="btn" onclick="closeReportSheet()" style="margin:12px 20px 0;text-align:center">取消</button>
+</div>
+
+<!-- Mode Switch Action Sheet -->
+<div id="modeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 30px;transform:translateY(100%);transition:transform .3s ease">
+  <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">显示模式</div>
+  <div class="menu-row" onclick="switchMode('waterfall')" style="padding-left:20px;padding-right:20px">瀑布流 <span id="check-waterfall" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="switchMode('immersive')" style="padding-left:20px;padding-right:20px">沉浸 <span id="check-immersive" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="switchMode('bubble')" style="padding-left:20px;padding-right:20px">泡泡 <span id="check-bubble" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="switchMode('glow')" style="padding-left:20px;padding-right:20px;border-bottom:none">光晕 <span id="check-glow" style="color:var(--accent);display:none">✓</span></div>
+  <button class="btn" onclick="closeModeSheet()" style="margin:12px 20px 0;text-align:center">取消</button>
+</div>
+
+<!-- Main App -->
+<div class="app">
+  <!-- Top Bar -->
+  <header class="topbar" style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--nav-border)">
+    <button onclick="openSideMenu()" style="font-size:22px;background:none;border:none;color:var(--text);padding:4px;cursor:pointer">☰</button>
+    <span style="font-size:17px;font-weight:600;letter-spacing:-.3px">此刻</span>
+    <button onclick="openQuickSettings()" style="font-size:20px;background:none;border:none;color:var(--text);padding:4px;cursor:pointer">⚙️</button>
+  </header>
+
+  <!-- Home Tab -->
+  <div id="tab-home" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 40px;overflow:hidden;overscroll-behavior:none;touch-action:manipulation">
+    <div id="todayStatus" style="font-size:15px;margin-bottom:20px;color:var(--muted);letter-spacing:-.2px">🌍 今天还没记录</div>
+    <button id="mainActionBtn" onclick="mainAction()">拍下<br>此刻</button>
+    <div style="margin-top:24px;text-align:center">
+      <div style="color:var(--muted);font-size:14px;letter-spacing:-.2px">每天一次，随机时刻</div>
+      <div id="reminderHint" style="color:rgba(255,255,255,.25);font-size:12px;margin-top:6px;letter-spacing:-.1px">明天又是新的一天</div>
+      <div id="todayDate" style="color:rgba(255,255,255,.15);font-size:11px;margin-top:4px;letter-spacing:0px"></div>
+    </div>
+    <input type="file" id="pkr" accept="image/*" capture="environment" style="display:none" onchange="gotPhoto(event)">
+  </div>
+
+  <!-- Photos/Gallery Tab -->
+  <div id="tab-photos" style="display:none;flex:1;overflow-y:auto;padding:16px 24px 60px;overscroll-behavior:none">
+    <div id="gr"></div>
+  </div>
+
+  <!-- Strangers Tab (Immersive / Filmstrip) -->
+  <div id="tab-strangers" style="display:none;flex:1;overflow:hidden;background:var(--tab-bg)">
+    <!-- Time Header -->
+    <div style="padding:12px 16px 4px;text-align:center">
+      <div style="display:flex;align-items:center;justify-content:center">
+        <div id="filmTime" style="font-size:32px;font-weight:700;letter-spacing:3px;color:var(--text);font-family:'SF Mono','Roboto Mono',monospace"></div>
+        <div class="pulse-dot" style="margin-left:6px;margin-bottom:4px"></div>
+      </div>
+      <div style="font-size:14px;color:#a0a0a0;letter-spacing:2px;margin-top:2px">世界正在记录</div>
+    </div>
+    <!-- Film Rows -->
+    <div id="filmRow1" style="overflow:hidden;height:160px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow2" style="overflow:hidden;height:160px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow3" style="overflow:hidden;height:160px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <!-- Bottom space -->
+    <div style="height:50px"></div>
+  </div>
+
+  <!-- Strangers Tab (Bubble) -->
+  <div id="tab-strangers-bubble" style="display:none;flex:1;overflow:hidden;background:var(--tab-bg);position:relative">
+    <div style="padding:12px 16px 4px;text-align:center;position:relative;z-index:1">
+      <div style="display:flex;align-items:center;justify-content:center">
+        <div id="bubbleTime" style="font-size:32px;font-weight:700;letter-spacing:3px;color:var(--text);font-family:'SF Mono','Roboto Mono',monospace"></div>
+        <div class="pulse-dot" style="margin-left:6px;margin-bottom:4px"></div>
+      </div>
+      <div style="font-size:14px;color:#a0a0a0;letter-spacing:2px;margin-top:2px">平行瞬间</div>
+    </div>
+    <div id="bubbleContainer" style="position:absolute;top:60px;left:0;right:0;bottom:40px"></div>
+    <div id="bubbleStats" style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.1);pointer-events:none"></div>
+  </div>
+
+  <!-- Strangers Tab (Glow) -->
+  <div id="tab-strangers-glow" style="display:none;flex:1;overflow:hidden;background:var(--tab-bg);position:relative">
+    <div style="padding:12px 16px 4px;text-align:center;position:relative;z-index:1">
+      <div style="display:flex;align-items:center;justify-content:center">
+        <div id="glowTime" style="font-size:32px;font-weight:700;letter-spacing:3px;color:var(--text);font-family:'SF Mono','Roboto Mono',monospace"></div>
+        <div class="pulse-dot" style="margin-left:6px;margin-bottom:4px"></div>
+      </div>
+      <div style="font-size:14px;color:#a0a0a0;letter-spacing:2px;margin-top:2px">这世界那么多人</div>
+    </div>
+    <div id="glowContainer" style="position:absolute;top:60px;left:0;right:0;bottom:0"></div>
+    <div style="position:absolute;bottom:40px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.1);pointer-events:none" id="glowStats"></div>
+  </div>
+
+  <!-- Strangers Tab (Waterfall) -->
+  <div id="tab-strangers-waterfall" style="display:none;flex:1;overflow-y:auto;padding:0;background:var(--tab-bg)">
+    <div style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px;background:var(--nav-bg)">
+      <span></span>
+    </div>
+    <div style="padding:0 8px 60px">
+    <div id="wf-grid" style="column-count:2;column-gap:8px"></div>
+    <div id="wf-loading" style="display:none;text-align:center;padding:16px;color:var(--muted);font-size:12px">加载中...</div>
+    <div id="wf-end" style="display:none;text-align:center;padding:16px;color:rgba(255,255,255,.15);font-size:11px">— 已经到底了 —</div>
+    <div id="wf-stats" style="text-align:center;padding:4px 0 8px;font-size:11px;color:rgba(255,255,255,.12)"></div>
+  </div>
+  </div>
+  <div id="wf-backTop" onclick="scrollToTop()" style="display:none;position:fixed;bottom:100px;right:16px;width:44px;height:44px;background:rgba(28,28,30,.9);border:1px solid rgba(255,255,255,.15);border-radius:50%;color:#fff;font-size:20px;cursor:pointer;z-index:200;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4);transition:opacity .2s">⬆</div>
+
+  <!-- Photo Zoom Overlay -->
+<div id="photoZoom" onclick="closeZoom()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:6000;align-items:center;justify-content:center">
+  <img id="photoZoomImg" src="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:4px" onclick="event.stopPropagation()">
+</div>
+
+<!-- Captured Screen (overlay) -->
+  <div id="captured" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;flex-direction:column;align-items:center;padding:60px 24px 100px;overflow-y:auto">
+    <div id="capturedLabel" style="font-size:12px;color:#888;margin-bottom:8px">已记录</div>
+    <div id="countdownBadge" style="font-size:24px;font-weight:700;margin-bottom:12px;letter-spacing:1px">60s</div>
+    <img id="ph" class="pv" src="" alt="" onclick="event.stopPropagation();zoomPhoto()" style="cursor:pointer">
+    <div id="st" style="font-size:12px;color:rgba(237,237,239,.4);margin-bottom:16px"></div>
+    <div id="publishUI" style="width:100%">
+      <input class="ti" id="th" placeholder="此刻想说点什么？(20字)" maxlength="20" oninput="saveTh()">
+      <div style="font-size:10px;color:#555;margin-bottom:12px"><span id="cc">0</span>/20</div>
+      <div onclick="saveMoment()" style="display:block;width:100%;padding:18px;background:var(--accent);color:#fff;font-size:17px;border-radius:14px;cursor:pointer;margin-bottom:10px;text-align:center">📤 发布</div>
+      <button class="btn depth-btn" onclick="toggle3D()" id="btn3d" style="text-align:center">✨ 3D景深</button>
+    </div>
+    <div id="viewUI" style="display:none;width:100%">
+      <div id="viewText" style="color:var(--text);font-size:18px;margin-bottom:10px;padding:14px;background:var(--card);border-radius:12px;text-align:left;letter-spacing:-.3px;min-height:50px"></div>
+      <div id="viewDate" style="font-size:12px;color:var(--muted);margin-bottom:20px"></div>
+      <button class="btn depth-btn" onclick="toggle3D()" id="btn3dv" style="text-align:center">✨ 3D景深</button>
+    </div>
+    <button class="btn" id="capturedBackBtn" onclick="if(document.getElementById('capturedLabel').textContent==='看世界')backFromStrangerDetail();else afterCaptureBack()" style="text-align:center;background:transparent;color:var(--muted);margin-top:20px">← 返回</button>
+  </div>
+
+  <!-- Collage Screen (overlay) -->
+  <div id="collage" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:60px 24px 100px">
+    <div style="font-size:13px;color:#888;margin-bottom:12px">月度碎片</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px">
+      <button class="btn" id="collagePrev" onclick="collagePrevMonth()" style="width:40px;padding:12px;text-align:center;font-size:18px">‹</button>
+      <div id="collageMonth" style="color:var(--text);font-size:20px;font-weight:600;letter-spacing:-.3px;min-width:140px;text-align:center"></div>
+      <button class="btn" id="collageNext" onclick="collageNextMonth()" style="width:40px;padding:12px;text-align:center;font-size:18px">›</button>
+    </div>
+    <div id="collageCount" style="color:var(--muted);font-size:13px;margin-bottom:14px;text-align:center"></div>
+    <button class="btn depth-btn" onclick="generateCollage()" style="text-align:center">📸 生成拼贴</button>
+    <div id="collageLoading" style="display:none;color:var(--muted);font-size:14px;text-align:center;padding:40px">生成中...</div>
+    <div id="collagePreview" style="margin-top:14px;display:none">
+      <img id="collageImg" src="" style="width:100%;border-radius:14px;background:var(--card)" alt="">
+    </div>
+    <div id="collageActions" style="display:none;margin-top:14px">
+      <button class="btn" onclick="downloadCollage()" style="text-align:center">💾 保存到相册</button>
+      <button class="btn" onclick="shareCollage()" style="text-align:center">📤 分享</button>
+    </div>
+  </div>
+
+  <!-- Time Fragment Screen -->
+  <div id="timeFragment" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:60px 24px 100px">
+    <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:16px">✨ 时光碎片</div>
+    <!-- Template selector -->
+    <div style="margin-bottom:18px">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:8px;letter-spacing:1px">选择模板</div>
+      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:2px" id="tfTemplates">
+        <div class="tf-tpl active" onclick="selectTF(0)" id="tf-tpl-0" style="flex-shrink:0;text-align:center;padding:10px 14px;border-radius:12px;background:var(--card);border:2px solid var(--accent);cursor:pointer;font-size:12px;min-width:72px">🔲<br>经典网格</div>
+        <div class="tf-tpl" onclick="selectTF(1)" id="tf-tpl-1" style="flex-shrink:0;text-align:center;padding:10px 14px;border-radius:12px;background:var(--card);border:2px solid transparent;cursor:pointer;font-size:12px;min-width:72px">📸<br>拍立得</div>
+        <div class="tf-tpl" onclick="selectTF(2)" id="tf-tpl-2" style="flex-shrink:0;text-align:center;padding:10px 14px;border-radius:12px;background:var(--card);border:2px solid transparent;cursor:pointer;font-size:12px;min-width:72px">📰<br>杂志排版</div>
+        <div class="tf-tpl" onclick="selectTF(3)" id="tf-tpl-3" style="flex-shrink:0;text-align:center;padding:10px 14px;border-radius:12px;background:var(--card);border:2px solid transparent;cursor:pointer;font-size:12px;min-width:72px">📅<br>日历日记</div>
+        <div class="tf-tpl" onclick="selectTF(4)" id="tf-tpl-4" style="flex-shrink:0;text-align:center;padding:10px 14px;border-radius:12px;background:var(--card);border:2px solid transparent;cursor:pointer;font-size:12px;min-width:72px">🎬<br>电影胶片</div>
+      </div>
+    </div>
+    <!-- Quick presets -->
+    <div style="margin-bottom:24px">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px;letter-spacing:1px">一键生成</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="genTimeFragment(7)" style="flex:1;text-align:center;padding:14px">最近7天</button>
+        <button class="btn" onclick="genTimeFragment(30)" style="flex:1;text-align:center;padding:14px">最近30天</button>
+        <button class="btn" onclick="genTimeFragment(90)" style="flex:1;text-align:center;padding:14px">最近90天</button>
+      </div>
+    </div>
+    <!-- Custom date range -->
+    <div style="margin-bottom:24px">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px;letter-spacing:1px">自定义日期</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <input type="date" id="tfStart" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-size:14px;outline:none">
+        <span style="color:var(--muted)">至</span>
+        <input type="date" id="tfEnd" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-size:14px;outline:none">
+      </div>
+      <button class="btn" onclick="genTimeFragmentCustom()" style="text-align:center;background:var(--accent);color:#fff">生成时光碎片</button>
+    </div>
+    <!-- Loading -->
+    <div id="tfLoading" style="display:none;text-align:center;padding:30px;color:var(--muted)">正在生成时光碎片...</div>
+    <!-- Result -->
+    <div id="tfResult" style="display:none">
+      <img id="tfImg" src="" style="width:100%;border-radius:14px;background:var(--card)">
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn" onclick="downloadTF()" style="flex:1;text-align:center">💾 保存到相册</button>
+        <button class="btn" onclick="shareTF()" style="flex:1;text-align:center">📤 分享</button>
+      </div>
+    </div>
+    <div onclick="closeTimeFragment()" style="text-align:center;color:var(--muted);font-size:15px;margin-top:16px;cursor:pointer">← 返回</div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 18px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
+    <div class="nav-item active" id="nav-home" onclick="navTo('home')">
+      <span class="nav-icon">📷</span><span class="nav-label">拍摄</span>
+    </div>
+    <div class="nav-item" id="nav-photos" onclick="navTo('photos')">
+      <span class="nav-icon">📁</span><span class="nav-label">档案</span>
+    </div>
+    <div class="nav-item" id="nav-strangers" onclick="navTo('strangers')">
+      <span class="nav-icon">🌍</span><span class="nav-label">看世界</span>
+    </div>
+  </nav>
+</div>
+
+<script>
+var D={m:[],c:0,i:-1};
+try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
+var API='';var AUTH={token:'',userId:0};
+try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
+function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
+function isLoggedIn(){return !!AUTH.token}
+function startApp(){document.getElementById('welcomeScreen').style.display='none';localStorage.setItem('mv_welcome','1');showLogin()}
+function showLogin(){document.getElementById('loginScreen').style.display='flex'}
+function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
+function doLogin(){
+  var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
+  if(ph.length<11){document.getElementById('loginMsg').textContent='请输入11位手机号';return}
+  document.getElementById('loginMsg').textContent='登录中...';
+  fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})})
+  .then(function(r){return r.json()}).then(function(d){
+    if(d.error){document.getElementById('loginMsg').textContent=d.error;return}
+    AUTH.token=d.token;AUTH.userId=d.userId;saveAuth();
+    // Clear local data from previous account
+    D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
+    document.getElementById('loginScreen').style.display='none';
+    updateSideMenuUser();updateAllUI();
+  }).catch(function(e){document.getElementById('loginMsg').textContent='网络错误，请重试'})
+}
+function api(path,opts){
+  opts=opts||{};
+  var params='userId='+AUTH.userId+'&token='+AUTH.token;
+  var url=API+path+(path.indexOf('?')>=0?'&':'?')+params;
+  var o={method:opts.method||'GET',headers:{}};
+  if(opts.body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(opts.body)}
+  return fetch(url,o).then(function(r){return r.json()})
+}
+function logout(){if(confirm('退出登录？本地数据保留。')){AUTH={token:'',userId:0};saveAuth();updateSideMenuUser();updateAllUI()}}
+
+// ======================== NAVIGATION ========================
+var currentTab='home';
+function navTo(tab){
+  currentTab=tab;
+  // Hide ALL tabs including both strangers variants
+  ['tab-home','tab-photos','tab-strangers','tab-strangers-waterfall','tab-strangers-bubble','tab-strangers-glow'].forEach(function(x){document.getElementById(x).style.display='none'});
+  // Show selected tab
+  if(tab==='strangers'){
+    var mode=getWatchMode();
+    if(mode==='waterfall'){refreshWaterfall(true)}
+    else if(mode==='bubble'){clearTimeout(wfIdleTimer);document.getElementById('tab-strangers-bubble').style.display='block';refreshBubbles();}
+    else if(mode==='glow'){clearTimeout(wfIdleTimer);document.getElementById('tab-strangers-glow').style.display='block';refreshGlows();}
+    else{clearTimeout(wfIdleTimer);document.getElementById('tab-strangers').style.display='block';refreshStrangers()}
+    if(window.showSwipeHint)window.showSwipeHint();
+  }else{
+    clearTimeout(wfIdleTimer);
+    document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block';
+  }
+  // Update nav active state
+  ['home','photos','strangers'].forEach(function(x){
+    var el=document.getElementById('nav-'+x);
+    if(el){el.classList.toggle('active',x===tab)}
+  });
+  // Special actions on tab switch
+  if(tab==='photos'){refreshGallery()}
+  if(tab==='home'){updateHomeUI()}
+  // Hide overlays
+  document.getElementById('captured').style.display='none';
+  document.getElementById('collage').style.display='none';
+  stopCountdown();
+}
+function updateNavActive(tab){
+  ['home','photos','strangers'].forEach(function(x){
+    var el=document.getElementById('nav-'+x);
+    if(el){el.classList.toggle('active',x===tab)}
+  });
+}
+
+// ======================== SIDE MENU & SETTINGS ========================
+function openSideMenu(){
+  document.getElementById('sideMenu').classList.add('open');
+  document.getElementById('menuOverlay').style.display='block';
+  updateSideMenuUser();
+}
+function openQuickSettings(){
+  document.getElementById('quickSettings').classList.add('open');
+  document.getElementById('menuOverlay').style.display='block';
+}
+function closeAllPanels(){
+  document.getElementById('sideMenu').classList.remove('open');
+  document.getElementById('quickSettings').classList.remove('open');
+  document.getElementById('menuOverlay').style.display='none';
+  closeReportSheet();
+  closeModeSheet();
+  closeDarkModeSheet();
+}
+// ======================== QUICK SETTINGS ========================
+function toggleDailyPick(){
+  var el=document.getElementById('dailyPickState');
+  var current=el.textContent==='已开启';
+  var next=!current;
+  el.textContent=next?'已开启':'已关闭';
+  el.style.color=next?'var(--accent)':'var(--muted)';
+  if(isLoggedIn()){
+    api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,daily_pick_enabled:next}}).catch(function(){});
+  }else{
+    localStorage.setItem('daily_pick_enabled',next?'1':'0');
+  }
+}
+function toggleNotify(){
+  var current=localStorage.getItem('notify_enabled')==='1';
+  var next=!current;
+  localStorage.setItem('notify_enabled',next?'1':'0');
+  document.getElementById('notifyState').textContent=next?'已开启':'已关闭';
+  document.getElementById('notifyState').style.color=next?'var(--accent)':'var(--muted)';
+}
+function doClearCache(){
+  if(confirm('清除缓存不会删除你的照片和记录，仅清理临时图片。确定清除吗？')){
+    // Clear non-essential caches
+    try{
+      var keys=Object.keys(localStorage);
+      keys.forEach(function(k){
+        if(k.indexOf('cache')>=0||k.indexOf('temp')>=0)localStorage.removeItem(k);
+      });
+    }catch(e){}
+    showToast('缓存已清除');
+  }
+}
+function openDarkModeSheet(){
+  var mode=getDarkMode();
+  document.getElementById('dm-check-auto').style.display=mode==='auto'?'inline':'none';
+  document.getElementById('dm-check-light').style.display=mode==='light'?'inline':'none';
+  document.getElementById('dm-check-dark').style.display=mode==='dark'?'inline':'none';
+  document.getElementById('darkModeSheet').style.transform='translateY(0)';
+}
+function closeDarkModeSheet(){
+  document.getElementById('darkModeSheet').style.transform='translateY(100%)';
+}
+function getDarkMode(){
+  return localStorage.getItem('dark_mode')||'auto';
+}
+function setDarkMode(mode){
+  localStorage.setItem('dark_mode',mode);
+  var label=mode==='auto'?'跟随系统':(mode==='light'?'浅色模式':'深色模式');
+  document.getElementById('darkModeState').textContent=label;
+  applyDarkMode(mode);
+  closeDarkModeSheet();
+}
+function applyDarkMode(mode){
+  var r=document.documentElement.style;
+  if(mode==='light'){
+    r.setProperty('--bg','#f5f5f7');
+    r.setProperty('--card','#fff');
+    r.setProperty('--text','#1c1c1e');
+    r.setProperty('--muted','#8e8e93');
+    r.setProperty('--overlay-bg','rgba(255,255,255,.95)');
+    r.setProperty('--panel-bg','#f5f5f7');
+    r.setProperty('--nav-bg','rgba(255,255,255,.85)');
+    r.setProperty('--nav-border','rgba(0,0,0,.08)');
+    r.setProperty('--menu-bg','#fff');
+    r.setProperty('--menu-sep','rgba(0,0,0,.08)');
+    r.setProperty('--tab-bg','#f5f5f7');
+    r.setProperty('--sheet-bg','#fff');
+    r.setProperty('--overlay-alpha','rgba(0,0,0,.3)');
+    document.body.style.background='#f5f5f7';
+  }else{
+    r.setProperty('--bg','#000');
+    r.setProperty('--card','#1c1c1e');
+    r.setProperty('--text','#f5f5f7');
+    r.setProperty('--muted','#98989d');
+    r.setProperty('--overlay-bg','rgba(0,0,0,.85)');
+    r.setProperty('--panel-bg','#0d0d0f');
+    r.setProperty('--nav-bg','rgba(0,0,0,.85)');
+    r.setProperty('--nav-border','rgba(255,255,255,.06)');
+    r.setProperty('--menu-bg','#0d0d0f');
+    r.setProperty('--menu-sep','rgba(255,255,255,.06)');
+    r.setProperty('--tab-bg','#000');
+    r.setProperty('--sheet-bg','#1c1c1e');
+    r.setProperty('--overlay-alpha','rgba(0,0,0,.55)');
+    document.body.style.background='#000';
+  }
+}
+function toggleImmersiveFX(){
+  var current=localStorage.getItem('immersive_fx')!=='0';
+  var next=!current;
+  localStorage.setItem('immersive_fx',next?'1':'0');
+  document.getElementById('immersiveFXState').textContent=next?'已开启':'已关闭';
+  document.getElementById('immersiveFXState').style.color=next?'var(--accent)':'var(--muted)';
+  showToast(next?'已开启：呼吸动画 + 涟漪触感':'已关闭沉浸特效');
+}
+function togglePureBlack(){
+  var current=localStorage.getItem('pure_black')==='1';
+  var next=!current;
+  localStorage.setItem('pure_black',next?'1':'0');
+  document.getElementById('pureBlackState').textContent=next?'已开启':'已关闭';
+  document.getElementById('pureBlackState').style.color=next?'var(--accent)':'var(--muted)';
+  applyPureBlack(next);
+}
+function applyPureBlack(on){
+  if(on){
+    document.documentElement.style.setProperty('--bg','#000');
+    document.documentElement.style.setProperty('--tab-bg','#000');
+    document.body.style.background='#000';
+  }else{
+    var dm=getDarkMode();
+    if(dm==='light'){
+      document.documentElement.style.setProperty('--bg','#f5f5f7');
+      document.documentElement.style.setProperty('--tab-bg','#f5f5f7');
+      document.body.style.background='#f5f5f7';
+    }else{
+      document.documentElement.style.setProperty('--bg','#1c1c1e');
+      document.documentElement.style.setProperty('--tab-bg','#1c1c1e');
+      document.body.style.background='#1c1c1e';
+    }
+  }
+}
+function toggleImageQuality(){
+  var current=localStorage.getItem('img_quality')||'compressed';
+  var next=current==='compressed'?'original':'compressed';
+  localStorage.setItem('img_quality',next);
+  document.getElementById('imgQualityState').textContent=next==='compressed'?'省流量':'原图';
+}
+function showAbout(){
+  closeAllPanels();
+  alert('此刻 v87\n记录真实瞬间，连接世界此刻');
+}
+// Toast helper
+function showToast(msg){
+  var t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;font-size:14px;padding:10px 24px;border-radius:20px;z-index:5000;opacity:0;transition:opacity .3s;pointer-events:none';
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){t.style.opacity='1'});
+  setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove()},300)},1500);
+}
+// ======================== REPORT ========================
+var reportTargetMomentId=null;
+function openReportSheet(momentId){
+  reportTargetMomentId=momentId;
+  document.getElementById('reportSheet').style.transform='translateY(0)';
+  document.getElementById('menuOverlay').style.display='block';
+}
+function closeReportSheet(){
+  document.getElementById('reportSheet').style.transform='translateY(100%)';
+  reportTargetMomentId=null;
+}
+function submitReport(reason){
+  if(!isLoggedIn()){alert('登录后才能举报哦');closeReportSheet();return}
+  if(!reportTargetMomentId)return;
+  api('/api/report',{method:'POST',body:{
+    userId:AUTH.userId,token:AUTH.token,
+    momentId:parseInt(reportTargetMomentId),reason:reason
+  }}).then(function(r){
+    if(r.error){alert(r.error)}
+    else{alert('举报已提交，我们会尽快处理')}
+    closeReportSheet();
+    document.getElementById('menuOverlay').style.display='none';
+  }).catch(function(){alert('网络错误，请重试');closeReportSheet();document.getElementById('menuOverlay').style.display='none'})
+}
+// ======================== MODE SWITCH ========================
+function getWatchMode(){
+  var mode=localStorage.getItem('watch_world_mode');
+  return mode==='waterfall'?'waterfall':(mode==='bubble'?'bubble':(mode==='glow'?'glow':'immersive'));
+}
+function setWatchMode(mode){localStorage.setItem('watch_world_mode',mode)}
+function openModeSwitcher(){
+  var mode=getWatchMode();
+  document.getElementById('check-waterfall').style.display=mode==='waterfall'?'inline':'none';
+  document.getElementById('check-immersive').style.display=mode==='immersive'?'inline':'none';
+  document.getElementById('check-bubble').style.display=mode==='bubble'?'inline':'none';
+  document.getElementById('check-glow').style.display=mode==='glow'?'inline':'none';
+  document.getElementById('modeSheet').style.transform='translateY(0)';
+  document.getElementById('menuOverlay').style.display='block';
+}
+function closeModeSheet(){
+  document.getElementById('modeSheet').style.transform='translateY(100%)';
+}
+function switchMode(mode,animate){
+  var oldMode=getWatchMode();
+  if(mode===oldMode)return;
+  setWatchMode(mode);closeModeSheet();
+  document.getElementById('menuOverlay').style.display='none';
+  // Always hide the inactive tab
+  var immersiveEl=document.getElementById('tab-strangers');
+  var waterfallEl=document.getElementById('tab-strangers-waterfall');
+  if(animate){
+    slideSwitchMode(oldMode,mode);
+  }else{
+    immersiveEl.style.display='none';
+    waterfallEl.style.display='none';
+    var bubbleEl=document.getElementById('tab-strangers-bubble');
+    if(bubbleEl)bubbleEl.style.display='none';
+    if(mode==='waterfall'){refreshWaterfall(true)}
+    else if(mode==='bubble'){bubbleEl.style.display='block';refreshBubbles();}
+    else if(mode==='glow'){document.getElementById('tab-strangers-glow').style.display='block';refreshGlows();}
+    else{immersiveEl.style.display='block';refreshStrangers()}
+  }
+  showModeToast(mode);
+}
+function slideSwitchMode(from,to){
+  var fromTab=from==='waterfall'?'tab-strangers-waterfall':(from==='bubble'?'tab-strangers-bubble':(from==='glow'?'tab-strangers-glow':'tab-strangers'));
+  var toTab=to==='waterfall'?'tab-strangers-waterfall':(to==='bubble'?'tab-strangers-bubble':(to==='glow'?'tab-strangers-glow':'tab-strangers'));
+  var fromEl=document.getElementById(fromTab);
+  var toEl=document.getElementById(toTab);
+  // Prepare target tab offscreen
+  toEl.style.display=to==='home'?'flex':'block';
+  toEl.style.transition='none';
+  toEl.style.transform='translateX(100%)';
+  toEl.style.opacity='1';
+  if(to==='waterfall'){refreshWaterfall(true)}else if(to==='bubble'){refreshBubbles()}else if(to==='glow'){refreshGlows()}
+  else{refreshStrangers()}
+  // Animate: current slides out left, new slides in from right
+  requestAnimationFrame(function(){
+    fromEl.style.transition='transform .25s ease, opacity .25s ease';
+    fromEl.style.transform='translateX(-30%)';
+    fromEl.style.opacity='0';
+    toEl.style.transition='transform .25s ease';
+    toEl.style.transform='translateX(0)';
+    setTimeout(function(){
+      fromEl.style.display='none';
+      fromEl.style.transform='';
+      fromEl.style.opacity='';
+      fromEl.style.transition='';
+      toEl.style.transform='';
+      toEl.style.transition='';
+    },260);
+  });
+}
+var modeToastTimer=null;
+function showModeToast(mode){
+  var toast=document.getElementById('modeToast');
+  if(!toast){
+    toast=document.createElement('div');
+    toast.id='modeToast';
+    toast.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.85);color:#fff;font-size:16px;font-weight:600;padding:12px 28px;border-radius:20px;z-index:5000;opacity:0;transition:opacity .2s;pointer-events:none;letter-spacing:-.2px';
+    document.body.appendChild(toast);
+  }
+  toast.textContent=mode==='waterfall'?'瀑布流':(mode==='bubble'?'泡泡':(mode==='glow'?'光晕':'沉浸'));
+  toast.style.opacity='1';
+  clearTimeout(modeToastTimer);
+  modeToastTimer=setTimeout(function(){toast.style.opacity='0'},800);
+}
+// Swipe gesture for tab-strangers and tab-strangers-waterfall
+function initSwipeGestures(){
+  var touchStartX=0,touchStartY=0;
+  function handleTouchStart(e){touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY}
+  function handleTouchEnd(e){
+    if(!e.changedTouches||!e.changedTouches.length)return;
+    var dx=e.changedTouches[0].clientX-touchStartX;
+    var dy=e.changedTouches[0].clientY-touchStartY;
+    // Ignore if too close to edges (system back gesture zone)
+    var sx=touchStartX;
+    if(sx<30||sx>window.innerWidth-30)return;
+    // Need horizontal swipe > 30px and horizontal > vertical
+    if(Math.abs(dx)<30||Math.abs(dx)<Math.abs(dy))return;
+    var mode=getWatchMode();
+    var modes=['immersive','bubble','glow','waterfall'];
+    var idx=modes.indexOf(mode);
+    if(idx<0)idx=0;
+    if(dx>0){idx=(idx+1)%4;switchMode(modes[idx],true)}       // right swipe -> next mode
+    else if(dx<0){idx=(idx+3)%4;switchMode(modes[idx],true)}  // left swipe -> prev mode
+  }
+  // Attach to both stranger tabs
+  var tabs=[document.getElementById('tab-strangers'),document.getElementById('tab-strangers-waterfall'),document.getElementById('tab-strangers-bubble'),document.getElementById('tab-strangers-glow')];
+  tabs.forEach(function(tab){
+    if(tab){
+      tab.addEventListener('touchstart',handleTouchStart,{passive:true});
+      tab.addEventListener('touchend',handleTouchEnd,{passive:true});
+    }
+  });
+  // Show swipe hint every time entering 看世界
+  var swipeHintTimer=null;
+  window.showSwipeHint=function(){
+    clearTimeout(swipeHintTimer);
+    var old=document.getElementById('swipeHint');
+    if(old)old.remove();
+    var tip=document.createElement('div');
+    tip.id='swipeHint';
+    tip.style.cssText='position:fixed;bottom:25%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:13px;padding:8px 20px;border-radius:20px;z-index:5000;opacity:0;transition:opacity .4s;pointer-events:none;letter-spacing:0px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)';
+    tip.textContent='← 滑动切换模式 →';
+    document.body.appendChild(tip);
+    requestAnimationFrame(function(){tip.style.opacity='1'});
+    swipeHintTimer=setTimeout(function(){tip.style.opacity='0';setTimeout(function(){tip.remove()},400)},2000);
+  };
+}
+setTimeout(initSwipeGestures,800);
+
+// ======================== WATERFALL ========================
+var wfPage=1,wfHasMore=true,wfLoading=false,wfMoments=[],wfIdleTimer=null;
+function resetWFIdleTimer(){
+  clearTimeout(wfIdleTimer);
+  wfIdleTimer=setTimeout(function(){
+    if(currentTab==='strangers'&&getWatchMode()==='waterfall'){
+      refreshWaterfall(true);
+    }
+  },60000);
+}
+function refreshWaterfall(reset){
+  if(reset){wfPage=1;wfHasMore=true;wfMoments=[];document.getElementById('wf-grid').innerHTML='';document.getElementById('wf-end').style.display='none'}
+  document.getElementById('tab-strangers-waterfall').style.display='block';
+  loadWaterfallPage();
+  updateStrangerStats();
+  resetWFIdleTimer();
+}
+function loadWaterfallPage(){
+  if(wfLoading||!wfHasMore)return;
+  wfLoading=true;document.getElementById('wf-loading').style.display='block';
+  fetch(API+'/api/explore?page='+wfPage+'&limit=15').then(function(r){return r.json()}).then(function(d){
+    document.getElementById('wf-loading').style.display='none';
+    if(d.moments&&d.moments.length>0){
+      wfMoments=wfMoments.concat(d.moments);
+      renderWaterfallCards(d.moments,true);
+      wfPage++;wfHasMore=d.hasMore;
+      if(!d.hasMore){document.getElementById('wf-end').style.display='block'}
+    }else{wfHasMore=false;document.getElementById('wf-end').style.display='block'}
+    wfLoading=false;
+    // Update global stats
+    if(d.total){document.getElementById('wf-stats').textContent='🌐 '+d.total+'个瞬间'}
+  }).catch(function(){document.getElementById('wf-loading').style.display='none';wfLoading=false})
+}
+function renderWaterfallCards(moments,append){
+  var grid=document.getElementById('wf-grid');
+  if(!append)grid.innerHTML='';
+  moments.forEach(function(m){
+    var card=document.createElement('div');
+    card.className='wf-card';
+    card.onclick=function(){viewStrangerMoment(m)};
+    var timeAgo=formatTimeAgo(m.created_at);
+    var thought=m.thought||'';
+    var thoughtHtml=thought?'<div class="wf-thought">'+escHtml(thought)+'</div>':'';
+    card.innerHTML='<img src="'+m.dataUrl+'" loading="lazy" onerror="this.style.display=\'none\'"><div class="wf-info"><div class="wf-time">'+timeAgo+'</div>'+thoughtHtml+'</div>';
+    grid.appendChild(card);
+  });
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function formatTimeAgo(dateStr){
+  if(!dateStr)return '';
+  var d=new Date(dateStr+'Z');if(isNaN(d.getTime()))d=new Date(dateStr);
+  var now=new Date(),diff=Math.floor((now-d)/1000);
+  if(diff<60)return '刚刚';
+  if(diff<3600)return Math.floor(diff/60)+'分钟前';
+  if(diff<86400)return Math.floor(diff/3600)+'小时前';
+  if(diff<604800)return Math.floor(diff/86400)+'天前';
+  return d.toLocaleDateString('zh-CN');
+}
+function viewStrangerMoment(m){
+  stopCountdown();
+  document.getElementById('countdownBadge').style.display='none';
+  document.getElementById('ph').src=m.dataUrl;
+  document.getElementById('viewText').textContent=m.thought||'(无文字)';
+  document.getElementById('viewDate').textContent=formatTimeAgo(m.created_at);
+  document.getElementById('publishUI').style.display='none';
+  document.getElementById('viewUI').style.display='block';
+  // Hide own-photo-only buttons (3D, back to gallery, delete)
+  document.getElementById('btn3dv').style.display='none';
+  document.querySelectorAll('#viewUI > button').forEach(function(b){b.style.display='none'});
+  // Add like and report buttons
+  var viewUI=document.getElementById('viewUI');
+  var existingActions=document.getElementById('strangerDetailActions');
+  if(existingActions)existingActions.remove();
+  var actions=document.createElement('div');
+  actions.id='strangerDetailActions';
+  actions.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:center"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+m.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+m.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;flex-shrink:0">⚠️</button></div>';
+  viewUI.appendChild(actions);
+  // Fetch like count
+  if(m.id&&isLoggedIn()){
+    api('/api/like?userId='+AUTH.userId+'&momentId='+m.id).then(function(r){
+      var b=actions.querySelector('button');
+      if(b)b.textContent='❤️ '+(r.count||0);
+    }).catch(function(){var b=actions.querySelector('button');if(b)b.textContent='❤️ LIKE'})
+  }else{var b=actions.querySelector('button');if(b)b.textContent='❤️ 0'}
+  document.getElementById('capturedLabel').textContent='看世界';
+  document.getElementById('capturedBackBtn').style.display='';
+  document.getElementById('captured').style.display='flex';
+}
+function backFromStrangerDetail(){
+  document.getElementById('captured').style.display='none';
+  document.getElementById('countdownBadge').style.display='';
+  // Resume all film rows
+  document.querySelectorAll('[id^=filmRow]').forEach(function(r){r.setAttribute('data-paused','0');var t=r.querySelector('.film-track');if(t)t.style.animationPlayState='running'});
+  navTo('strangers');
+}
+// Scroll load for waterfall
+setTimeout(function(){
+  var wfEl=document.getElementById('tab-strangers-waterfall');
+  if(wfEl){
+    wfEl.addEventListener('scroll',function(){
+      resetWFIdleTimer();
+      var btn=document.getElementById('wf-backTop');
+      if(btn)btn.style.display=this.scrollTop>400?'flex':'none';
+      if(this.scrollTop+this.clientHeight>=this.scrollHeight-300){
+        if(!wfLoading&&wfHasMore)loadWaterfallPage();
+      }
+    });
+    wfEl.addEventListener('click',function(){resetWFIdleTimer()});
+    // Pull-to-refresh
+    var pullStartY=0,pulling=false,pullEl=null;
+    wfEl.addEventListener('touchstart',function(e){
+      if(wfEl.scrollTop<=0){
+        pullStartY=e.touches[0].clientY;pulling=true;
+      }
+    },{passive:true});
+    wfEl.addEventListener('touchmove',function(e){
+      if(!pulling)return;
+      var dy=e.touches[0].clientY-pullStartY;
+      if(dy>20&&dy<80){
+        if(!pullEl){
+          pullEl=document.createElement('div');
+          pullEl.style.cssText='text-align:center;padding:4px;color:var(--accent);font-size:13px;transition:none';
+          pullEl.textContent='↓ 释放刷新';
+          wfEl.insertBefore(pullEl,wfEl.firstChild);
+        }
+        pullEl.style.padding=(Math.min(dy,60)-10)+'px 0 4px';
+      }
+    },{passive:true});
+    wfEl.addEventListener('touchend',function(e){
+      if(!pulling)return;
+      var dy=e.changedTouches[0].clientY-pullStartY;
+      if(dy>50&&wfEl.scrollTop<=0){
+        if(pullEl)pullEl.textContent='刷新中...';
+        refreshWaterfall(true);
+      }
+      if(pullEl){setTimeout(function(){if(pullEl)pullEl.remove();pullEl=null},300)}
+      pulling=false;
+    },{passive:true});
+  }
+},500);
+function scrollToTop(){
+  var wfEl=document.getElementById('tab-strangers-waterfall');
+  if(wfEl){
+    wfEl.scrollTo({top:0,behavior:'smooth'});
+    setTimeout(function(){refreshWaterfall(true)},400);
+  }
+}
+
+function updateSideMenuUser(){
+  if(AUTH.token){
+    document.getElementById('sideMenuLoginPrompt').style.display='none';
+    document.getElementById('sideMenuLoggedIn').style.display='block';
+    var phone='用户'+AUTH.userId;
+    var phInput=document.getElementById('loginPhone');
+    if(phInput&&phInput.value.length===11){
+      phone=phInput.value.substr(0,3)+'****'+phInput.value.substr(7);
+    }
+    var savedName=localStorage.getItem('user_nickname');
+    document.getElementById('sideMenuNick').textContent=savedName||('用户'+AUTH.userId);
+    var savedAvatar=localStorage.getItem('user_avatar');
+    if(savedAvatar)applyAvatar(savedAvatar);
+    document.getElementById('sideMenuPhoneSmall').textContent=phone;
+    // Stats - try server first for streak
+    var streak=0;
+    if(D.m.length>0){var first=new Date(D.m[D.m.length-1].d||Date.now());streak=Math.floor((Date.now()-first.getTime())/86400000)+1}
+    document.getElementById('sideMenuStats').innerHTML='🔥 连续'+streak+'天 &nbsp; 📷 已记录'+D.c+'张';
+    // Sync streak from server
+    api('/api/stats').then(function(r){if(!r.error&&r.streak!==undefined){
+      document.getElementById('sideMenuStats').innerHTML='🔥 连续'+r.streak+'天 &nbsp; 📷 已记录'+D.c+'张';
+    }}).catch(function(){});
+  }else{
+    document.getElementById('sideMenuLoginPrompt').style.display='block';
+    document.getElementById('sideMenuLoggedIn').style.display='none';
+  }
+}
+function editNickname(){
+  if(!isLoggedIn()){showLogin();return}
+  var current=localStorage.getItem('user_nickname')||('用户'+AUTH.userId);
+  var name=prompt('修改用户名（最多12字）：',current);
+  if(name&&name.trim()){
+    name=name.trim().substring(0,12);
+    localStorage.setItem('user_nickname',name);
+    document.getElementById('sideMenuNick').textContent=name;
+  }
+}
+function pickAvatar(){
+  if(!isLoggedIn()){showLogin();return}
+  document.getElementById('avatarPicker').click();
+}
+function gotAvatar(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    var img=new Image();
+    img.onload=function(){
+      var size=Math.min(img.width,img.height,200);
+      var c=document.createElement('canvas');c.width=size;c.height=size;
+      var ctx=c.getContext('2d');
+      var sx=(img.width-size)/2,sy=(img.height-size)/2;
+      ctx.drawImage(img,sx,sy,size,size,0,0,size,size);
+      var dataUrl=c.toDataURL('image/jpeg',0.8);
+      localStorage.setItem('user_avatar',dataUrl);
+      applyAvatar(dataUrl);
+    };
+    img.src=ev.target.result;
+  };r.readAsDataURL(f);e.target.value='';
+}
+function applyAvatar(dataUrl){
+  var el=document.getElementById('sideMenuAvatar');
+  if(el&&dataUrl){
+    el.style.backgroundImage='url('+dataUrl+')';
+    el.textContent='';
+  }
+}
+function doLogout(){
+  if(confirm('确定退出登录吗？')){
+    AUTH={token:'',userId:0};saveAuth();
+    document.getElementById('sideMenuLoggedIn').style.display='none';
+    document.getElementById('sideMenuLoginPrompt').style.display='block';
+    closeAllPanels();
+    updateAllUI();
+    showLogin();
+  }
+}
+function deleteAccount(){
+  if(!isLoggedIn()){alert('请先登录');return}
+  if(!confirm('确定注销账号吗？\n\n此操作将永久删除你的账号、所有照片、点赞和记录，无法恢复！'))return;
+  if(!confirm('再次确认：注销后数据将彻底删除，不可找回。确定继续吗？'))return;
+  api('/api/account/delete',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token}}).then(function(r){
+    if(r.error){alert(r.error);return}
+    D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
+    AUTH={token:'',userId:0};saveAuth();
+    closeAllPanels();
+    updateAllUI();
+    alert('账号已注销');
+    location.reload();
+  }).catch(function(){alert('网络错误，请重试')})
+}
+function togglePhotoPublic(){
+  var current=localStorage.getItem('photo_public')!=='0';
+  var next=!current;
+  localStorage.setItem('photo_public',next?'1':'0');
+  document.getElementById('photoPublicState').textContent=next?'已开启':'已关闭';
+  document.getElementById('photoPublicState').style.color=next?'var(--accent)':'var(--muted)';
+}
+function showClearConfirm(){
+  if(confirm('此操作将永久删除你所有的照片和记录，无法恢复。\n\n确定清空吗？')){
+    D={m:[],c:0,i:-1};
+    localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
+    alert('所有记录已清空');
+    location.reload();
+  }
+}
+
+// ======================== TODAY STATUS ========================
+function todayPhotoIdx(){
+  var today=new Date().toLocaleDateString('zh-CN');
+  for(var i=0;i<D.m.length;i++){
+    var d=new Date(D.m[i].d||Date.now());
+    if(d.toLocaleDateString('zh-CN')===today)return i;
+  }
+  return -1;
+}
+function isTodayTaken(){return todayPhotoIdx()>=0}
+function updateHomeUI(){
+  var btn=document.getElementById('mainActionBtn');
+  var status=document.getElementById('todayStatus');
+  var idx=todayPhotoIdx();
+  if(idx>=0){
+    status.textContent='✅ 今日已记录';
+    status.style.color='rgba(72,199,142,.8)';
+    btn.innerHTML='查看今日<br>照片';
+    btn.classList.add('taken');
+    document.getElementById('reminderHint').textContent='明天又是新的一天';
+  }else{
+    status.textContent='🌍 今天还没记录';
+    status.style.color='var(--muted)';
+    btn.innerHTML='拍下<br>此刻';
+    btn.classList.remove('taken');
+    document.getElementById('reminderHint').textContent='明天又是新的一天';
+  }
+  // Show today's date
+  var now=new Date();
+  document.getElementById('todayDate').textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日';
+}
+function mainAction(){
+  var idx=todayPhotoIdx();
+  if(idx>=0){viewTodayPhoto(idx)}
+  else{pick()}
+}
+function viewTodayPhoto(idx){
+  view(idx);
+  // Show nav back hint
+  document.getElementById('capturedLabel').textContent='今日记录';
+}
+
+// ======================== PHOTO TAKING ========================
+var countdownTimer=null,countdownSec=0;
+function pick(){
+  document.getElementById('pkr').click();
+  // Start 60s countdown
+  countdownSec=60;
+  updateCountdown();
+  clearInterval(countdownTimer);
+  countdownTimer=setInterval(function(){
+    countdownSec--;
+    updateCountdown();
+    if(countdownSec<=0){cancelPhoto()}
+  },1000);
+}
+function updateCountdown(){
+  var el=document.getElementById('countdownBadge');
+  if(!el)return;
+  el.textContent=countdownSec+'s';
+  el.style.color=countdownSec<=10?'rgba(255,80,80,.9)':'rgba(255,255,255,.6)';
+}
+function cancelPhoto(){
+  clearInterval(countdownTimer);
+  countdownSec=0;
+  // If user hasn't taken a photo yet, cancel and go home
+  if(document.getElementById('captured').style.display!=='flex'){
+    document.getElementById('pkr').value='';
+    navTo('home');
+    return;
+  }
+  // If photo is shown but not published, auto-publish
+  if(document.getElementById('publishUI').style.display!=='none'){
+    saveMoment();
+  }
+}
+function stopCountdown(){
+  clearInterval(countdownTimer);
+  countdownSec=0;
+}
+var pending=null;
+function gotPhoto(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    resizeImage(ev.target.result,function(thumb){
+      pending=thumb;
+      document.getElementById('ph').src=thumb;
+      document.getElementById('th').value='';
+      document.getElementById('cc').textContent='0';
+      document.getElementById('st').textContent='写好感想，点下方发布';
+      document.getElementById('publishUI').style.display='block';
+      document.getElementById('viewUI').style.display='none';
+      document.getElementById('capturedLabel').textContent='已记录';
+      document.getElementById('captured').style.display='flex';
+      document.getElementById('th').focus();
+    });
+  };r.readAsDataURL(f);e.target.value='';
+}
+var savingMoment=false;
+function saveMoment(){
+  if(savingMoment)return;
+  savingMoment=true;
+  // Disable the publish button
+  var publishBtn=document.querySelector('#publishUI div[onclick]');
+  if(publishBtn){publishBtn.style.opacity='.5';publishBtn.style.pointerEvents='none'}
+  var t=document.getElementById('th').value.slice(0,20);
+  function done(){
+    savingMoment=false;
+    if(publishBtn){publishBtn.style.opacity='';publishBtn.style.pointerEvents=''}
+  }
+  if(isLoggedIn()){
+    api('/api/moments',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,dataUrl:document.getElementById('ph').src,thought:t}}).then(function(r){
+      if(r.error){
+        if(r.code==='CONTENT_REJECTED'){alert('内容不符合社区规范，未发布');done();return}
+        else{alert(r.error);done();return}
+      }
+      D.c++;D.m.unshift({u:document.getElementById('ph').src,t:t,d:Date.now(),id:r.id});D.i=0;save();
+      if(r.newBadge){
+        var b=r.newBadge;
+        var msg='🎉 恭喜！你已连续打卡'+b.days+'天，获得【'+b.name+'】徽章 '+b.emoji;
+        if(b.days===306)msg='🎈 恭喜！连续打卡306天，获得【诞辰之光】徽章 🎈 这一天，因你而特别。';
+        setTimeout(function(){alert(msg)},500);
+      }
+      afterCaptureBack();
+      updateAllUI();
+      done();
+    }).catch(function(){D.c++;var u=document.getElementById('ph').src;D.m.unshift({u:u,t:t,d:Date.now()});D.i=0;save();afterCaptureBack();updateAllUI();done()})
+  }else{
+    D.c++;var u=document.getElementById('ph').src;D.m.unshift({u:u,t:t,d:Date.now()});D.i=0;save();
+    afterCaptureBack();
+    updateAllUI();
+    done();
+  }
+}
+function zoomPhoto(){
+  var img=document.getElementById('ph');
+  if(!img||!img.src||img.src.indexOf('data:')!==0)return;
+  document.getElementById('photoZoomImg').src=img.src;
+  document.getElementById('photoZoom').style.display='flex';
+}
+function closeZoom(){
+  document.getElementById('photoZoom').style.display='none';
+}
+function afterCaptureBack(){
+  stopCountdown();
+  document.getElementById('captured').style.display='none';
+  closeZoom();
+  // Resume all film rows
+  document.querySelectorAll('[id^=filmRow]').forEach(function(r){r.setAttribute('data-paused','0');var t=r.querySelector('.film-track');if(t)t.style.animationPlayState='running'});
+  navTo('home');
+}
+function saveTh(){if(D.i>=0&&D.i<D.m.length){D.m[D.i].t=document.getElementById('th').value.slice(0,20);save()}}
+var is3D=false;
+function toggle3D(){
+  is3D=!is3D;var img=document.getElementById('ph');var btn=document.getElementById('btn3d');
+  if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='#0a84ff';btn3dv.textContent='✨ 3D开';btn3dv.style.background='#0a84ff'}
+  else{img.classList.remove('depth3d');btn.textContent='✨ 3D景深';btn.style.background='var(--accent)';btn3dv.textContent='✨ 3D景深';btn3dv.style.background='var(--accent)'}
+}
+function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=1200;if(w<=maxDim&&h<=maxDim){cb(dataUrl);return}var r=Math.min(maxDim/w,maxDim/h);var cw=Math.round(w*r),ch=Math.round(h*r);var c=document.createElement('canvas');c.width=cw;c.height=ch;c.getContext('2d').drawImage(img,0,0,cw,ch);cb(c.toDataURL('image/jpeg',0.85))};img.src=dataUrl}
+
+// ======================== GALLERY ========================
+function refreshGallery(){
+  var g=document.getElementById('gr');
+  if(isLoggedIn()){
+    api('/api/gallery').then(function(r){
+      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id){existsIdx=k;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage}else{D.m.push({u:sm.dataUrl,t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage})}});save()}
+      renderGallery();
+    }).catch(renderGallery)
+  }else{renderGallery()}
+}
+function renderGallery(){
+  var g=document.getElementById('gr');
+  // Update gallery stats
+  var days=D.m.length;
+  var streak=0;
+  if(D.m.length>0){var first=new Date(D.m[D.m.length-1].d||Date.now());streak=Math.floor((Date.now()-first.getTime())/86400000)+1}
+  // Sync badges from server for side menu display
+  if(isLoggedIn()){
+    api('/api/stats').then(function(r){
+      if(!r.error){updateSideMenuUser()}
+    }).catch(function(){});
+  }
+
+  if(!D.m.length){g.innerHTML='<div style="color:#555;font-size:13px;text-align:center;padding:40px 0">还没有记录</div>';return}
+  var groups={},order=[];
+  D.m.forEach(function(m,i){var d=new Date(m.d||Date.now());var key=d.toLocaleDateString('zh-CN');if(!groups[key]){groups[key]=[];order.push(key)};groups[key].push({m:m,i:i,time:d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})})});
+  var today=new Date().toLocaleDateString('zh-CN');
+  var yesterday=new Date(Date.now()-86400000).toLocaleDateString('zh-CN');
+  var html='';
+  order.forEach(function(date){var items=groups[date];var label=date;if(date===today)label='今天';else if(date===yesterday)label='昨天';
+    html+='<div style="color:var(--muted);font-size:14px;font-weight:600;margin:18px 0 8px;letter-spacing:-.3px">'+label+' · '+items.length+'张</div>';
+    items.forEach(function(item){var statusTag='';var clickable=true;
+      if(item.m.status==='pending'){statusTag='<span style="color:rgba(255,180,60,.8);font-size:10px;margin-left:6px">审核中</span>'}
+      if(item.m.status==='rejected'){statusTag='<span style="color:rgba(255,80,80,.6);font-size:10px;margin-left:6px">已被移除</span>';clickable=false}
+      if(item.m.status==='hidden'){statusTag='<span style="color:rgba(255,80,80,.5);font-size:10px;margin-left:6px">审核中</span>'}
+      html+='<div '+(clickable?'onclick="view('+item.i+')"':'')+' style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card);border-radius:12px;margin-bottom:6px;'+(clickable?'cursor:pointer;':'opacity:.5;')+'-webkit-tap-highlight-color:transparent">';
+      html+='<img src="'+(item.m.u||'data:image/svg+xml,'+encodeURIComponent('<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22><rect fill=%22%23222%22 width=%2252%22 height=%2252%22/><text fill=%22%23555%22 x=%2226%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2212%22>🚫</text></svg>'))+'" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#111">';
+      html+='<div style="flex:1;min-width:0"><div style="color:var(--text);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.2px">'+(item.m.t||'无文字')+statusTag+'</div><div style="color:var(--muted);font-size:12px;margin-top:3px">'+item.time+'</div></div>';
+      if(clickable)html+='<div style="color:var(--muted);font-size:12px">›</div>';
+      html+='</div>'})});
+  g.innerHTML=html;
+}
+function view(i){D.i=i;var m=D.m[i];
+  if(m.status==='rejected'){
+    document.getElementById('ph').src='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect fill="#1c1c1e" width="180" height="180" rx="20"/><text fill="#555" x="90" y="85" text-anchor="middle" font-size="40">🚫</text><text fill="#666" x="90" y="115" text-anchor="middle" font-size="12">已被移除</text></svg>');
+    document.getElementById('viewText').textContent=m.rejectedMessage||'该内容因违反社区规范已被移除';
+    document.getElementById('viewDate').textContent=new Date(m.d||Date.now()).toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }else{
+    document.getElementById('ph').src=m.u;
+    document.getElementById('viewText').textContent=m.t||'(无文字)';
+    document.getElementById('viewDate').textContent=new Date(m.d||Date.now()).toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
+  document.getElementById('publishUI').style.display='none';document.getElementById('viewUI').style.display='block';
+  // Restore own-photo buttons
+  document.getElementById('btn3dv').style.display='';
+  document.querySelectorAll('#viewUI > button').forEach(function(b){b.style.display=''});
+  // Remove stranger actions
+  var sa=document.getElementById('strangerDetailActions');if(sa)sa.remove();
+  document.getElementById('capturedLabel').textContent=m.status==='rejected'?'已被移除':'档案回顾';
+  document.getElementById('capturedBackBtn').style.display='';
+  document.getElementById('captured').style.display='flex'}
+function backToGallery(){document.getElementById('captured').style.display='none';navTo('photos')}
+
+
+var _emojiPool=['🍎','🍊','🍋','🍇','🍓','🥝','🍑','🍒','🥭','🍍','🐱','🐶','🐰','🦊','🐼','🐨','🐯','🐸','🐙','🦋'];
+function getNickname(phone){
+  if(!phone)return _emojiPool[0]+'001';
+  var hash=0;for(var i=0;i<phone.length;i++)hash=((hash<<5)-hash)+phone.charCodeAt(i);
+  hash=Math.abs(hash);
+  return _emojiPool[hash%_emojiPool.length]+('00'+(hash%900+100));
+}
+
+// ======================== IMMERSIVE FILMSTRIP ========================
+var filmPool=[],filmTimer=null,filmTimeTimer=null;
+function refreshStrangers(){
+  document.getElementById('tab-strangers').style.display='block';
+  loadFilmPool();
+  startFilmTime();
+  if(document.querySelectorAll('.film-track img').length===0)loadFilmPool();
+}
+function startFilmTime(){
+  clearInterval(filmTimeTimer);
+  function update(){var n=new Date();document.getElementById('filmTime').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+  update();filmTimeTimer=setInterval(update,10000);
+}
+function updateStrangerStats(){} // stub - stats now in filmstrip time header
+function loadFilmPool(){
+  fetch(API+'/api/explore?limit=60').then(function(r){return r.json()}).then(function(d){
+    if(d.moments&&d.moments.length){filmPool=d.moments;renderFilmRows();}
+  }).catch(function(){});
+  clearTimeout(filmTimer);
+  filmTimer=setTimeout(loadFilmPool,30000);
+}
+function renderFilmRows(){
+  if(filmPool.length===0)return;
+  // Shuffle and pick for 3 rows
+  var pool=filmPool.slice().sort(function(){return Math.random()-.5});
+  var r1=pool.slice(0,Math.max(15,pool.length));
+  var r2=pool.slice(Math.max(0,pool.length-15)).reverse();
+  var r3=pool.slice(0,Math.max(15,pool.length)).sort(function(){return Math.random()-.5});
+  buildRow('filmRow1',r1,'left');
+  buildRow('filmRow2',r2,'right');
+  buildRow('filmRow3',r3,'left');
+}
+function buildRow(id,photos,dir){
+  var row=document.getElementById(id);
+  if(!row)return;
+  // Duplicate for seamless loop
+  var all=photos.concat(photos);
+  var html='<div class="film-track '+dir+'">';
+  all.forEach(function(p,i){
+    var author=getNickname(p.author_phone||'');
+    var timeAgo=formatTimeAgo(p.created_at||'');
+    html+='<div class="film-photo" data-row="'+id+'" onclick="viewFilmPhoto('+p.id+',&quot;'+id+'&quot;)"><img src="'+p.dataUrl+'" loading="lazy"><div class="film-label"><span>'+author+'</span><span class="film-time-label">'+timeAgo+'</span></div></div>';
+  });
+  html+='</div>';
+  row.innerHTML=html;
+  // Resume animation if not paused
+  var track=row.querySelector('.film-track');
+  if(track&&row.getAttribute('data-paused')==='1')track.style.animationPlayState='paused';
+}
+function toggleFilmRow(el){
+  if(el.getAttribute('data-paused')==='1'){el.setAttribute('data-paused','0');var t=el.querySelector('.film-track');if(t)t.style.animationPlayState='running'}
+  else{el.setAttribute('data-paused','1');var t=el.querySelector('.film-track');if(t)t.style.animationPlayState='paused'}
+}
+function viewBubblePhoto(p){
+  document.getElementById('ph').src=p.dataUrl;
+  document.getElementById('viewText').textContent=p.thought||'(无文字)';
+  document.getElementById('viewDate').textContent=formatTimeAgo(p.created_at);
+  document.getElementById('countdownBadge').style.display='none';
+  document.getElementById('publishUI').style.display='none';
+  document.getElementById('viewUI').style.display='block';
+  document.getElementById('btn3dv').style.display='none';
+  document.querySelectorAll('#viewUI > button').forEach(function(b){b.style.display='none'});
+  var viewUI=document.getElementById('viewUI');
+  var ea=document.getElementById('strangerDetailActions');if(ea)ea.remove();
+  var a=document.createElement('div');a.id='strangerDetailActions';
+  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+p.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+p.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
+  viewUI.appendChild(a);
+  if(p.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+p.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
+  document.getElementById('capturedLabel').textContent='看世界';
+  document.getElementById('capturedBackBtn').style.display='';
+  document.getElementById('captured').style.display='flex';
+}
+function viewFilmPhoto(id,rowId){
+  // Pause the row this photo belongs to
+  if(rowId){
+    var rowEl=document.getElementById(rowId);
+    if(rowEl){rowEl.setAttribute('data-paused','1');var t=rowEl.querySelector('.film-track');if(t)t.style.animationPlayState='paused'}
+  }
+  var found=null;
+  for(var i=0;i<filmPool.length;i++){if(filmPool[i].id===id){found=filmPool[i];break}}
+  if(!found)return;
+  document.getElementById('ph').src=found.dataUrl;
+  document.getElementById('viewText').textContent=found.thought||'(无文字)';
+  document.getElementById('viewDate').textContent=formatTimeAgo(found.created_at);
+  document.getElementById('countdownBadge').style.display='none';
+  document.getElementById('publishUI').style.display='none';
+  document.getElementById('viewUI').style.display='block';
+  document.getElementById('btn3dv').style.display='none';
+  document.querySelectorAll('#viewUI > button').forEach(function(b){b.style.display='none'});
+  var viewUI=document.getElementById('viewUI');
+  var ea=document.getElementById('strangerDetailActions');if(ea)ea.remove();
+  var a=document.createElement('div');a.id='strangerDetailActions';
+  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+found.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+found.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
+  viewUI.appendChild(a);
+  if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
+  document.getElementById('capturedLabel').textContent='看世界';
+  document.getElementById('capturedBackBtn').style.display='';
+  document.getElementById('captured').style.display='flex';
+}
+function doWorldLike(btn,momentId){
+  if(!momentId){return}
+  if(!isLoggedIn()){alert('登录后才能点赞哦');return}
+  btn.textContent='❤️ ...';btn.disabled=true;
+  api('/api/like',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,momentId:parseInt(momentId)}}).then(function(r){
+    if(!r.error){btn.textContent='❤️ '+r.count;btn.style.background=r.liked?'rgba(255,80,80,.5)':'rgba(10,132,255,.3)'}
+    btn.disabled=false
+  }).catch(function(){btn.textContent='❤️ LIKE';btn.disabled=false})
+}
+
+
+// ======================== BUBBLE MODE ========================
+var bubbleTimeTimer=null;
+function updateBubbleTime(){
+  var n=new Date();
+  var el=document.getElementById('bubbleTime');
+  if(el)el.textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  clearInterval(bubbleTimeTimer);
+  bubbleTimeTimer=setInterval(function(){
+    var n=new Date();
+    var el=document.getElementById('bubbleTime');
+    if(el)el.textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  },10000);
+}
+var bubblePool=[],bubbleTimer=null,bubbleGenTimer=null,bubblePaused=false;
+function refreshBubbles(){
+  bubblePaused=false;
+  updateBubbleTime();
+  var container=document.getElementById('bubbleContainer');
+  if(container)container.innerHTML='';
+  fetch(API+'/api/explore?limit=40').then(function(r){return r.json()}).then(function(d){
+    if(d.moments&&d.moments.length){bubblePool=d.moments;startBubbleGen()}
+  }).catch(function(){});
+  clearTimeout(bubbleTimer);
+  bubbleTimer=setTimeout(refreshBubbles,30000);
+}
+function startBubbleGen(){
+  clearInterval(bubbleGenTimer);
+  generateBubble();
+  bubbleGenTimer=setInterval(function(){
+    if(!bubblePaused&&bubblePool.length>0)generateBubble();
+  },1500+Math.random()*1500);
+}
+function generateBubble(){
+  var container=document.getElementById('bubbleContainer');
+  if(!container)return;
+  // Limit concurrent bubbles
+  var existing=container.querySelectorAll('.bubble');
+  if(existing.length>=10){existing[0].style.opacity='0';setTimeout(function(){existing[0].remove()},300)}
+  // Randomly pick photo
+  var idx=Math.floor(Math.random()*bubblePool.length);
+  var p=bubblePool[idx];
+  var size=80+Math.floor(Math.random()*40); // 80-120px
+  var startX=20+Math.random()*(container.offsetWidth-size-40);
+  var duration=8+Math.random()*6; // 8-14s
+  var swayAmount=8+Math.random()*14;
+  var delay=Math.random()*0.3;
+  var bubble=document.createElement('div');
+  bubble.className='bubble';
+  bubble.style.cssText='width:'+size+'px;height:'+size+'px;left:'+startX+'px;bottom:-'+size+'px;animation:bubble-float '+duration+'s ease-out '+delay+'s forwards;';
+  bubble.innerHTML='<img src="'+p.dataUrl+'" loading="lazy">';
+  // Sway
+  bubble.style.setProperty('--sway',swayAmount+'px');
+  // Click handler
+  bubble.onclick=function(e){
+    e.stopPropagation();
+    bubble.style.animationPlayState='paused';
+    viewBubblePhoto(p);
+  };
+  container.appendChild(bubble);
+  // Clean up after animation
+  setTimeout(function(){if(bubble.parentNode)bubble.remove()},(duration+delay)*1000+500);
+}
+
+
+// ======================== GLOW MODE ========================
+var glowTimeTimer=null;
+function updateGlowTime(){
+  var n=new Date();
+  var el=document.getElementById('glowTime');
+  if(el)el.textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  clearInterval(glowTimeTimer);
+  glowTimeTimer=setInterval(function(){
+    var n=new Date();
+    var el=document.getElementById('glowTime');
+    if(el)el.textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');
+  },10000);
+}
+var glowPool=[],glowTimer=null,glowGenTimer=null,glowPaused=false,glowCount=0;
+function refreshGlows(){
+  glowPaused=false;
+  updateGlowTime();
+  var container=document.getElementById('glowContainer');
+  if(container)container.innerHTML='';
+  fetch(API+'/api/explore?limit=30').then(function(r){return r.json()}).then(function(d){
+    if(d.moments&&d.moments.length){glowPool=d.moments;startGlowGen()}
+  }).catch(function(){});
+  clearTimeout(glowTimer);
+  glowTimer=setTimeout(refreshGlows,30000);
+}
+function startGlowGen(){
+  clearInterval(glowGenTimer);
+  glowCount=0;
+  generateGlow();
+  glowGenTimer=setInterval(function(){
+    if(!glowPaused&&glowPool.length>0&&glowCount<5)generateGlow();
+  },1000+Math.random()*500);
+}
+function generateGlow(){
+  var container=document.getElementById('glowContainer');
+  if(!container)return;
+  var existing=container.querySelectorAll('.glow-circle');
+  if(existing.length>=5){
+    var oldest=existing[0];
+    oldest.style.opacity='0';
+    setTimeout(function(){if(oldest.parentNode)oldest.remove();glowCount--},500);
+  }
+  var idx=Math.floor(Math.random()*glowPool.length);
+  var p=glowPool[idx];
+  var size=100+Math.floor(Math.random()*60);
+  var maxX=container.offsetWidth-size-30,maxY=container.offsetHeight-size-60;
+  var x=15+Math.random()*maxX,y=20+Math.random()*maxY;
+  var stay=2000+Math.random()*1000;
+  glowCount++;
+  var glow=document.createElement('div');
+  glow.className='glow-circle';
+  glow.style.cssText='width:'+size+'px;height:'+size+'px;left:'+x+'px;top:'+y+'px;opacity:0';
+  glow.innerHTML='<div class="glow-halo"></div><div class="glow-img-wrap"><img src="'+p.dataUrl+'" loading="lazy"></div>';
+  // Fade in
+  requestAnimationFrame(function(){glow.style.transition='opacity .2s';glow.style.opacity='1'});
+  // Stay then fade out
+  setTimeout(function(){glow.style.opacity='0'},stay);
+  setTimeout(function(){if(glow.parentNode)glow.remove();glowCount--},stay+600);
+  // Click
+  glow.onclick=function(e){
+    e.stopPropagation();
+    glow.style.opacity='0';
+    setTimeout(function(){if(glow.parentNode)glow.remove();glowCount--},500);
+    viewFilmPhoto(p.id);
+  };
+  container.appendChild(glow);
+}
+
+// ======================== UPDATE ALL UI ========================
+function updateAllUI(){
+  updateHomeUI();
+  if(currentTab==='photos')refreshGallery();
+  if(currentTab==='strangers')refreshStrangers();
+}
+
+// ======================== SAVE ========================
+function save(){try{localStorage.setItem('mv21',JSON.stringify(D))}catch(e){if(confirm('存储空间不足，要清空旧记录吗？')){D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');location.reload()}else{alert('无法保存，请手动清理浏览器数据')}}}
+
+// ======================== COLLAGE ========================
+var collageMonth=null,collageCanvas=null,collageAvailable=[];
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);
+  ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+}
+function getAvailableMonths(){
+  var map={};D.m.forEach(function(m){var d=new Date(m.d||Date.now());var y=d.getFullYear();var mo=d.getMonth()+1;var key=y+'-'+mo;if(!map[key])map[key]={year:y,month:mo,count:0};map[key].count++});
+  var result=[];for(var k in map){var item=map[k];item.label=item.month+'月碎片';result.push(item)}
+  result.sort(function(a,b){return b.year!==a.year?b.year-a.year:b.month-a.month});return result;
+}
+function openCollage(){
+  collageAvailable=getAvailableMonths();
+  if(collageAvailable.length===0){alert('还没有记录，先拍一些照片吧');return}
+  var now=new Date(),cy=now.getFullYear(),cm=now.getMonth()+1,found=false;
+  for(var i=0;i<collageAvailable.length;i++){if(collageAvailable[i].year===cy&&collageAvailable[i].month===cm){collageMonth=collageAvailable[i];found=true;break}}
+  if(!found)collageMonth=collageAvailable[0];renderCollageScreen();
+  document.getElementById('collage').style.display='block';
+}
+function renderCollageScreen(){
+  document.getElementById('collageMonth').textContent=collageMonth.year+'年'+collageMonth.month+'月';
+  document.getElementById('collageCount').textContent=collageMonth.count+'张照片';
+  document.getElementById('collagePrev').style.display=getPrevMonth()?'block':'none';
+  document.getElementById('collageNext').style.display=getNextMonth()?'block':'none';
+  document.getElementById('collagePreview').style.display='none';document.getElementById('collageActions').style.display='none';
+  document.getElementById('collageLoading').style.display='none';collageCanvas=null;
+}
+function getPrevMonth(){var idx=collageAvailable.indexOf(collageMonth);if(idx>0)return collageAvailable[idx-1];return null}
+function getNextMonth(){var idx=collageAvailable.indexOf(collageMonth);if(idx>=0&&idx<collageAvailable.length-1)return collageAvailable[idx+1];return null}
+function collagePrevMonth(){var p=getPrevMonth();if(p){collageMonth=p;renderCollageScreen()}}
+function collageNextMonth(){var n=getNextMonth();if(n){collageMonth=n;renderCollageScreen()}}
+function loadAllImages(moments,callback){
+  var remaining=moments.length;if(remaining===0){callback([]);return}
+  var imgs=new Array(moments.length);
+  moments.forEach(function(m,i){var img=new Image(),done=false;
+    img.onload=function(){if(!done){done=true;remaining--;if(remaining<=0)callback(imgs)}};
+    img.onerror=function(){if(!done){done=true;imgs[i]=null;remaining--;if(remaining<=0)callback(imgs)}};
+    img.src=m.u;imgs[i]=img;
+  });
+}
+function generateCollage(){
+  var moments=[];D.m.forEach(function(m){var d=new Date(m.d||Date.now());if(d.getFullYear()===collageMonth.year&&(d.getMonth()+1)===collageMonth.month){moments.push(m)}});
+  moments.sort(function(a,b){return(a.d||0)-(b.d||0)});
+  if(moments.length===0){alert('该月没有照片');return}
+  document.getElementById('collageLoading').style.display='block';document.getElementById('collagePreview').style.display='none';document.getElementById('collageActions').style.display='none';
+  loadAllImages(moments,function(imgs){
+    document.getElementById('collageLoading').style.display='none';
+    collageCanvas=renderCollageCanvas(imgs,moments,collageMonth);
+    document.getElementById('collageImg').src=collageCanvas.toDataURL('image/png');
+    document.getElementById('collagePreview').style.display='block';document.getElementById('collageActions').style.display='block';
+  });
+}
+function renderCollageCanvas(imgs,moments,monthInfo){
+  var N=moments.length,CW=390,PH=14,GAP=8,HH=90,FH=50,AW=CW-2*PH;
+  var cols,cellSize,captionFontSize,captionH;
+  if(N===1){cols=1;cellSize=AW;captionFontSize=14;captionH=30}
+  else if(N<=4){cols=2;cellSize=(AW-GAP)/2;captionFontSize=12;captionH=26}
+  else if(N<=9){cols=3;cellSize=(AW-2*GAP)/3;captionFontSize=11;captionH=24}
+  else{cols=4;cellSize=(AW-3*GAP)/4;captionFontSize=10;captionH=22}
+  var rows=Math.ceil(N/cols),CH=HH+rows*(cellSize+captionH+GAP)+FH;
+  var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;var ctx=canvas.getContext('2d');
+  ctx.fillStyle='#08080a';ctx.fillRect(0,0,CW,CH);
+  ctx.fillStyle='#0a84ff';ctx.fillRect(0,0,CW,3);
+  ctx.fillStyle='#f5f5f7';ctx.font='bold 26px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';ctx.fillText(monthInfo.label,CW/2,38);
+  var fd=new Date(moments[0].d||Date.now()),ld=new Date(moments[N-1].d||Date.now());
+  var sub=N+'个瞬间 · '+(fd.getMonth()+1)+'.'+fd.getDate()+' - '+(ld.getMonth()+1)+'.'+ld.getDate();
+  ctx.fillStyle='#98989d';ctx.font='12px -apple-system,"PingFang SC",sans-serif';ctx.fillText(sub,CW/2,58);
+  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.1,74);ctx.lineTo(CW*.9,74);ctx.stroke();
+  for(var i=0;i<N;i++){
+    var col=i%cols,row=Math.floor(i/cols);
+    var fw=cellSize+8,fh=cellSize+8+captionH;
+    var fx=PH+col*(cellSize+GAP),fy=HH+row*(cellSize+captionH+GAP);
+    var px=fx+4,py=fy+4,pw=cellSize,ph=cellSize;
+    roundRect(ctx,fx,fy,fw,fh,8);ctx.fillStyle='#1c1c1e';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.06)';ctx.lineWidth=1;ctx.stroke();
+    ctx.save();roundRect(ctx,px,py,pw,ph,5);ctx.clip();
+    if(imgs[i]){
+      var img=imgs[i],sc=Math.max(pw/img.width,ph/img.height),sw=img.width*sc,sh=img.height*sc;
+      ctx.drawImage(img,px-(sw-pw)/2,py-(sh-ph)/2,sw,sh);
+    }else{ctx.fillStyle='#2c2c2e';ctx.fillRect(px,py,pw,ph);ctx.fillStyle='#555';ctx.font=(cellSize*.3)+'px -apple-system';ctx.textAlign='center';ctx.fillText('?',px+pw/2,py+ph/2+cellSize*.1)}
+    ctx.restore();
+    var thought=moments[i].t||'';if(thought.length>0){
+      var maxChars=cols===1?12:(cols===2?8:6);if(thought.length>maxChars)thought=thought.substring(0,maxChars)+'..';
+      ctx.fillStyle='#98989d';ctx.font=captionFontSize+'px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';ctx.fillText(thought,fx+fw/2,fy+fh-8);
+    }
+  }
+  var footerY=HH+rows*(cellSize+captionH+GAP)+14;
+  ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v87',CW/2,footerY+20);
+  return canvas;
+}
+function downloadCollage(){
+  if(!collageCanvas)return;
+  var a=document.createElement('a');a.href=collageCanvas.toDataURL('image/png');a.download='moment-'+collageMonth.year+'-'+collageMonth.month+'.png';a.click();
+}
+function shareCollage(){
+  if(!collageCanvas)return;
+  collageCanvas.toBlob(function(blob){
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([blob],'moment.png',{type:'image/png'})]})){
+      navigator.share({title:collageMonth.label,text:collageMonth.label+' - 此刻 MOMENT',files:[new File([blob],'moment-'+collageMonth.year+'-'+collageMonth.month+'.png',{type:'image/png'})]}).catch(function(){downloadCollage()});
+    }else{downloadCollage()}
+  },'image/png');
+}
+function backFromCollage(){
+  document.getElementById('collage').style.display='none';
+  navTo('photos');
+}
+
+// ======================== TIME FRAGMENT ========================
+var tfCanvas=null,tfTemplate=0,tfMoments=[],tfImgs=[],tfStart=null,tfEnd=null;
+function selectTF(idx){
+  tfTemplate=idx;
+  var items=document.querySelectorAll('.tf-tpl');
+  for(var i=0;i<items.length;i++){
+    items[i].style.borderColor=i===idx?'var(--accent)':'transparent';
+    items[i].classList.toggle('active',i===idx);
+  }
+  // Re-generate if we have data
+  if(tfMoments.length>=3){
+    document.getElementById('tfLoading').style.display='block';
+    document.getElementById('tfResult').style.display='none';
+    setTimeout(function(){
+      loadAllImages(tfMoments,function(imgs){
+        tfImgs=imgs;
+        document.getElementById('tfLoading').style.display='none';
+        tfCanvas=renderTFCanvas(imgs,tfMoments,tfStart,tfEnd,tfTemplate);
+        document.getElementById('tfImg').src=tfCanvas.toDataURL('image/png');
+        document.getElementById('tfResult').style.display='block';
+      });
+    },100);
+  }
+}
+function openTimeFragment(){
+  var today=new Date();
+  document.getElementById('tfEnd').value=today.toISOString().split('T')[0];
+  var weekAgo=new Date(today-7*86400000);
+  document.getElementById('tfStart').value=weekAgo.toISOString().split('T')[0];
+  document.getElementById('tfResult').style.display='none';
+  document.getElementById('tfLoading').style.display='none';
+  document.getElementById('timeFragment').style.display='block';
+}
+function closeTimeFragment(){
+  document.getElementById('timeFragment').style.display='none';
+}
+function genTimeFragment(days){
+  var end=new Date();
+  var start=new Date(end-days*86400000);
+  genTF(start,end);
+}
+function genTimeFragmentCustom(){
+  var start=new Date(document.getElementById('tfStart').value);
+  var end=new Date(document.getElementById('tfEnd').value);
+  if(isNaN(start.getTime())||isNaN(end.getTime())){alert('请选择日期');return}
+  if(end<start){alert('结束日期不能早于起始日期');return}
+  var diffDays=Math.ceil((end-start)/86400000);
+  if(diffDays>90){alert('日期范围不能超过90天');return}
+  genTF(start,end);
+}
+function genTF(start,end){
+  end.setHours(23,59,59,999);
+  start.setHours(0,0,0,0);
+  tfStart=new Date(start);tfEnd=new Date(end);
+  var moments=[];
+  D.m.forEach(function(m){
+    var d=new Date(m.d||Date.now());
+    if(d>=start&&d<=end&&m.status!=='rejected')moments.push(m);
+  });
+  moments.sort(function(a,b){return(a.d||0)-(b.d||0)});
+  if(moments.length===0){alert('该时间段暂无照片，试试其他日期吧');return}
+  if(moments.length<3){alert('至少需要3张照片才能生成碎片');return}
+  if(moments.length>30){moments=moments.slice(0,30);alert('照片太多，仅展示前30张')}
+  tfMoments=moments;
+  document.getElementById('tfLoading').style.display='block';
+  document.getElementById('tfResult').style.display='none';
+  loadAllImages(moments,function(imgs){
+    tfImgs=imgs;
+    document.getElementById('tfLoading').style.display='none';
+    tfCanvas=renderTFCanvas(imgs,moments,tfStart,tfEnd,tfTemplate);
+    document.getElementById('tfImg').src=tfCanvas.toDataURL('image/png');
+    document.getElementById('tfResult').style.display='block';
+  });
+}
+function renderTFCanvas(imgs,moments,start,end,tpl){
+  tpl=tpl||0;
+  if(tpl===0)return renderTplGrid(imgs,moments,start,end);
+  if(tpl===1)return renderTplPolaroid(imgs,moments,start,end);
+  if(tpl===2)return renderTplMagazine(imgs,moments,start,end);
+  if(tpl===3)return renderTplCalendar(imgs,moments,start,end);
+  if(tpl===4)return renderTplFilm(imgs,moments,start,end);
+  return renderTplGrid(imgs,moments,start,end);
+}
+// Template 1: Classic Grid
+function renderTplGrid(imgs,moments,start,end){
+  var N=moments.length,CW=390,PH=12,GAP=6;
+  var cols=N<=4?2:3;
+  var cellSize=(CW-2*PH-(cols-1)*GAP)/cols;
+  var rows=Math.ceil(N/cols);
+  var HH=70,FH=38;
+  var CH=HH+rows*(cellSize+GAP)+FH;
+  var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
+  var ctx=canvas.getContext('2d');
+  ctx.fillStyle='#f5f5f5';ctx.fillRect(0,0,CW,CH);
+  ctx.fillStyle='#1c1c1e';ctx.font='bold 22px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';
+  ctx.fillText('✨ 时光碎片',CW/2,33);
+  var ds=start.getFullYear()+'-'+pad2(start.getMonth()+1)+'-'+pad2(start.getDate());
+  var de=end.getFullYear()+'-'+pad2(end.getMonth()+1)+'-'+pad2(end.getDate());
+  ctx.fillStyle='#8e8e93';ctx.font='12px -apple-system,"PingFang SC",sans-serif';
+  ctx.fillText(ds+' 至 '+de,CW/2,52);ctx.fillText(N+'个瞬间',CW/2,66);
+  for(var i=0;i<N;i++){
+    var col=i%cols,row=Math.floor(i/cols);
+    var px=PH+col*(cellSize+GAP),py=HH+row*(cellSize+GAP);
+    ctx.save();roundRect(ctx,px,py,cellSize,cellSize,6);ctx.clip();
+    if(imgs[i]){var img=imgs[i],sc=Math.max(cellSize/img.width,cellSize/img.height);ctx.drawImage(img,px-(img.width*sc-cellSize)/2,py-(img.height*sc-cellSize)/2,img.width*sc,img.height*sc)}
+    ctx.restore();
+    ctx.strokeStyle='#ddd';ctx.lineWidth=.5;ctx.beginPath();roundRect(ctx,px,py,cellSize,cellSize,6);ctx.stroke();
+  }
+  var fy=HH+rows*(cellSize+GAP)+10;
+  ctx.fillStyle='#999';ctx.font='10px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';ctx.fillText('此刻 · 时光碎片',CW/2,fy+14);
+  return canvas;
+}
+// Template 2: Polaroid Stack
+function renderTplPolaroid(imgs,moments,start,end){
+  var N=moments.length,CW=390,CH=Math.max(500,N*120+160);
+  var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
+  var ctx=canvas.getContext('2d');
+  ctx.fillStyle='#fdf8f0';ctx.fillRect(0,0,CW,CH);
+  // Random laid-back layout
+  var placed=[];
+  var sizes=[{w:100,h:100},{w:110,h:110},{w:120,h:120},{w:95,h:95},{w:105,h:105},{w:115,h:115}];
+  for(var i=0;i<N;i++){
+    var sz=sizes[i%sizes.length];
+    var x=20+Math.random()*(CW-sz.w-60),y=40+Math.random()*(CH-sz.h-120);
+    // White polaroid frame
+    var fw=sz.w+16,fh=sz.h+30;
+    ctx.save();
+    ctx.translate(x+fw/2,y+fh/2);
+    ctx.rotate((Math.random()-.5)*6*Math.PI/180);
+    ctx.fillStyle='#fff';ctx.shadowColor='rgba(0,0,0,.15)';ctx.shadowBlur=8;ctx.shadowOffsetY=2;
+    ctx.fillRect(-fw/2,-fh/2,fw,fh);
+    ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    if(imgs[i]){
+      var sc=Math.max(sz.w/imgs[i].width,sz.h/imgs[i].height);
+      var sw=imgs[i].width*sc,sh=imgs[i].height*sc;
+      ctx.drawImage(imgs[i],-sw/2,-sh/2+4,sw,sh);
+    }
+    // Date at bottom of polaroid
+    var d=new Date(moments[i].d||Date.now());
+    ctx.fillStyle='#999';ctx.font='9px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';
+    ctx.fillText((d.getMonth()+1)+'/'+d.getDate(),0,fh/2-8);
+    ctx.restore();
+  }
+  // Footer text
+  var ds=start.getFullYear()+'-'+pad2(start.getMonth()+1)+'-'+pad2(start.getDate());
+  var de=end.getFullYear()+'-'+pad2(end.getMonth()+1)+'-'+pad2(end.getDate());
+  ctx.fillStyle='rgba(0,0,0,.3)';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='right';
+  ctx.fillText('拍立得·时光  '+ds+'~'+de,CW-16,CH-10);
+  return canvas;
+}
+// Template 3: Magazine Layout
+function renderTplMagazine(imgs,moments,start,end){
+  var N=moments.length,CW=390,CH=600;
+  var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
+  var ctx=canvas.getContext('2d');
+  var grad=ctx.createLinearGradient(0,0,0,CH);
+  grad.addColorStop(0,'#1a1a2e');grad.addColorStop(1,'#16213e');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,CW,CH);
+  // Main hero image
+  var mainIdx=Math.floor(moments.length/2);
+  ctx.save();ctx.fillStyle='rgba(255,255,255,.1)';ctx.fillRect(20,80,220,280);ctx.restore();
+  if(imgs[mainIdx]){
+    var sc=Math.max(220/imgs[mainIdx].width,280/imgs[mainIdx].height);
+    ctx.drawImage(imgs[mainIdx],20,80,imgs[mainIdx].width*sc,imgs[mainIdx].height*sc);
+    ctx.save();ctx.beginPath();ctx.rect(20,80,220,280);ctx.clip();
+    ctx.drawImage(imgs[mainIdx],20-(imgs[mainIdx].width*sc-220)/2,80-(imgs[mainIdx].height*sc-280)/2,imgs[mainIdx].width*sc,imgs[mainIdx].height*sc);
+    ctx.restore();
+  }
+  ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;ctx.strokeRect(20,80,220,280);
+  // Side images
+  var sideImgs=[];
+  for(var i=0;i<N;i++){if(i!==mainIdx)sideImgs.push(i)}
+  var sx=260,sy=80;
+  for(var j=0;j<Math.min(sideImgs.length,5);j++){
+    var idx=sideImgs[j];
+    ctx.fillStyle='rgba(255,255,255,.05)';ctx.fillRect(sx,sy,110,90);
+    if(imgs[idx]){
+      ctx.save();ctx.beginPath();ctx.rect(sx,sy,110,90);ctx.clip();
+      var sc2=Math.max(110/imgs[idx].width,90/imgs[idx].height);
+      ctx.drawImage(imgs[idx],sx-(imgs[idx].width*sc2-110)/2,sy-(imgs[idx].height*sc2-90)/2,imgs[idx].width*sc2,imgs[idx].height*sc2);
+      ctx.restore();
+    }
+    ctx.strokeStyle='rgba(255,255,255,.15)';ctx.strokeRect(sx,sy,110,90);
+    sy+=98;
+  }
+  // Title
+  ctx.fillStyle='#fff';ctx.font='bold 28px "Georgia","Times New Roman",serif';ctx.textAlign='left';
+  ctx.fillText('封面故事',20,50);
+  var ds=start.getFullYear()+'-'+pad2(start.getMonth()+1)+'-'+pad2(start.getDate());
+  var de=end.getFullYear()+'-'+pad2(end.getMonth()+1)+'-'+pad2(end.getDate());
+  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='12px "Georgia",serif';ctx.fillText(ds+' — '+de,20,68);
+  ctx.fillStyle='rgba(255,255,255,.3)';ctx.font='9px -apple-system';ctx.textAlign='right';ctx.fillText('此刻·杂志',CW-16,CH-12);
+  return canvas;
+}
+// Template 4: Calendar Diary
+function renderTplCalendar(imgs,moments,start,end){
+  var N=moments.length,CW=390;
+  var days=['日','一','二','三','四','五','六'];
+  // Group by date, take latest per day
+  var dayMap={};
+  moments.forEach(function(m,i){var d=new Date(m.d||Date.now());var key=d.toLocaleDateString('zh-CN');if(!dayMap[key]||(m.d||0)>(dayMap[key].m.d||0))dayMap[key]={m:m,i:i}});
+  var entries=[];
+  for(var k in dayMap)entries.push(dayMap[k]);
+  entries.sort(function(a,b){return(a.m.d||0)-(b.m.d||0)});
+  entries=entries.slice(0,30);
+  var rowH=100,CH=60+entries.length*rowH+60;
+  var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
+  var ctx=canvas.getContext('2d');
+  ctx.fillStyle='#f8f9fa';ctx.fillRect(0,0,CW,CH);
+  // Header
+  ctx.fillStyle='#1c1c1e';ctx.font='bold 20px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';ctx.fillText('📅 日历日记',CW/2,34);
+  var ds=start.getFullYear()+'-'+pad2(start.getMonth()+1)+'-'+pad2(start.getDate());
+  var de=end.getFullYear()+'-'+pad2(end.getMonth()+1)+'-'+pad2(end.getDate());
+  ctx.fillStyle='#8e8e93';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText(ds+' 至 '+de,CW/2,50);
+  // Entries
+  entries.forEach(function(entry,j){
+    var y=60+j*rowH,d=new Date(entry.m.d||Date.now());
+    ctx.fillStyle='#e9ecef';ctx.fillRect(10,y+rowH-1,CW-20,1);
+    // Date column
+    ctx.fillStyle='#1c1c1e';ctx.font='bold 18px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';
+    ctx.fillText((d.getMonth()+1)+'/'+d.getDate(),50,y+35);
+    ctx.fillStyle='#8e8e93';ctx.font='11px -apple-system';ctx.fillText('周'+days[d.getDay()],50,y+52);
+    // Photo
+    if(imgs[entry.i]){
+      ctx.save();ctx.beginPath();ctx.rect(90,y+8,84,84);ctx.clip();
+      var sc=Math.max(84/imgs[entry.i].width,84/imgs[entry.i].height);
+      ctx.drawImage(imgs[entry.i],90-(imgs[entry.i].width*sc-84)/2,y+8-(imgs[entry.i].height*sc-84)/2,imgs[entry.i].width*sc,imgs[entry.i].height*sc);
+      ctx.restore();
+      ctx.strokeStyle='#dee2e6';ctx.strokeRect(90,y+8,84,84);
+    }
+    // Time
+    var time=d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+    ctx.fillStyle='#999';ctx.font='10px -apple-system';ctx.textAlign='left';ctx.fillText(time,180,y+52);
+    // Thought
+    var t=entry.m.t||'';
+    if(t.length>0){ctx.fillStyle='#666';ctx.font='13px -apple-system';ctx.textAlign='left';ctx.fillText(t.substring(0,12),180,y+35)}
+  });
+  return canvas;
+}
+// Template 5: Film Strip
+function renderTplFilm(imgs,moments,start,end){
+  var N=Math.min(moments.length,15),CW=Math.max(390,N*120+40),cellW=100,cellH=150;
+  var CH=cellH+120;
+  var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
+  var ctx=canvas.getContext('2d');
+  ctx.fillStyle='#111';ctx.fillRect(0,0,CW,CH);
+  // Film strip holes
+  ctx.fillStyle='#000';
+  for(var x=20;x<CW-20;x+=30){ctx.beginPath();ctx.arc(x,18,6,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x,CH-18,6,0,Math.PI*2);ctx.fill()}
+  ctx.fillStyle='rgba(255,255,255,.04)';ctx.fillRect(0,40,CW,cellH+30);
+  // Photos
+  for(var i=0;i<N;i++){
+    var x=20+i*115;
+    ctx.fillStyle='#000';ctx.fillRect(x-2,48,cellW+4,cellH+8);
+    if(imgs[i]){
+      ctx.save();ctx.beginPath();ctx.rect(x,52,cellW,cellH);ctx.clip();
+      var sc=Math.max(cellW/imgs[i].width,cellH/imgs[i].height);
+      ctx.drawImage(imgs[i],x-(imgs[i].width*sc-cellW)/2,52-(imgs[i].height*sc-cellH)/2,imgs[i].width*sc,imgs[i].height*sc);
+      ctx.restore();
+    }
+  }
+  // Subtitle
+  var ds=start.getFullYear()+'-'+pad2(start.getMonth()+1)+'-'+pad2(start.getDate());
+  var de=end.getFullYear()+'-'+pad2(end.getMonth()+1)+'-'+pad2(end.getDate());
+  ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';
+  ctx.fillText(ds+' ~ '+de,CW/2,CH-40);
+  ctx.fillText('🎬 此刻·胶片',CW/2,CH-22);
+  return canvas;
+}
+function pad2(n){return n<10?'0'+n:''+n}
+function downloadTF(){
+  if(!tfCanvas)return;
+  var a=document.createElement('a');a.href=tfCanvas.toDataURL('image/png');a.download='时光碎片.png';a.click();
+}
+function shareTF(){
+  if(!tfCanvas)return;
+  tfCanvas.toBlob(function(blob){
+    if(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([blob],'时光碎片.png',{type:'image/png'})]})){
+      navigator.share({title:'时光碎片',text:'我的时光碎片',files:[new File([blob],'时光碎片.png',{type:'image/png'})]}).catch(function(){downloadTF()});
+    }else{downloadTF()}
+  },'image/png');
+}
+
+// ======================== INIT ========================
+var seenWelcome=localStorage.getItem('mv_welcome');
+if(AUTH.token&&AUTH.userId){setTimeout(function(){updateAllUI();updateSideMenuUser()},500)}
+else if(!seenWelcome){setTimeout(function(){document.getElementById('welcomeScreen').style.display='flex'},500)}
+else{setTimeout(showLogin,800)}
+
+// ======================== IMMERSIVE SYNC REFRESH ========================
+var syncRefreshTimer=null;
+function startSyncRefresh(){
+  clearInterval(syncRefreshTimer);
+  syncRefreshTimer=setInterval(function(){
+    var now=new Date();
+    if(now.getSeconds()===0&&currentTab==='strangers'&&getWatchMode()==='immersive'){
+      // Fade out all cards
+      var cards=document.querySelectorAll('#cs > div');
+      for(var i=0;i<cards.length;i++){
+        cards[i].style.transition='opacity .2s';
+        cards[i].style.opacity='0';
+      }
+      // Reload after fade
+      setTimeout(function(){
+        if(currentTab==='strangers'&&getWatchMode()==='immersive'){
+          poolLoaded=false;
+          refreshStrangers();
+        }
+      },250);
+    }
+  },1000);
+}
+setTimeout(startSyncRefresh,1000);
+
+// Init UI
+setTimeout(function(){
+  updateHomeUI();updateSideMenuUser();
+  // Init quick settings states
+  // Sync daily pick from server if logged in
+  if(isLoggedIn()){
+    api('/api/user/preferences').then(function(r){
+      if(!r.error){
+        var dp=r.daily_pick_enabled!==false;
+        document.getElementById('dailyPickState').textContent=dp?'已开启':'已关闭';
+        document.getElementById('dailyPickState').style.color=dp?'var(--accent)':'var(--muted)';
+      }
+    }).catch(function(){});
+  }else{
+    var dp=localStorage.getItem('daily_pick_enabled')!=='0';
+    document.getElementById('dailyPickState').textContent=dp?'已开启':'已关闭';
+    document.getElementById('dailyPickState').style.color=dp?'var(--accent)':'var(--muted)';
+  }
+  var notifyOn=localStorage.getItem('notify_enabled')==='1';
+  document.getElementById('notifyState').textContent=notifyOn?'已开启':'已关闭';
+  document.getElementById('notifyState').style.color=notifyOn?'var(--accent)':'var(--muted)';
+  var photoPublic=localStorage.getItem('photo_public')!=='0';
+  document.getElementById('photoPublicState').textContent=photoPublic?'已开启':'已关闭';
+  document.getElementById('photoPublicState').style.color=photoPublic?'var(--accent)':'var(--muted)';
+  var dm=getDarkMode();
+  document.getElementById('darkModeState').textContent=dm==='auto'?'跟随系统':(dm==='light'?'浅色模式':'深色模式');
+  var iq=localStorage.getItem('img_quality')||'compressed';
+  document.getElementById('imgQualityState').textContent=iq==='compressed'?'省流量':'原图';
+  var ifx=localStorage.getItem('immersive_fx')!=='0';
+  document.getElementById('immersiveFXState').textContent=ifx?'已开启':'已关闭';
+  document.getElementById('immersiveFXState').style.color=ifx?'var(--accent)':'var(--muted)';
+  var pb=localStorage.getItem('pure_black')==='1';
+  document.getElementById('pureBlackState').textContent=pb?'已开启':'已关闭';
+  document.getElementById('pureBlackState').style.color=pb?'var(--accent)':'var(--muted)';
+  applyDarkMode(dm);
+  if(pb)applyPureBlack(true);
+},100);
+// Haptic click feedback
+var _clickAudio=null;
+function hapticClick(){
+  try{
+    if(navigator.vibrate)navigator.vibrate(8);
+    if(!_clickAudio){var ctx=new(window.AudioContext||window.webkitAudioContext)();_clickAudio=function(){var o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=120;g.gain.setValueAtTime(.03,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.05);o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.05)}}
+    _clickAudio();
+  }catch(e){}
+}
+// Add haptic to all interactive elements
+setTimeout(function(){
+  document.querySelectorAll('button, .menu-row, .nav-item, .btn, #mainActionBtn, .wf-card, [onclick]').forEach(function(el){
+    if(!el.hasAttribute('data-haptic')){
+      el.setAttribute('data-haptic','1');
+      el.addEventListener('click',function(e){hapticClick()});
+    }
+  });
+},600);
+
+</script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(function(){})
+}
+</script>
+</body>
+</html>

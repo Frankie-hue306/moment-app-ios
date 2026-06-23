@@ -1,0 +1,177 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - button [ref=e5] [cursor=pointer]
+    - link "VPS Control" [ref=e9] [cursor=pointer]:
+      - /url: home.php
+    - generic:
+      - list [ref=e10]:
+        - listitem [ref=e11]:
+          - link "Home" [ref=e12] [cursor=pointer]:
+            - /url: home.php
+            - text: Home
+        - listitem [ref=e14]:
+          - link "Virtual Servers" [ref=e15] [cursor=pointer]:
+            - /url: home.php
+            - text: Virtual Servers
+        - listitem [ref=e17]:
+          - link "My Account" [ref=e18] [cursor=pointer]:
+            - /url: account.php
+            - text: My Account
+      - button "Frankie 赵" [ref=e22] [cursor=pointer]: Frankie 赵
+  - generic [ref=e24]:
+    - generic [ref=e26]:
+      - generic [ref=e28]:
+        - heading "racknerd-c859c77 (107.172.157.172)" [level=3] [ref=e30]
+        - button "Refresh" [ref=e32] [cursor=pointer]: Refresh
+      - generic [ref=e34]:
+        - table [ref=e36]:
+          - rowgroup [ref=e37]:
+            - row "Status" [ref=e38]:
+              - cell "Status" [ref=e39]
+              - cell [ref=e40]
+            - row "IPv4 Address 1" [ref=e51]:
+              - cell "IPv4 Address" [ref=e52]
+              - cell "1" [ref=e53]
+            - row "IP Address 107.172.157.172" [ref=e54]:
+              - cell "IP Address" [ref=e55]
+              - cell "107.172.157.172" [ref=e56]
+            - row "Virtualization Type (KVM)" [ref=e57]:
+              - cell "Virtualization Type" [ref=e58]
+              - cell "(KVM)" [ref=e59]:
+                - img [ref=e60]
+                - text: (KVM)
+            - row "Hostname racknerd-c859c77" [ref=e61]:
+              - cell "Hostname" [ref=e62]
+              - cell "racknerd-c859c77" [ref=e63]
+            - row "Node NYRN184KVM" [ref=e64]:
+              - cell "Node" [ref=e65]
+              - cell "NYRN184KVM" [ref=e66]
+        - table [ref=e68]:
+          - rowgroup [ref=e69]:
+            - row "Operating System Ubuntu 22.04 64 Bit" [ref=e70]:
+              - cell "Operating System" [ref=e71]
+              - cell "Ubuntu 22.04 64 Bit" [ref=e72]
+            - row "IPv6 Address 0" [ref=e73]:
+              - cell "IPv6 Address" [ref=e74]
+              - cell "0" [ref=e75]
+            - row "Disk Space 20 GB" [ref=e76]:
+              - cell "Disk Space" [ref=e77]
+              - cell "20 GB" [ref=e78]
+            - row "Bandwidth 2.93 TB" [ref=e79]:
+              - cell "Bandwidth" [ref=e80]
+              - cell "2.93 TB" [ref=e81]
+            - row "Memory 1 GB" [ref=e82]:
+              - cell "Memory" [ref=e83]
+              - cell "1 GB" [ref=e84]
+            - row "Swap 1 GB" [ref=e85]:
+              - cell "Swap" [ref=e86]
+              - cell "1 GB" [ref=e87]
+    - table [ref=e88]:
+      - rowgroup [ref=e89]:
+        - row "Bandwidth Usage 0% 950.23 MB of 2.93 TB Used / 2.93 TB Free" [ref=e90]:
+          - cell "Bandwidth Usage" [ref=e91]
+          - cell "0%" [ref=e92]:
+            - generic [ref=e103]:
+              - generic: 0%
+          - cell "950.23 MB of 2.93 TB Used / 2.93 TB Free" [ref=e104]
+    - generic [ref=e106]:
+      - list [ref=e107]:
+        - listitem [ref=e108] [cursor=pointer]:
+          - paragraph [ref=e110]: Reboot
+        - listitem [ref=e111] [cursor=pointer]:
+          - paragraph [ref=e113]: Shutdown
+        - listitem [ref=e114] [cursor=pointer]:
+          - paragraph [ref=e116]: Boot
+        - listitem [ref=e117] [cursor=pointer]:
+          - paragraph [ref=e119]: Reinstall
+        - listitem [ref=e120] [cursor=pointer]:
+          - paragraph [ref=e122]: VNC
+        - listitem [ref=e123] [cursor=pointer]:
+          - paragraph [ref=e125]: Log
+      - list [ref=e126]:
+        - listitem [ref=e127] [cursor=pointer]:
+          - paragraph [ref=e129]: Power Off
+        - listitem [ref=e130] [cursor=pointer]:
+          - paragraph [ref=e132]: Reconfigure Networking
+        - listitem [ref=e133] [cursor=pointer]:
+          - paragraph [ref=e135]: Rescue
+    - generic [ref=e137]:
+      - list [ref=e138]:
+        - listitem [ref=e139]:
+          - link "Settings" [ref=e140]:
+            - /url: "#settingstab"
+        - listitem [ref=e141]:
+          - link "CDRom" [ref=e142] [cursor=pointer]:
+            - /url: "#cdromtab"
+        - listitem [ref=e143]:
+          - link "Drivers" [ref=e144] [cursor=pointer]:
+            - /url: "#drivertab"
+        - listitem [ref=e145]:
+          - link "Hostname" [ref=e146] [cursor=pointer]:
+            - /url: "#hostnametab"
+        - listitem [ref=e147]:
+          - link "Clock" [ref=e148] [cursor=pointer]:
+            - /url: "#clocktab"
+        - listitem [ref=e149]:
+          - link "Root/Admin Password" [ref=e150] [cursor=pointer]:
+            - /url: "#rootpwdtab"
+        - listitem [ref=e151]:
+          - link "Network" [ref=e152] [cursor=pointer]:
+            - /url: "#networktab"
+        - listitem [ref=e153]:
+          - link "API" [ref=e154] [cursor=pointer]:
+            - /url: "#apitab"
+        - listitem [ref=e155]:
+          - link "Statistics" [ref=e156] [cursor=pointer]:
+            - /url: "#statisticstab"
+      - generic [ref=e161]:
+        - generic [ref=e162]:
+          - paragraph [ref=e163]:
+            - text: APIC
+            - combobox [ref=e164] [cursor=pointer]:
+              - option "On" [selected]
+              - option "Off"
+          - paragraph [ref=e165]:
+            - text: ACPI
+            - combobox [ref=e166] [cursor=pointer]:
+              - option "On" [selected]
+              - option "Off"
+          - paragraph [ref=e167]:
+            - text: VNC
+            - combobox [ref=e168] [cursor=pointer]:
+              - option "On" [selected]
+              - option "Off"
+          - paragraph [ref=e169]:
+            - text: PAE
+            - combobox [ref=e170] [cursor=pointer]:
+              - option "On"
+              - option "Off" [selected]
+          - paragraph [ref=e171]:
+            - text: Tablet Input Device
+            - combobox [ref=e172] [cursor=pointer]:
+              - option "On"
+              - option "Off" [selected]
+        - generic [ref=e173]:
+          - paragraph [ref=e174]:
+            - text: Boot Order
+            - combobox [ref=e175] [cursor=pointer]:
+              - option "(1) Hard Disk (2) CDROM" [selected]
+              - option "(1) CDROM (2) Hard Disk"
+              - option "Hard Disk Only"
+              - option "CDROM Only"
+          - paragraph [ref=e176]:
+            - text: Network Card
+            - combobox [ref=e177] [cursor=pointer]:
+              - option "Realtek 8139"
+              - option "Intel PRO/1000"
+              - option "Virtio" [selected]
+          - paragraph [ref=e178]:
+            - text: Disk Driver
+            - combobox "Changing Disk Driver can break OS booting" [ref=e179] [cursor=pointer]:
+              - option "ide"
+              - option "virtio (default)" [selected]
+              - option "scsi"
+          - paragraph [ref=e180]:
+            - text: VNC Keymap
+            - combobox [ref=e181] [cursor=pointer]:
+              - option "Default" [selected]

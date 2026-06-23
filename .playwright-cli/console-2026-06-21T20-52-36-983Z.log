@@ -1,0 +1,14 @@
+[    1105ms] [WARNING]  Msg: noVNC ready: native WebSockets, canvas rendering @ https://nerdvm.racknerd.com/include/util.js:217
+[    1106ms] [WARNING]  @ https://nerdvm.racknerd.com/include/util.js:217
+[    1847ms] [WARNING]  Msg: Starting VNC handshake @ https://nerdvm.racknerd.com/include/util.js:217
+[    1955ms] [WARNING]  Msg: Sent ProtocolVersion: 003.008 @ https://nerdvm.racknerd.com/include/util.js:217
+[    2255ms] [WARNING]  Msg: Authenticating using scheme: 2 @ https://nerdvm.racknerd.com/include/util.js:217
+[    2560ms] [WARNING]  @ https://nerdvm.racknerd.com/include/util.js:217
+[    2851ms] [WARNING]  Msg: Authentication OK @ https://nerdvm.racknerd.com/include/util.js:217
+[    2852ms] [WARNING]  Msg: Authentication OK @ https://nerdvm.racknerd.com/include/util.js:217
+[    3147ms] [WARNING] Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently @ https://nerdvm.racknerd.com/include/display.js:256
+[    3157ms] [WARNING]  Msg: Connected (encrypted) to: QEMU (kvm560452) @ https://nerdvm.racknerd.com/include/util.js:217
+[   82081ms] [WARNING] WebSocket on-close event @ https://nerdvm.racknerd.com/include/util.js:217
+[   82301ms] [ERROR]  Msg: Server disconnected (code: 1006) @ https://nerdvm.racknerd.com/include/util.js:219
+[   82302ms] [ERROR] Error while connected. @ https://nerdvm.racknerd.com/include/util.js:219
+[   82353ms] [WARNING]  @ https://nerdvm.racknerd.com/include/util.js:217

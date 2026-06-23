@@ -1,0 +1,140 @@
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - link "VPS Control" [ref=e5] [cursor=pointer]:
+      - /url: home.php
+    - generic:
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "Home" [ref=e8] [cursor=pointer]:
+            - /url: home.php
+            - text: Home
+        - listitem [ref=e10]:
+          - link "Virtual Servers" [ref=e11] [cursor=pointer]:
+            - /url: home.php
+            - text: Virtual Servers
+        - listitem [ref=e13]:
+          - link "My Account" [ref=e14] [cursor=pointer]:
+            - /url: account.php
+            - text: My Account
+      - button "Frankie 赵" [ref=e18] [cursor=pointer]: Frankie 赵
+  - generic [ref=e20]:
+    - generic [ref=e196]:
+      - heading "Change Root/Administrator Password" [level=3] [ref=e198]
+      - generic [ref=e199]:
+        - text: Please wait for the password to change.
+        - text: "New root/administrator password: 4v8Bzr9W75VPV6jyFj"
+      - generic [ref=e201]:
+        - button "No" [ref=e202] [cursor=pointer]
+        - button "Yes" [active] [ref=e203] [cursor=pointer]
+    - generic [ref=e23]:
+      - generic [ref=e25]:
+        - heading "racknerd-c859c77 (107.172.157.172)" [level=3] [ref=e27]
+        - button "Refresh" [ref=e29] [cursor=pointer]: Refresh
+      - generic [ref=e31]:
+        - table [ref=e33]:
+          - rowgroup [ref=e34]:
+            - row "Status Online" [ref=e179]:
+              - cell "Status" [ref=e36]
+              - cell "Online" [ref=e180]:
+                - generic [ref=e181]: Online
+            - row "IPv4 Address 1" [ref=e48]:
+              - cell "IPv4 Address" [ref=e49]
+              - cell "1" [ref=e50]
+            - row "IP Address 107.172.157.172" [ref=e51]:
+              - cell "IP Address" [ref=e52]
+              - cell "107.172.157.172" [ref=e53]
+            - row "Virtualization Type (KVM)" [ref=e54]:
+              - cell "Virtualization Type" [ref=e55]
+              - cell "(KVM)" [ref=e56]:
+                - img [ref=e57]
+                - text: (KVM)
+            - row "Hostname racknerd-c859c77" [ref=e58]:
+              - cell "Hostname" [ref=e59]
+              - cell "racknerd-c859c77" [ref=e60]
+            - row "Node NYRN184KVM" [ref=e61]:
+              - cell "Node" [ref=e62]
+              - cell "NYRN184KVM" [ref=e63]
+        - table [ref=e65]:
+          - rowgroup [ref=e66]:
+            - row "Operating System Ubuntu 22.04 64 Bit" [ref=e67]:
+              - cell "Operating System" [ref=e68]
+              - cell "Ubuntu 22.04 64 Bit" [ref=e69]
+            - row "IPv6 Address 0" [ref=e70]:
+              - cell "IPv6 Address" [ref=e71]
+              - cell "0" [ref=e72]
+            - row "Disk Space 20 GB" [ref=e73]:
+              - cell "Disk Space" [ref=e74]
+              - cell "20 GB" [ref=e75]
+            - row "Bandwidth 2.93 TB" [ref=e76]:
+              - cell "Bandwidth" [ref=e77]
+              - cell "2.93 TB" [ref=e78]
+            - row "Memory 1 GB" [ref=e79]:
+              - cell "Memory" [ref=e80]
+              - cell "1 GB" [ref=e81]
+            - row "Swap 1 GB" [ref=e82]:
+              - cell "Swap" [ref=e83]
+              - cell "1 GB" [ref=e84]
+    - table [ref=e85]:
+      - rowgroup [ref=e86]:
+        - row "Bandwidth Usage 0% 6.62 MB of 2.93 TB Used / 2.93 TB Free" [ref=e87]:
+          - cell "Bandwidth Usage" [ref=e182]
+          - cell "0%" [ref=e183]:
+            - generic [ref=e184]:
+              - generic: 0%
+          - cell "6.62 MB of 2.93 TB Used / 2.93 TB Free" [ref=e185]
+        - row "Disk Usage 11% 2.3 GB of 20 GB Used/17.7 GBFree" [ref=e186]:
+          - cell "Disk Usage" [ref=e187]
+          - cell "11%" [ref=e188]:
+            - generic [ref=e190]: 11%
+          - cell "2.3 GB of 20 GB Used/17.7 GBFree" [ref=e191]
+    - generic [ref=e103]:
+      - list [ref=e104]:
+        - listitem [ref=e105] [cursor=pointer]:
+          - paragraph [ref=e107]: Reboot
+        - listitem [ref=e108] [cursor=pointer]:
+          - paragraph [ref=e110]: Shutdown
+        - listitem [ref=e111] [cursor=pointer]:
+          - paragraph [ref=e113]: Boot
+        - listitem [ref=e114] [cursor=pointer]:
+          - paragraph [ref=e116]: Reinstall
+        - listitem [ref=e117] [cursor=pointer]:
+          - paragraph [ref=e119]: VNC
+        - listitem [ref=e120] [cursor=pointer]:
+          - paragraph [ref=e122]: Log
+      - list [ref=e123]:
+        - listitem [ref=e124] [cursor=pointer]:
+          - paragraph [ref=e126]: Power Off
+        - listitem [ref=e127] [cursor=pointer]:
+          - paragraph [ref=e129]: Reconfigure Networking
+        - listitem [ref=e130] [cursor=pointer]:
+          - paragraph [ref=e132]: Rescue
+    - generic [ref=e134]:
+      - list [ref=e135]:
+        - listitem [ref=e136]:
+          - link "Settings" [ref=e137] [cursor=pointer]:
+            - /url: "#settingstab"
+        - listitem [ref=e138]:
+          - link "CDRom" [ref=e139] [cursor=pointer]:
+            - /url: "#cdromtab"
+        - listitem [ref=e140]:
+          - link "Drivers" [ref=e141] [cursor=pointer]:
+            - /url: "#drivertab"
+        - listitem [ref=e142]:
+          - link "Hostname" [ref=e143] [cursor=pointer]:
+            - /url: "#hostnametab"
+        - listitem [ref=e144]:
+          - link "Clock" [ref=e145] [cursor=pointer]:
+            - /url: "#clocktab"
+        - listitem [ref=e146]:
+          - link "Root/Admin Password" [ref=e147]:
+            - /url: "#rootpwdtab"
+        - listitem [ref=e148]:
+          - link "Network" [ref=e149] [cursor=pointer]:
+            - /url: "#networktab"
+        - listitem [ref=e150]:
+          - link "API" [ref=e151] [cursor=pointer]:
+            - /url: "#apitab"
+        - listitem [ref=e152]:
+          - link "Statistics" [ref=e153] [cursor=pointer]:
+            - /url: "#statisticstab"
+      - button "Change" [ref=e195] [cursor=pointer]

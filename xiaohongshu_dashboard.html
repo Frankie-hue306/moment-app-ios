@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📱 一键发布中心</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'PingFang SC','Microsoft YaHei',sans-serif;
+  background: linear-gradient(135deg, #ff6b6b, #f093fb);
+  min-height: 100vh; padding: 20px;
+}
+.container { max-width: 800px; margin: 0 auto; }
+h1 { color: #fff; text-align: center; font-size: 28px; margin: 20px 0 10px; }
+.subtitle { color: rgba(255,255,255,0.8); text-align: center; margin-bottom: 24px; font-size: 14px; }
+
+.note-card {
+  background: #fff; border-radius: 20px; padding: 24px;
+  margin-bottom: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+.note-card h2 { font-size: 18px; margin-bottom: 6px; }
+.note-card .product { color: #ee5a24; font-size: 13px; margin-bottom: 16px; }
+.note-card .section-label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin: 14px 0 6px; font-weight: 700; }
+
+/* 图片区 */
+.img-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0; }
+.img-slot {
+  aspect-ratio: 3/4; background: #f5f5f5; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #bbb; text-align: center; padding: 8px;
+  border: 1px dashed #ddd; cursor: pointer; position: relative;
+  overflow: hidden; transition: border-color 0.3s;
+}
+.img-slot.has-img { border: 2px solid #27ae60; }
+.img-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+.img-slot .plus { font-size: 28px; color: #ccc; }
+.img-slot .label { position: absolute; bottom: 4px; font-size: 10px; color: #999; }
+
+/* 获取图片按钮 */
+.img-source-bar {
+  display: flex; gap: 8px; margin: 10px 0;
+  flex-wrap: wrap;
+}
+.img-source-bar button {
+  padding: 6px 14px; border-radius: 16px; border: 1px solid #ee5a24;
+  background: #fff; color: #ee5a24; font-size: 12px; cursor: pointer;
+}
+.img-source-bar button:hover { background: #fff5f0; }
+.img-source-bar button.active { background: #ee5a24; color: #fff; }
+
+/* 文案区 */
+.copy-box {
+  background: #fafafa; border-radius: 12px; padding: 14px;
+  font-size: 14px; line-height: 1.8; margin: 10px 0;
+  max-height: 120px; overflow-y: auto; position: relative;
+  border: 1px solid #eee;
+}
+.copy-box.title-box { font-weight: 700; font-size: 16px; max-height: 60px; }
+.copy-box.tags-box { color: #3498db; font-size: 13px; max-height: 50px; }
+
+.copy-btn {
+  padding: 8px 16px; background: #ee5a24; color: #fff;
+  border: none; border-radius: 10px; cursor: pointer;
+  font-size: 12px; font-weight: 600; margin: 4px;
+}
+.copy-btn.copied { background: #27ae60; }
+
+/* 一键发布按钮 */
+.publish-btn {
+  width: 100%; padding: 16px;
+  background: linear-gradient(135deg, #ee5a24, #f093fb);
+  color: #fff; border: none; border-radius: 16px;
+  font-size: 18px; font-weight: 900; cursor: pointer;
+  margin: 20px 0; box-shadow: 0 6px 24px rgba(238,90,36,0.3);
+  transition: transform 0.2s;
+}
+.publish-btn:hover { transform: scale(1.02); }
+.publish-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* 步骤条 */
+.steps { display: flex; gap: 8px; margin: 10px 0; }
+.step {
+  flex: 1; text-align: center; padding: 8px;
+  border-radius: 10px; font-size: 11px; font-weight: 600;
+  background: #f0f0f0; color: #999;
+}
+.step.done { background: #d4edda; color: #155724; }
+.step.current { background: #fff3cd; color: #856404; }
+
+/* 提示 */
+.tip {
+  background: #fff3cd; border-radius: 10px; padding: 10px 14px;
+  font-size: 12px; color: #856404; margin: 10px 0;
+}
+
+.how-to-get-box {
+  background: #e8f4fd; border-radius: 12px; padding: 16px; margin: 12px 0;
+  border-left: 3px solid #3498db;
+}
+.how-to-get-box h4 { font-size: 13px; color: #2980b9; margin-bottom: 8px; }
+.how-to-get-box ol { font-size: 12px; color: #555; padding-left: 20px; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📱 一键发布中心</h1>
+  <p class="subtitle">图·标题·正文·标签 全部打包好 → 复制粘贴发布</p>
+
+  <!-- 笔记1 -->
+  <div class="note-card" id="note1">
+    <h2>📝 笔记 1：冰箱磁吸置物架</h2>
+    <p class="product">🛒 商品：免打孔冰箱侧边磁吸置物架 | 定价 ¥29.9 | 利润 ~66%</p>
+
+    <!-- 步骤条 -->
+    <div class="steps">
+      <div class="step done" id="s1_1">✅ 图已备</div>
+      <div class="step" id="s1_2">📋 复制文案</div>
+      <div class="step" id="s1_3">📱 去小红书粘贴</div>
+      <div class="step" id="s1_4">🚀 发布</div>
+    </div>
+
+    <!-- 图片区 -->
+    <div class="section-label">🖼️ 封面+配图（5张）</div>
+    <div class="how-to-get-box">
+      <h4>📸 30秒获取这5张图：</h4>
+      <ol>
+        <li>打开手机<b>小红书App</b></li>
+        <li>搜索<b>"冰箱磁吸置物架 收纳"</b></li>
+        <li>点<b>"图文"</b>筛选 → 找点赞高的笔记</li>
+        <li>截图保存<b>5张最清楚的买家秀/效果图</b></li>
+        <li>裁掉水印 → 回到这里点"图已到位"</li>
+      </ol>
+      <p style="font-size:11px;color:#999;margin-top:6px">💡 攻略：第1张用「使用前vs使用后」对比图点击率最高，第2-3张细节图，第4-5张场景图</p>
+    </div>
+    <button class="copy-btn" onclick="markDone('s1_1')" style="margin-top:6px">✅ 图已到位</button>
+
+    <!-- 标题 -->
+    <div class="section-label">📌 标题</div>
+    <div class="copy-box title-box" id="t1">租房党哭了😭这个小东西让厨房多出半平米</div>
+    <button class="copy-btn" onclick="copyText('t1', this)">📋 复制标题</button>
+
+    <!-- 正文 -->
+    <div class="section-label">📝 正文</div>
+    <div class="copy-box" id="b1">谁懂！租房厨房台面小到切菜得侧着身子😤调料瓶堆得乱七八糟找个盐都要翻半天
+
+直到被种草了这个冰箱侧边磁吸架——免打孔直接啪一下吸在冰箱侧面！酱油醋盐糖全塞进去台面瞬间空出一大截
+
+铁艺材质很结实我放了5瓶都没掉 租房党学生党闭眼冲🚀
+
+🛒左下角链接直接拍</div>
+    <button class="copy-btn" onclick="copyText('b1', this)">📋 复制正文</button>
+
+    <!-- 标签 -->
+    <div class="section-label">🏷️ 标签</div>
+    <div class="copy-box tags-box" id="tags1">#厨房收纳 #租房好物 #收纳神器 #独居女孩 #好物分享 #小户型收纳</div>
+    <button class="copy-btn" onclick="copyText('tags1', this)">📋 复制标签</button>
+
+    <!-- 一键全部复制 -->
+    <button class="publish-btn" onclick="copyAll('t1','b1','tags1',this)">
+      🚀 一键复制全部（标题+正文+标签）
+    </button>
+  </div>
+
+  <!-- 笔记2 -->
+  <div class="note-card" id="note2">
+    <h2>📝 笔记 2：软硅藻泥吸水垫</h2>
+    <p class="product">🛒 商品：可爱猫猫硅藻泥吸水地垫 | 定价 ¥29.9 | 利润 ~80%</p>
+
+    <div class="how-to-get-box">
+      <h4>📸 获取图片：</h4>
+      <ol>
+        <li>小红书搜<b>"硅藻泥吸水垫 猫"</b></li>
+        <li>找图文笔记 截图5张买家秀</li>
+        <li>第1张用「湿脚踩上去对比」动图效果最佳</li>
+      </ol>
+    </div>
+
+    <div class="section-label">📌 标题</div>
+    <div class="copy-box title-box" id="t2">浴室门口再也不湿漉漉了😭真早该买</div>
+    <button class="copy-btn" onclick="copyText('t2', this)">📋 复制标题</button>
+
+    <div class="section-label">📝 正文</div>
+    <div class="copy-box" id="b2">每次洗完澡踩到门口那个湿漉漉的布垫子就想洗脚…终于换了硅藻泥的！
+
+脚踩上去三秒就干了，比布垫好用一百倍！而且这个猫猫造型太可爱了吧😍租房党直接铺卫生间门口，颜值+实用双杀
+
+才一杯奶茶钱💰左下角冲</div>
+    <button class="copy-btn" onclick="copyText('b2', this)">📋 复制正文</button>
+
+    <div class="section-label">🏷️ 标签</div>
+    <div class="copy-box tags-box" id="tags2">#卫生间好物 #浴室收纳 #吸水地垫 #租房改造 #独居好物</div>
+    <button class="copy-btn" onclick="copyText('tags2', this)">📋 复制标签</button>
+
+    <button class="publish-btn" onclick="copyAll('t2','b2','tags2',this)">
+      🚀 一键复制全部（标题+正文+标签）
+    </button>
+  </div>
+
+  <!-- 笔记3 -->
+  <div class="note-card" id="note3">
+    <h2>📝 笔记 3：桌面亚克力收纳盒</h2>
+    <p class="product">🛒 商品：INS风透明亚克力化妆收纳盒 | 定价 ¥25.9 | 利润 ~69%</p>
+
+    <div class="how-to-get-box">
+      <h4>📸 获取图片：</h4>
+      <ol>
+        <li>小红书搜<b>"亚克力收纳盒 化妆台"</b></li>
+        <li>截图「梳妆台Before/After」对比图效果最好</li>
+        <li>5张图：1对比+2细节+2场景</li>
+      </ol>
+    </div>
+
+    <div class="section-label">📌 标题</div>
+    <div class="copy-box title-box" id="t3">梳妆台乱成垃圾场的进😭10块钱解决</div>
+    <button class="copy-btn" onclick="copyText('t3', this)">📋 复制标题</button>
+
+    <div class="section-label">📝 正文</div>
+    <div class="copy-box" id="b3">口红散落在各个角落的痛谁懂？每天找只唇釉要先翻三分钟🙄
+
+这个透明亚克力收纳盒一眼看见所有化妆品！分格设计口红粉底眼影各回各家，桌面终于能看见木头了😂
+
+高颜值+便宜+实用=钱包和梳妆台同时得救了💸左下角直接拍</div>
+    <button class="copy-btn" onclick="copyText('b3', this)">📋 复制正文</button>
+
+    <div class="section-label">🏷️ 标签</div>
+    <div class="copy-box tags-box" id="tags3">#桌面收纳 #梳妆台改造 #化妆台收纳 #少女心好物 #百元好物</div>
+    <button class="copy-btn" onclick="copyText('tags3', this)">📋 复制标签</button>
+
+    <button class="publish-btn" onclick="copyAll('t3','b3','tags3',this)">
+      🚀 一键复制全部（标题+正文+标签）
+    </button>
+  </div>
+
+  <div class="tip">
+    ⚠️ <b>发布步骤</b>：小红书App → 点+ → 图文 → 上传5张图 → 粘贴标题+正文+标签 → 关联商品 → 发布<br>
+    每天发 3 篇，间隔 6 小时（12:00 / 18:00 / 21:00），坚持 7 天必出结果
+  </div>
+</div>
+
+<script>
+function copyText(id, btn) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    btn.textContent = '✅ 已复制';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 复制'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyAll(tId, bId, tagsId, btn) {
+  const title = document.getElementById(tId).textContent.trim();
+  const body = document.getElementById(bId).textContent.trim();
+  const tags = document.getElementById(tagsId).textContent.trim();
+  const all = title + '\n\n' + body + '\n\n' + tags;
+  navigator.clipboard.writeText(all).then(() => {
+    btn.textContent = '✅ 全部已复制！去小红书粘贴';
+    setTimeout(() => { btn.textContent = '🚀 一键复制全部（标题+正文+标签）'; }, 3000);
+  });
+}
+
+function markDone(id) {
+  const el = document.getElementById(id);
+  el.textContent = '✅ 图已到位';
+  el.classList.add('done');
+}
+</script>
+</body>
+</html>

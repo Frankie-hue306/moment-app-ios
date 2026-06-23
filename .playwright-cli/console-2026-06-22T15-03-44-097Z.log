@@ -1,0 +1,2 @@
+[    2301ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://nerdvm.racknerd.com/login.php:0
+[   10737ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://nerdvm.racknerd.com/control.php?_v=u2b484p284e414y25434w2o2:0

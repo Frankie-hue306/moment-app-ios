@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>此刻 MOMENT</title></head>
+<body style="text-align:center;padding-top:100px;font-family:-apple-system">
+<h2>🔄 正在跳转到此刻...</h2>
+<script>
+// Fetch current tunnel URL from a simple JSON endpoint
+fetch('https://frankie-hue306.github.io/moment-app-ios/tunnel.json')
+  .then(r => r.json())
+  .then(d => { window.location.href = d.url; })
+  .catch(() => { document.body.innerHTML = '<h2>❌ 服务暂时不可用</h2><p>请稍后再试</p>'; });
+</script>
+</body></html>

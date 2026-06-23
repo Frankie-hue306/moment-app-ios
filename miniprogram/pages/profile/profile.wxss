@@ -1,0 +1,6 @@
+.pg{min-height:100vh;background:#FFF}
+.nav{padding:0 24rpx}.nav-t{font-size:40rpx;font-weight:700;letter-spacing:-.5rpx;line-height:88rpx}
+.card{margin:24rpx;padding:40rpx;border-radius:var(--r);display:flex;flex-direction:column;align-items:center;gap:24rpx;background:#FBF8F6}
+.card-name{font-size:32rpx;font-weight:600}.stats{display:flex;gap:64rpx}.st{display:flex;flex-direction:column;align-items:center;gap:4rpx}.st-n{font-size:40rpx;font-weight:700;color:var(--accent)}.st-l{font-size:22rpx;color:var(--t3)}
+.menus{margin:0 24rpx;border-radius:var(--r);overflow:hidden}.m{display:flex;align-items:center;justify-content:space-between;padding:22rpx 20rpx;font-size:28rpx;min-height:88rpx}.m:not(:last-child){border-bottom:.5px solid var(--sep)}.m:active{background:#FBF8F6}.ma{font-size:32rpx;color:var(--t3)}
+.bot{height:calc(98rpx + env(safe-area-inset-bottom,0rpx))}

@@ -1,0 +1,16 @@
+- generic [ref=e2]:
+  - generic [ref=e5]:
+    - generic [ref=e20]: Invalid Username or Password
+    - heading "Login" [level=2] [ref=e6]
+    - textbox "Username" [ref=e9]: vmuser344896
+    - textbox "Password" [ref=e12]: Zhaopei123789@
+    - button "Login" [active] [ref=e13] [cursor=pointer]
+  - link "Forgot Password?" [ref=e15] [cursor=pointer]:
+    - /url: lostpassword.php
+  - combobox [ref=e17] [cursor=pointer]:
+    - option "English" [selected]
+    - option "German"
+    - option "Persian"
+    - option "Polish"
+    - option "Portugues-Brasil"
+    - option "Spanish"

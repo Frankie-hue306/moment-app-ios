@@ -1,0 +1,199 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - link "VPS Control" [ref=e5] [cursor=pointer]:
+      - /url: home.php
+    - generic:
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link "Home" [ref=e8] [cursor=pointer]:
+            - /url: home.php
+            - text: Home
+        - listitem [ref=e10]:
+          - link "Virtual Servers" [ref=e11] [cursor=pointer]:
+            - /url: home.php
+            - text: Virtual Servers
+        - listitem [ref=e13]:
+          - link "My Account" [ref=e14] [cursor=pointer]:
+            - /url: account.php
+            - text: My Account
+      - button "Frankie 赵" [ref=e18] [cursor=pointer]: Frankie 赵
+  - generic [ref=e20]:
+    - heading "Reinstall racknerd-c859c77 (107.172.157.172)" [level=3] [ref=e22]
+    - generic [ref=e23]:
+      - button "×" [ref=e24] [cursor=pointer]
+      - text: Installation has been started. Please allow up to 10 minutes for it to complete
+      - strong [ref=e25]: "Root/Admin Password:"
+      - text: 0dFEuy4Rk1g7XqT97A
+    - table [ref=e27]:
+      - rowgroup [ref=e28]:
+        - row "AlmaLinux 8 64 Bit AlmaLinux OS 8 64 Bit" [ref=e29]:
+          - cell [ref=e30]:
+            - img [ref=e31]
+          - cell "AlmaLinux 8 64 Bit AlmaLinux OS 8 64 Bit" [ref=e32]:
+            - strong [ref=e33]: AlmaLinux 8 64 Bit
+            - text: AlmaLinux OS 8 64 Bit
+          - cell [ref=e34]:
+            - radio [checked] [ref=e35] [cursor=pointer]
+        - 'row "AlmaLinux 9 64 Bit AlmaLinux OS 9 64 Bit Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html" [ref=e36]':
+          - cell [ref=e37]:
+            - img [ref=e38]
+          - 'cell "AlmaLinux 9 64 Bit AlmaLinux OS 9 64 Bit Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html" [ref=e39]':
+            - strong [ref=e40]: AlmaLinux 9 64 Bit
+            - text: "AlmaLinux OS 9 64 Bit Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html"
+          - cell [ref=e41]:
+            - radio [ref=e42] [cursor=pointer]
+        - row "CentOS 7 64 Bit CentOS 7 64 Bit (please note that CentOS 7 is End of Life, we recommend using AlmaLinux 8 instead)" [ref=e43]:
+          - cell [ref=e44]:
+            - img [ref=e45]
+          - cell "CentOS 7 64 Bit CentOS 7 64 Bit (please note that CentOS 7 is End of Life, we recommend using AlmaLinux 8 instead)" [ref=e46]:
+            - strong [ref=e47]: CentOS 7 64 Bit
+            - text: CentOS 7 64 Bit (please note that CentOS 7 is End of Life, we recommend using AlmaLinux 8 instead)
+          - cell [ref=e48]:
+            - radio [ref=e49] [cursor=pointer]
+        - row "CentOS 8 64 Bit CentOS 8 64 Bit (please note that CentOS 8 is End of Life in Dec 2021, we recommend using AlmaLinux OS 8 instead, which is an alternative RHEL fork)" [ref=e50]:
+          - cell [ref=e51]:
+            - img [ref=e52]
+          - cell "CentOS 8 64 Bit CentOS 8 64 Bit (please note that CentOS 8 is End of Life in Dec 2021, we recommend using AlmaLinux OS 8 instead, which is an alternative RHEL fork)" [ref=e53]:
+            - strong [ref=e54]: CentOS 8 64 Bit
+            - text: CentOS 8 64 Bit (please note that CentOS 8 is End of Life in Dec 2021, we recommend using AlmaLinux OS 8 instead, which is an alternative RHEL fork)
+          - cell [ref=e55]:
+            - radio [ref=e56] [cursor=pointer]
+        - 'row "CentOS Stream 9 CentOS Stream 9 64 Bit Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html" [ref=e57]':
+          - cell [ref=e58]:
+            - img [ref=e59]
+          - 'cell "CentOS Stream 9 CentOS Stream 9 64 Bit Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html" [ref=e60]':
+            - strong [ref=e61]: CentOS Stream 9
+            - text: "CentOS Stream 9 64 Bit Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html"
+          - cell [ref=e62]:
+            - radio [ref=e63] [cursor=pointer]
+        - row "Debian 10 64 Bit Debian 10 64 bit" [ref=e64]:
+          - cell [ref=e65]:
+            - img [ref=e66]
+          - cell "Debian 10 64 Bit Debian 10 64 bit" [ref=e67]:
+            - strong [ref=e68]: Debian 10 64 Bit
+            - text: Debian 10 64 bit
+          - cell [ref=e69]:
+            - radio [ref=e70] [cursor=pointer]
+        - 'row "Debian 11 64 bit Debian 11 64 bit Recommended Specs: Minimum 2 GB of RAM" [ref=e71]':
+          - cell [ref=e72]:
+            - img [ref=e73]
+          - 'cell "Debian 11 64 bit Debian 11 64 bit Recommended Specs: Minimum 2 GB of RAM" [ref=e74]':
+            - strong [ref=e75]: Debian 11 64 bit
+            - text: "Debian 11 64 bit Recommended Specs: Minimum 2 GB of RAM"
+          - cell [ref=e76]:
+            - radio [ref=e77] [cursor=pointer]
+        - 'row "Debian 12 64 bit Debian 12 64 bit Recommended Specs: Minimum 2 GB of RAM" [ref=e78]':
+          - cell [ref=e79]:
+            - img [ref=e80]
+          - 'cell "Debian 12 64 bit Debian 12 64 bit Recommended Specs: Minimum 2 GB of RAM" [ref=e81]':
+            - strong [ref=e82]: Debian 12 64 bit
+            - text: "Debian 12 64 bit Recommended Specs: Minimum 2 GB of RAM"
+          - cell [ref=e83]:
+            - radio [ref=e84] [cursor=pointer]
+        - row "Debian 13 64 Bit Debian 13 64 Bit" [ref=e85]:
+          - cell [ref=e86]:
+            - img [ref=e87]
+          - cell "Debian 13 64 Bit Debian 13 64 Bit" [ref=e88]:
+            - strong [ref=e89]: Debian 13 64 Bit
+            - text: Debian 13 64 Bit
+          - cell [ref=e90]:
+            - radio [ref=e91] [cursor=pointer]
+        - row "Debian 9 64 Bit Debian 9 64 Bit" [ref=e92]:
+          - cell [ref=e93]:
+            - img [ref=e94]
+          - cell "Debian 9 64 Bit Debian 9 64 Bit" [ref=e95]:
+            - strong [ref=e96]: Debian 9 64 Bit
+            - text: Debian 9 64 Bit
+          - cell [ref=e97]:
+            - radio [ref=e98] [cursor=pointer]
+        - row "Fedora 27 64 Bit Fedora 27 64 Bit" [ref=e99]:
+          - cell [ref=e100]:
+            - img [ref=e101]
+          - cell "Fedora 27 64 Bit Fedora 27 64 Bit" [ref=e102]:
+            - strong [ref=e103]: Fedora 27 64 Bit
+            - text: Fedora 27 64 Bit
+          - cell [ref=e104]:
+            - radio [ref=e105] [cursor=pointer]
+        - row "Fedora 29 64 Bit Fedora 29 64 Bit" [ref=e106]:
+          - cell [ref=e107]:
+            - img [ref=e108]
+          - cell "Fedora 29 64 Bit Fedora 29 64 Bit" [ref=e109]:
+            - strong [ref=e110]: Fedora 29 64 Bit
+            - text: Fedora 29 64 Bit
+          - cell [ref=e111]:
+            - radio [ref=e112] [cursor=pointer]
+        - row "Rocky Linux OS 8 Rocky Linux 8" [ref=e113]:
+          - cell [ref=e114]:
+            - img [ref=e115]
+          - cell "Rocky Linux OS 8 Rocky Linux 8" [ref=e116]:
+            - strong [ref=e117]: Rocky Linux OS 8
+            - text: Rocky Linux 8
+          - cell [ref=e118]:
+            - radio [ref=e119] [cursor=pointer]
+        - 'row "Rocky Linux OS 9 Rocky Linux OS 9 Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html" [ref=e120]':
+          - cell [ref=e121]:
+            - img [ref=e122]
+          - 'cell "Rocky Linux OS 9 Rocky Linux OS 9 Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html" [ref=e123]':
+            - strong [ref=e124]: Rocky Linux OS 9
+            - text: "Rocky Linux OS 9 Note: please be aware of this before using this OS template: https://my.racknerd.com/index.php?rp=/knowledgebase/58/yum-update-or-dnf-update-not-working-in-AlmaLinux-9-or-RockyLinux-9-or-CentOS-Stream-9.html"
+          - cell [ref=e125]:
+            - radio [ref=e126] [cursor=pointer]
+        - row "Ubuntu 14.04 64 Bit Ubuntu 14.04 64 Bit (please note that Ubuntu 14.04 is End of Life, we recommend using Ubuntu 20.04)" [ref=e127]:
+          - cell [ref=e128]:
+            - img [ref=e129]
+          - cell "Ubuntu 14.04 64 Bit Ubuntu 14.04 64 Bit (please note that Ubuntu 14.04 is End of Life, we recommend using Ubuntu 20.04)" [ref=e130]:
+            - strong [ref=e131]: Ubuntu 14.04 64 Bit
+            - text: Ubuntu 14.04 64 Bit (please note that Ubuntu 14.04 is End of Life, we recommend using Ubuntu 20.04)
+          - cell [ref=e132]:
+            - radio [ref=e133] [cursor=pointer]
+        - row "Ubuntu 16.04 64 Bit Ubuntu 16.04 64 Bit (please note that Ubuntu 16.04 is End of Life, we recommend using Ubuntu 20.04)" [ref=e134]:
+          - cell [ref=e135]:
+            - img [ref=e136]
+          - cell "Ubuntu 16.04 64 Bit Ubuntu 16.04 64 Bit (please note that Ubuntu 16.04 is End of Life, we recommend using Ubuntu 20.04)" [ref=e137]:
+            - strong [ref=e138]: Ubuntu 16.04 64 Bit
+            - text: Ubuntu 16.04 64 Bit (please note that Ubuntu 16.04 is End of Life, we recommend using Ubuntu 20.04)
+          - cell [ref=e139]:
+            - radio [ref=e140] [cursor=pointer]
+        - row "Ubuntu 18.04 64 Bit Ubuntu 18.04 64 Bit" [ref=e141]:
+          - cell [ref=e142]:
+            - img [ref=e143]
+          - cell "Ubuntu 18.04 64 Bit Ubuntu 18.04 64 Bit" [ref=e144]:
+            - strong [ref=e145]: Ubuntu 18.04 64 Bit
+            - text: Ubuntu 18.04 64 Bit
+          - cell [ref=e146]:
+            - radio [ref=e147] [cursor=pointer]
+        - row "Ubuntu 18.04 with Docker Ubuntu 18.04 with Docker Preinstalled" [ref=e148]:
+          - cell [ref=e149]:
+            - img [ref=e150]
+          - cell "Ubuntu 18.04 with Docker Ubuntu 18.04 with Docker Preinstalled" [ref=e151]:
+            - strong [ref=e152]: Ubuntu 18.04 with Docker
+            - text: Ubuntu 18.04 with Docker Preinstalled
+          - cell [ref=e153]:
+            - radio [ref=e154] [cursor=pointer]
+        - row "Ubuntu 20.04 64 Bit Ubuntu 20.04 64 Bit" [ref=e155]:
+          - cell [ref=e156]:
+            - img [ref=e157]
+          - cell "Ubuntu 20.04 64 Bit Ubuntu 20.04 64 Bit" [ref=e158]:
+            - strong [ref=e159]: Ubuntu 20.04 64 Bit
+            - text: Ubuntu 20.04 64 Bit
+          - cell [ref=e160]:
+            - radio [ref=e161] [cursor=pointer]
+        - 'row "Ubuntu 22.04 64 Bit Ubuntu 22.04 64 Bit Recommended Specs: Minimum 1 GB of RAM" [ref=e162]':
+          - cell [ref=e163]:
+            - img [ref=e164]
+          - 'cell "Ubuntu 22.04 64 Bit Ubuntu 22.04 64 Bit Recommended Specs: Minimum 1 GB of RAM" [ref=e165]':
+            - strong [ref=e166]: Ubuntu 22.04 64 Bit
+            - text: "Ubuntu 22.04 64 Bit Recommended Specs: Minimum 1 GB of RAM"
+          - cell [ref=e167]:
+            - radio [ref=e168] [cursor=pointer]
+        - row "Ubuntu 24.04 64 Bit Ubuntu 24.04 64 Bit" [ref=e169]:
+          - cell [ref=e170]:
+            - img [ref=e171]
+          - cell "Ubuntu 24.04 64 Bit Ubuntu 24.04 64 Bit" [ref=e172]:
+            - strong [ref=e173]: Ubuntu 24.04 64 Bit
+            - text: Ubuntu 24.04 64 Bit
+          - cell [ref=e174]:
+            - radio [ref=e175] [cursor=pointer]
+    - generic [ref=e176]:
+      - button "Back" [ref=e177] [cursor=pointer]
+      - button "Reinstall" [ref=e178] [cursor=pointer]

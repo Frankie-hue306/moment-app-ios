@@ -1,0 +1,289 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4] [cursor=pointer]: 登录同步数据 →
+    - generic [ref=e6] [cursor=pointer]:
+      - generic [ref=e7]: 📁 我的档案
+      - generic [ref=e8]: ›
+    - generic [ref=e9] [cursor=pointer]:
+      - generic [ref=e10]: ✨ 时光碎片
+      - generic [ref=e11]: ›
+    - generic [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: 📸 每日精选推送
+      - generic [ref=e14]: 已开启
+    - generic [ref=e16]:
+      - generic [ref=e17] [cursor=pointer]: 退出登录
+      - generic [ref=e18] [cursor=pointer]: 注销账号
+  - generic [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]: 设置
+      - generic [ref=e22] [cursor=pointer]: ✕
+    - generic [ref=e23]:
+      - generic [ref=e24]: 通知
+      - generic [ref=e25] [cursor=pointer]:
+        - generic [ref=e26]: 🔔 通知总开关
+        - generic [ref=e27]: 已关闭
+    - generic [ref=e28]:
+      - generic [ref=e29]: 隐私与安全
+      - generic [ref=e30] [cursor=pointer]:
+        - generic [ref=e31]: 📍 位置权限
+        - generic [ref=e32]: ›
+      - generic [ref=e33] [cursor=pointer]:
+        - generic [ref=e34]: 🌐 照片默认公开
+        - generic [ref=e35]: 已开启
+    - generic [ref=e36]:
+      - generic [ref=e37]: 通用
+      - generic [ref=e38] [cursor=pointer]:
+        - generic [ref=e39]: 🌓 深色模式
+        - generic [ref=e40]: 跟随系统
+      - generic [ref=e41] [cursor=pointer]:
+        - generic [ref=e42]: 📶 图片加载策略
+        - generic [ref=e43]: 省流量
+      - generic [ref=e44] [cursor=pointer]:
+        - generic [ref=e45]: ✨ 沉浸特效
+        - generic [ref=e46]: 已开启
+      - generic [ref=e47] [cursor=pointer]:
+        - generic [ref=e48]: ⬛ 纯黑背景模式
+        - generic [ref=e49]: 已关闭
+      - generic [ref=e50] [cursor=pointer]:
+        - generic [ref=e51]: 🗑️ 清除缓存
+        - generic [ref=e52]: ›
+    - generic [ref=e53]:
+      - generic [ref=e54]: 支持
+      - generic [ref=e55] [cursor=pointer]:
+        - generic [ref=e56]: ❓ 帮助与反馈
+        - generic [ref=e57]: ›
+      - generic [ref=e58] [cursor=pointer]:
+        - generic [ref=e59]: ℹ️ 关于我们
+        - generic [ref=e60]: ›
+      - generic [ref=e61] [cursor=pointer]:
+        - generic [ref=e62]: 📄 用户协议
+        - generic [ref=e63]: ›
+      - generic [ref=e64] [cursor=pointer]:
+        - generic [ref=e65]: 🔒 隐私政策
+        - generic [ref=e66]: ›
+    - generic [ref=e67]:
+      - generic [ref=e68]: 危险操作
+      - generic [ref=e70] [cursor=pointer]: 清空全部记录
+  - generic [ref=e71]:
+    - generic [ref=e72]: 深色模式
+    - generic [ref=e73] [cursor=pointer]: 跟随系统
+    - generic [ref=e74] [cursor=pointer]: 浅色模式
+    - generic [ref=e75] [cursor=pointer]: 深色模式
+    - button "取消" [ref=e76] [cursor=pointer]
+  - generic [ref=e77]:
+    - generic [ref=e78]: 举报内容
+    - generic [ref=e79] [cursor=pointer]: 色情低俗
+    - generic [ref=e80] [cursor=pointer]: 暴力血腥
+    - generic [ref=e81] [cursor=pointer]: 骚扰辱骂
+    - generic [ref=e82] [cursor=pointer]: 垃圾广告
+    - generic [ref=e83] [cursor=pointer]: 隐私侵犯
+    - generic [ref=e84] [cursor=pointer]: 其他
+    - button "取消" [ref=e85] [cursor=pointer]
+  - generic [ref=e86]:
+    - generic [ref=e87]: 显示模式
+    - generic [ref=e88] [cursor=pointer]: 瀑布流
+    - generic [ref=e89] [cursor=pointer]: 沉浸
+    - button "取消" [ref=e90] [cursor=pointer]
+  - generic [ref=e91]:
+    - banner [ref=e92]:
+      - button "☰" [ref=e93] [cursor=pointer]
+      - generic [ref=e94]: 此刻
+      - button "⚙️" [ref=e95] [cursor=pointer]
+    - generic [ref=e123]:
+      - generic [ref=e124]:
+        - generic [ref=e126]: 01:34
+        - generic [ref=e128]: 世界正在记录
+      - generic [ref=e130]:
+        - generic [ref=e131] [cursor=pointer]:
+          - img [ref=e132]
+          - generic [ref=e133]:
+            - generic [ref=e134]: 🍎00200
+            - generic [ref=e135]: 4小时前
+        - generic [ref=e136] [cursor=pointer]:
+          - img [ref=e137]
+          - generic [ref=e138]:
+            - generic [ref=e139]: 🍍00389
+            - generic [ref=e140]: 4天前
+        - generic [ref=e141] [cursor=pointer]:
+          - img [ref=e142]
+          - generic [ref=e143]:
+            - generic [ref=e144]: 🐰00412
+            - generic [ref=e145]: 6天前
+        - generic [ref=e146] [cursor=pointer]:
+          - img [ref=e147]
+          - generic [ref=e148]:
+            - generic [ref=e149]: 🍍00389
+            - generic [ref=e150]: 6天前
+        - generic [ref=e151] [cursor=pointer]:
+          - img [ref=e152]
+          - generic [ref=e153]:
+            - generic [ref=e154]: 🍍00389
+            - generic [ref=e155]: 5天前
+        - generic [ref=e156] [cursor=pointer]:
+          - img [ref=e157]
+          - generic [ref=e158]:
+            - generic [ref=e159]: 🐱00250
+            - generic [ref=e160]: 4小时前
+        - generic [ref=e161] [cursor=pointer]:
+          - img [ref=e162]
+          - generic [ref=e163]:
+            - generic [ref=e164]: 🍎00200
+            - generic [ref=e165]: 4小时前
+        - generic [ref=e166] [cursor=pointer]:
+          - img [ref=e167]
+          - generic [ref=e168]:
+            - generic [ref=e169]: 🍍00389
+            - generic [ref=e170]: 4天前
+        - generic [ref=e171] [cursor=pointer]:
+          - img [ref=e172]
+          - generic [ref=e173]:
+            - generic [ref=e174]: 🐰00412
+            - generic [ref=e175]: 6天前
+        - generic [ref=e176] [cursor=pointer]:
+          - img [ref=e177]
+          - generic [ref=e178]:
+            - generic [ref=e179]: 🍍00389
+            - generic [ref=e180]: 6天前
+        - generic [ref=e181] [cursor=pointer]:
+          - img [ref=e182]
+          - generic [ref=e183]:
+            - generic [ref=e184]: 🍍00389
+            - generic [ref=e185]: 5天前
+        - generic [ref=e186] [cursor=pointer]:
+          - img [ref=e187]
+          - generic [ref=e188]:
+            - generic [ref=e189]: 🐱00250
+            - generic [ref=e190]: 4小时前
+      - generic [ref=e192]:
+        - generic [ref=e193] [cursor=pointer]:
+          - img [ref=e194]
+          - generic [ref=e195]:
+            - generic [ref=e196]: 🐱00250
+            - generic [ref=e197]: 4小时前
+        - generic [ref=e198] [cursor=pointer]:
+          - img [ref=e199]
+          - generic [ref=e200]:
+            - generic [ref=e201]: 🍍00389
+            - generic [ref=e202]: 5天前
+        - generic [ref=e203] [cursor=pointer]:
+          - img [ref=e204]
+          - generic [ref=e205]:
+            - generic [ref=e206]: 🍍00389
+            - generic [ref=e207]: 6天前
+        - generic [ref=e208] [cursor=pointer]:
+          - img [ref=e209]
+          - generic [ref=e210]:
+            - generic [ref=e211]: 🐰00412
+            - generic [ref=e212]: 6天前
+        - generic [ref=e213] [cursor=pointer]:
+          - img [ref=e214]
+          - generic [ref=e215]:
+            - generic [ref=e216]: 🍍00389
+            - generic [ref=e217]: 4天前
+        - generic [ref=e218] [cursor=pointer]:
+          - img [ref=e219]
+          - generic [ref=e220]:
+            - generic [ref=e221]: 🍎00200
+            - generic [ref=e222]: 4小时前
+        - generic [ref=e223] [cursor=pointer]:
+          - img [ref=e224]
+          - generic [ref=e225]:
+            - generic [ref=e226]: 🐱00250
+            - generic [ref=e227]: 4小时前
+        - generic [ref=e228] [cursor=pointer]:
+          - img [ref=e229]
+          - generic [ref=e230]:
+            - generic [ref=e231]: 🍍00389
+            - generic [ref=e232]: 5天前
+        - generic [ref=e233] [cursor=pointer]:
+          - img [ref=e234]
+          - generic [ref=e235]:
+            - generic [ref=e236]: 🍍00389
+            - generic [ref=e237]: 6天前
+        - generic [ref=e238] [cursor=pointer]:
+          - img [ref=e239]
+          - generic [ref=e240]:
+            - generic [ref=e241]: 🐰00412
+            - generic [ref=e242]: 6天前
+        - generic [ref=e243] [cursor=pointer]:
+          - img [ref=e244]
+          - generic [ref=e245]:
+            - generic [ref=e246]: 🍍00389
+            - generic [ref=e247]: 4天前
+        - generic [ref=e248] [cursor=pointer]:
+          - img [ref=e249]
+          - generic [ref=e250]:
+            - generic [ref=e251]: 🍎00200
+            - generic [ref=e252]: 4小时前
+      - generic [ref=e254]:
+        - generic [ref=e255] [cursor=pointer]:
+          - img [ref=e256]
+          - generic [ref=e257]:
+            - generic [ref=e258]: 🍍00389
+            - generic [ref=e259]: 4天前
+        - generic [ref=e260] [cursor=pointer]:
+          - img [ref=e261]
+          - generic [ref=e262]:
+            - generic [ref=e263]: 🍍00389
+            - generic [ref=e264]: 6天前
+        - generic [ref=e265] [cursor=pointer]:
+          - img [ref=e266]
+          - generic [ref=e267]:
+            - generic [ref=e268]: 🍍00389
+            - generic [ref=e269]: 5天前
+        - generic [ref=e270] [cursor=pointer]:
+          - img [ref=e271]
+          - generic [ref=e272]:
+            - generic [ref=e273]: 🍎00200
+            - generic [ref=e274]: 4小时前
+        - generic [ref=e275] [cursor=pointer]:
+          - img [ref=e276]
+          - generic [ref=e277]:
+            - generic [ref=e278]: 🐰00412
+            - generic [ref=e279]: 6天前
+        - generic [ref=e280] [cursor=pointer]:
+          - img [ref=e281]
+          - generic [ref=e282]:
+            - generic [ref=e283]: 🐱00250
+            - generic [ref=e284]: 4小时前
+        - generic [ref=e285] [cursor=pointer]:
+          - img [ref=e286]
+          - generic [ref=e287]:
+            - generic [ref=e288]: 🍍00389
+            - generic [ref=e289]: 4天前
+        - generic [ref=e290] [cursor=pointer]:
+          - img [ref=e291]
+          - generic [ref=e292]:
+            - generic [ref=e293]: 🍍00389
+            - generic [ref=e294]: 6天前
+        - generic [ref=e295] [cursor=pointer]:
+          - img [ref=e296]
+          - generic [ref=e297]:
+            - generic [ref=e298]: 🍍00389
+            - generic [ref=e299]: 5天前
+        - generic [ref=e300] [cursor=pointer]:
+          - img [ref=e301]
+          - generic [ref=e302]:
+            - generic [ref=e303]: 🍎00200
+            - generic [ref=e304]: 4小时前
+        - generic [ref=e305] [cursor=pointer]:
+          - img [ref=e306]
+          - generic [ref=e307]:
+            - generic [ref=e308]: 🐰00412
+            - generic [ref=e309]: 6天前
+        - generic [ref=e310] [cursor=pointer]:
+          - img [ref=e311]
+          - generic [ref=e312]:
+            - generic [ref=e313]: 🐱00250
+            - generic [ref=e314]: 4小时前
+    - navigation [ref=e102]:
+      - generic [ref=e103] [cursor=pointer]:
+        - generic [ref=e104]: 📷
+        - generic [ref=e105]: 拍摄
+      - generic [ref=e106] [cursor=pointer]:
+        - generic [ref=e107]: 📁
+        - generic [ref=e108]: 档案
+      - generic [ref=e109] [cursor=pointer]:
+        - generic [ref=e110]: 🌍
+        - generic [ref=e111]: 看世界
+  - generic: ← 滑动切换模式 →

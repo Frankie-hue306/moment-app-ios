@@ -1,6 +1,1 @@
-{
-  "usingComponents": {},
-  "navigationBarTitleText": "虚拟试戴",
-  "navigationBarBackgroundColor": "#FFFFFF",
-  "backgroundColor": "#F9F9FB"
-}
+{"usingComponents":{},"navigationStyle":"custom","disableScroll":true}

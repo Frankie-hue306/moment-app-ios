@@ -1,0 +1,39 @@
+<!-- 首页 — AI全自动试戴入口 -->
+<view class="pg">
+  <view class="nav" style="padding-top:{{sH}}px"><text class="nav-t">RealNail</text></view>
+
+  <!-- 试戴入口 -->
+  <view class="hero">
+    <view class="hero-btn" bindtap="onTryon">
+      <text class="hb-ico">&#9678;</text>
+      <text class="hb-t">开始试戴</text>
+      <text class="hb-sub">AI 自动识别 · 一拍即合</text>
+    </view>
+  </view>
+
+  <!-- 热门排行 -->
+  <view class="sec" wx:if="{{rank.length}}">
+    <text class="sec-t">热门款式</text>
+    <scroll-view scroll-x class="rank-scroll">
+      <view class="rc" wx:for="{{rank}}" wx:key="id" wx:if="{{index<10}}" bindtap="onDetail" data-id="{{item.id}}">
+        <view class="rc-num">{{index+1}}</view>
+        <view class="rc-prev" style="background:{{item.c[2]||item.c[0]}}10;">
+          <view class="rc-nail" style="background:linear-gradient(180deg,{{item.c[0]}},{{item.c[1]||item.c[0]}});box-shadow:0 3rpx 12rpx rgba(0,0,0,.08);">
+            <view class="rc-shine"></view>
+          </view>
+        </view>
+        <text class="rc-name ell">{{item.name}}</text>
+        <text class="rc-price">¥{{item.price}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 分类入口 -->
+  <view class="sec">
+    <text class="sec-t">按风格浏览</text>
+    <view class="cats">
+      <view class="cat" wx:for="{{cats}}" wx:key="k" wx:if="{{item.k!=='all'}}" bindtap="onCat" data-k="{{item.k}}">{{item.n}}</view>
+    </view>
+  </view>
+  <view class="bot"></view>
+</view>
