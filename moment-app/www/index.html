@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v88</title>
+<title>此刻 v89</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85)}
@@ -67,13 +67,13 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 #mainActionBtn.taken{animation:none;background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1)}
 #sideMenu{
   position:fixed;top:0;left:-280px;bottom:0;width:280px;background:var(--menu-bg);z-index:4000;
-  transition:transform .25s ease;overflow-y:auto;padding:30px 20px;
+  transition:transform .25s ease;overflow-y:auto;padding:calc(30px+env(safe-area-inset-top,0px)) 20px calc(30px+env(safe-area-inset-bottom,0px));
   display:flex;flex-direction:column;
 }
 #sideMenu.open{transform:translateX(280px)}
 #quickSettings{
   position:fixed;top:0;right:0;bottom:0;width:280px;background:var(--menu-bg);z-index:4000;
-  transition:transform .25s ease;overflow-y:auto;padding:30px 20px;
+  transition:transform .25s ease;overflow-y:auto;padding:calc(30px+env(safe-area-inset-top,0px)) 20px calc(30px+env(safe-area-inset-bottom,0px));
   transform:translateX(280px);
 }
 #quickSettings.open{transform:translateX(0)}
@@ -243,7 +243,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 </div>
 
 <!-- Dark Mode Picker Sheet -->
-<div id="darkModeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 30px;transform:translateY(100%);transition:transform .3s ease">
+<div id="darkModeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px+env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s ease">
   <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">深色模式</div>
   <div class="menu-row" onclick="setDarkMode('auto')" style="padding-left:20px;padding-right:20px">跟随系统 <span id="dm-check-auto" style="color:var(--accent);display:none">✓</span></div>
   <div class="menu-row" onclick="setDarkMode('light')" style="padding-left:20px;padding-right:20px">浅色模式 <span id="dm-check-light" style="color:var(--accent);display:none">✓</span></div>
@@ -252,7 +252,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 </div>
 
 <!-- Report Action Sheet -->
-<div id="reportSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 30px;transform:translateY(100%);transition:transform .3s ease">
+<div id="reportSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px+env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s ease">
   <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep);letter-spacing:-.2px">举报内容</div>
   <div class="menu-row" onclick="submitReport('porn')" style="padding-left:20px;padding-right:20px">色情低俗</div>
   <div class="menu-row" onclick="submitReport('violence')" style="padding-left:20px;padding-right:20px">暴力血腥</div>
@@ -264,7 +264,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 </div>
 
 <!-- Mode Switch Action Sheet -->
-<div id="modeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 30px;transform:translateY(100%);transition:transform .3s ease">
+<div id="modeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px+env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s ease">
   <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">显示模式</div>
   <div class="menu-row" onclick="switchMode('waterfall')" style="padding-left:20px;padding-right:20px">瀑布流 <span id="check-waterfall" style="color:var(--accent);display:none">✓</span></div>
   <div class="menu-row" onclick="switchMode('immersive')" style="padding-left:20px;padding-right:20px;border-bottom:none">沉浸 <span id="check-immersive" style="color:var(--accent);display:none">✓</span></div>
@@ -335,7 +335,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 </div>
 
 <!-- Captured Screen (overlay) -->
-  <div id="captured" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;flex-direction:column;align-items:center;padding:60px 24px 100px;overflow-y:auto">
+  <div id="captured" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;flex-direction:column;align-items:center;padding:calc(60px+env(safe-area-inset-top,0px)) 24px calc(100px+env(safe-area-inset-bottom,0px));overflow-y:auto">
     <div id="capturedLabel" style="font-size:12px;color:#888;margin-bottom:8px">已记录</div>
     <div id="countdownBadge" style="font-size:24px;font-weight:700;margin-bottom:12px;letter-spacing:1px">60s</div>
     <img id="ph" class="pv" src="" alt="" onclick="event.stopPropagation();zoomPhoto()" style="cursor:pointer">
@@ -355,7 +355,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   </div>
 
   <!-- Collage Screen (overlay) -->
-  <div id="collage" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:60px 24px 100px">
+  <div id="collage" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:calc(60px+env(safe-area-inset-top,0px)) 24px calc(100px+env(safe-area-inset-bottom,0px))">
     <div style="font-size:13px;color:#888;margin-bottom:12px">月度碎片</div>
     <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px">
       <button class="btn" id="collagePrev" onclick="collagePrevMonth()" style="width:40px;padding:12px;text-align:center;font-size:18px">‹</button>
@@ -375,7 +375,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   </div>
 
   <!-- Time Fragment Screen -->
-  <div id="timeFragment" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:60px 24px 100px">
+  <div id="timeFragment" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:calc(60px+env(safe-area-inset-top,0px)) 24px calc(100px+env(safe-area-inset-bottom,0px))">
     <div style="font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:16px">✨ 时光碎片</div>
     <!-- Template selector -->
     <div style="margin-bottom:18px">
@@ -421,7 +421,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   </div>
 
   <!-- Bottom Nav -->
-  <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 18px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
+  <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 calc(18px+env(safe-area-inset-bottom,0px));background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
     <div class="nav-item active" id="nav-home" onclick="navTo('home')">
       <span class="nav-icon">📷</span><span class="nav-label">拍摄</span>
     </div>
@@ -437,7 +437,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 <script>
 var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
-var API='https://c7c22a99dfc33e.lhr.life';var AUTH={token:'',userId:0};
+var API='https://0bf209633313bf.lhr.life';var AUTH={token:'',userId:0};
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
 function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
 function isLoggedIn(){return !!AUTH.token}
@@ -650,7 +650,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v88\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v89\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1511,7 +1511,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v88',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v89',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -1820,30 +1820,7 @@ if(AUTH.token&&AUTH.userId){setTimeout(function(){updateAllUI();updateSideMenuUs
 else if(!seenWelcome){setTimeout(function(){document.getElementById('welcomeScreen').style.display='flex'},500)}
 else{setTimeout(showLogin,800)}
 
-// ======================== IMMERSIVE SYNC REFRESH ========================
-var syncRefreshTimer=null;
-function startSyncRefresh(){
-  clearInterval(syncRefreshTimer);
-  syncRefreshTimer=setInterval(function(){
-    var now=new Date();
-    if(now.getSeconds()===0&&currentTab==='strangers'&&getWatchMode()==='immersive'){
-      // Fade out all cards
-      var cards=document.querySelectorAll('#cs > div');
-      for(var i=0;i<cards.length;i++){
-        cards[i].style.transition='opacity .2s';
-        cards[i].style.opacity='0';
-      }
-      // Reload after fade
-      setTimeout(function(){
-        if(currentTab==='strangers'&&getWatchMode()==='immersive'){
-          poolLoaded=false;
-          refreshStrangers();
-        }
-      },250);
-    }
-  },1000);
-}
-setTimeout(startSyncRefresh,1000);
+// Immersive film pool auto-refreshes every 30s via loadFilmPool timer
 
 // Init UI
 setTimeout(function(){
