@@ -161,6 +161,9 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   <div class="menu-row" onclick="closeAllPanels();openTimeFragment()">
     <span>✨ 时光碎片</span><span class="menu-arrow">›</span>
   </div>
+  <div class="menu-row" onclick="closeAllPanels();openCollage()">
+    <span>🖼️ 拼贴回顾</span><span class="menu-arrow">›</span>
+  </div>
   <div class="menu-row" onclick="toggleDailyPick()" style="border-bottom:none">
     <span>📸 每日精选推送</span>
     <span id="dailyPickState" style="color:var(--accent);font-size:13px">已开启</span>
@@ -1216,7 +1219,7 @@ function saveMoment(){
 }
 function zoomPhoto(){
   var img=document.getElementById('ph');
-  if(!img||!img.src||img.src.indexOf('data:')!==0)return;
+  if(!img||!img.src)return;
   document.getElementById('photoZoomImg').src=img.src;
   document.getElementById('photoZoom').style.display='flex';
 }
@@ -1245,7 +1248,7 @@ function refreshGallery(){
   var g=document.getElementById('gr');
   if(isLoggedIn()){
     api('/api/gallery').then(function(r){
-      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id){existsIdx=k;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage}else{D.m.push({u:sm.dataUrl,t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage})}});save()}
+      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id){existsIdx=k;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage}else{D.m.push({u:sm.dataUrl,t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage})}});D.c=D.m.length;save()}
       renderGallery();
     }).catch(renderGallery)
   }else{renderGallery()}
