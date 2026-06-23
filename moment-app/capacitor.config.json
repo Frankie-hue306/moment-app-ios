@@ -5,6 +5,9 @@
   "server": {
     "androidScheme": "https"
   },
+  "ios": {
+    "contentInset": "always"
+  },
   "plugins": {
     "LocalNotifications": {
       "smallIcon": "ic_notification",
