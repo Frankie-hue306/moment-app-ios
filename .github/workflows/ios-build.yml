@@ -5,6 +5,8 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+      - name: Select Xcode 26
+        run: sudo xcode-select -s /Applications/Xcode_26.3.0.app/Contents/Developer
       - uses: actions/setup-node@v4
         with: {node-version: 20}
       - name: Install & Build
@@ -40,7 +42,7 @@ jobs:
         working-directory: moment-app
         run: |
           cd ios/App
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 5" App/Info.plist 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 6" App/Info.plist 2>/dev/null || true
           /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" App/Info.plist
       - name: Build Archive (unsigned)
         working-directory: moment-app
