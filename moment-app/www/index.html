@@ -1404,7 +1404,7 @@ function viewFilmPhoto(id,rowId){
   var a=document.createElement('div');a.id='strangerDetailActions';
   a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+found.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+found.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
   viewUI.appendChild(a);
-  if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
+  if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='看世界';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';
