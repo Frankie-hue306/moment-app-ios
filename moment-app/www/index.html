@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v90</title>
+<title>此刻 v94</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85)}
@@ -441,7 +441,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 <script>
 var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
-var API='https://ca28b7ec77baa9.lhr.life';var AUTH={token:'',userId:0};
+var API='https://d8e9a8596b3679.lhr.life';var AUTH={token:'',userId:0};
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
 function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
 function isLoggedIn(){return !!AUTH.token}
@@ -654,7 +654,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v90\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v94\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1517,7 +1517,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v90',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v94',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
