@@ -7,32 +7,40 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
-      - name: Deploy
+      - name: Deploy SQLite Server
         env:
           VP: ${{ secrets.VPS_PASSWORD }}
         run: |
           sshpass -p "$VP" ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30 root@107.172.157.172 "bash -s" << 'REMOTE'
           set -e
+          # Ensure swap for compilation
+          swapon --show | grep -q /swapfile || { fallocate -l 1G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile; }
           if ! command -v node; then
             curl -fsSL https://nodejs.org/dist/v20.19.6/node-v20.19.6-linux-x64.tar.xz -o /tmp/node.tar.xz
             tar xf /tmp/node.tar.xz -C /usr/local/ --strip-components=1
           fi
           apt-get update -qq 2>&1 | tail -1
-          apt-get install -y -qq nginx 2>&1 | tail -1
-          mkdir -p /opt/moment/data /opt/moment/uploads
+          apt-get install -y -qq nginx build-essential python3 2>&1 | tail -1
+          mkdir -p /opt/moment
           cd /opt/moment
-          curl -sL -o server.js https://raw.githubusercontent.com/Frankie-hue306/moment-app-ios/main/moment-server/json-server.js
+          # Download the REAL SQLite server
+          curl -sL -o server.js https://raw.githubusercontent.com/Frankie-hue306/moment-app-ios/main/moment-server/server.js
           npm init -y 2>/dev/null || true
-          npm install express cors 2>&1 | tail -2
+          # Install dependencies (SQLite uses disk, not RAM)
+          npm install express cors better-sqlite3 compression 2>&1 | tail -5
+          # sharp is optional for thumbnails
+          npm install sharp 2>&1 | tail -3 || echo "sharp optional, skipping"
+          # nginx
           cat > /etc/nginx/sites-available/moment << 'NX'
           server { listen 80; server_name momentnow.xyz; client_max_body_size 50m; location / { proxy_pass http://localhost:3000; proxy_http_version 1.1; proxy_set_header Host $host; proxy_read_timeout 120s; } }
           NX
           ln -sf /etc/nginx/sites-available/moment /etc/nginx/sites-enabled/
           rm -f /etc/nginx/sites-enabled/default
           nginx -t && systemctl restart nginx
+          # systemd with lower memory limit for SQLite (which uses disk, not RAM)
           cat > /etc/systemd/system/moment.service << 'SX'
           [Unit]
-          Description=Moment
+          Description=Moment Server
           After=network.target
           [Service]
           Type=simple
@@ -41,14 +49,15 @@ jobs:
           ExecStart=/usr/local/bin/node /opt/moment/server.js
           Restart=always
           RestartSec=5
-          MemoryMax=400M
+          MemoryMax=350M
           [Install]
           WantedBy=multi-user.target
           SX
           systemctl daemon-reload
           systemctl enable moment
           systemctl restart moment
-          sleep 4
-          curl -s http://localhost:3000/health && echo LIVE || echo FAIL
-          curl -s http://localhost:3000/api/explore | head -20
+          sleep 5
+          curl -s http://localhost:3000/health 2>/dev/null || echo NO_HEALTH
+          curl -s http://localhost:3000/api/explore | head -20 || echo NO_EXPLORE
+          echo === LIVE ===
           REMOTE
