@@ -355,12 +355,12 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
       <div id="viewDate" style="font-size:12px;color:var(--muted);margin-bottom:20px"></div>
       <button class="btn depth-btn" onclick="toggle3D()" id="btn3dv" style="text-align:center">✨ 3D景深</button>
     </div>
-    <button class="btn" id="capturedBackBtn" onclick="var l=document.getElementById('capturedLabel').textContent;if(l==='看世界')backFromStrangerDetail();else if(l==='档案回顾')backToGallery();else afterCaptureBack()" style="text-align:center;background:transparent;color:var(--muted);margin-top:20px">← 返回</button>
+    <button class="btn" id="capturedBackBtn" onclick="var l=document.getElementById('capturedLabel').textContent;if(l==='看世界')backFromStrangerDetail();else if(l==='档案回顾'||l==='已被移除')backToGallery();else afterCaptureBack()" style="text-align:center;background:transparent;color:var(--muted);margin-top:20px">← 返回</button>
   </div>
 
   <!-- Collage Screen (overlay) -->
   <div id="collage" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:calc(60px + env(safe-area-inset-top, 0px)) 24px calc(100px + env(safe-area-inset-bottom, 0px))">
-    <div style="font-size:13px;color:#888;margin-bottom:12px">月度碎片</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:13px;color:#888">月度碎片</span><button onclick="backFromCollage()" style="background:none;border:none;color:var(--accent);font-size:15px;cursor:pointer">✕</button></div>
     <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px">
       <button class="btn" id="collagePrev" onclick="collagePrevMonth()" style="width:40px;padding:12px;text-align:center;font-size:18px">‹</button>
       <div id="collageMonth" style="color:var(--text);font-size:20px;font-weight:600;letter-spacing:-.3px;min-width:140px;text-align:center"></div>
@@ -485,7 +485,7 @@ function navTo(tab){
     else{clearTimeout(wfIdleTimer);document.getElementById('tab-strangers').style.display='block';refreshStrangers()}
     if(window.showSwipeHint)window.showSwipeHint();
   }else{
-    clearTimeout(wfIdleTimer);
+    clearTimeout(wfIdleTimer);clearTimeout(filmTimer);
     document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block';
   }
   // Update nav active state
@@ -916,6 +916,7 @@ function viewStrangerMoment(m){
   document.getElementById('captured').style.display='flex';
 }
 function backFromStrangerDetail(){
+  closeZoom();
   document.getElementById('captured').style.display='none';
   document.getElementById('countdownBadge').style.display='';
   // Resume all film rows
@@ -1227,7 +1228,7 @@ function closeZoom(){
   document.getElementById('photoZoom').style.display='none';
 }
 function afterCaptureBack(){
-  stopCountdown();
+  closeZoom();stopCountdown();
   document.getElementById('captured').style.display='none';
   closeZoom();
   // Resume all film rows
