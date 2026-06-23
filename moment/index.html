@@ -48,7 +48,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 }
 .depth-btn{background:var(--accent) !important;color:#fff !important;text-align:center !important}
 /* New layout styles */
-.topbar{position:sticky;top:44px;z-index:200}
+.topbar{position:sticky;top:0;z-index:200}
 .bottom-nav{position:sticky;bottom:0;z-index:100}
 .nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0}
 .nav-item.active{opacity:1}
@@ -278,6 +278,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 
 <!-- Main App -->
 <div class="app">
+  <div style="height:44px;flex-shrink:0"></div>
   <!-- Top Bar -->
   <header class="topbar" style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--nav-border)">
     <button onclick="openSideMenu()" style="font-size:22px;background:none;border:none;color:var(--text);padding:4px;cursor:pointer">☰</button>
