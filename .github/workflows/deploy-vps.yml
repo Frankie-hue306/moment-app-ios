@@ -4,6 +4,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
       - name: Deploy
@@ -18,22 +19,13 @@ jobs:
           fi
           apt-get update -qq 2>&1 | tail -1
           apt-get install -y -qq nginx 2>&1 | tail -1
-          mkdir -p /opt/moment /opt/moment/data
+          mkdir -p /opt/moment/data /opt/moment/uploads
           cd /opt/moment
-          cat > server.js << 'JS'
-          const express=require('express'),cors=require('cors'),fs=require('fs'),path=require('path');
-          const app=express();app.use(cors());app.use(express.json({limit:'10mb'}));
-          const DB=()=>{try{return JSON.parse(fs.readFileSync('/opt/moment/data/db.json','utf8'))}catch(e){return {users:[],moments:[],likes:[],reports:[]}}};
-          const SAVE=(d)=>fs.writeFileSync('/opt/moment/data/db.json',JSON.stringify(d));
-          app.get('/health',(r,s)=>s.json({ok:true,mem:process.memoryUsage().rss}));
-          app.get('/api/gallery',(r,s)=>{let db=DB();s.json(db.moments.slice(0,50))});
-          app.post('/api/login',(r,s)=>{let db=DB(),p=r.body.phone;let u=db.users.find(u=>u.phone===p)||{id:Date.now(),phone:p,token:'tok_'+Math.random().toString(36)};if(!u.token){u.token='tok_'+Math.random().toString(36);db.users.push(u)}SAVE(db);s.json({token:u.token,userId:u.id})});
-          app.listen(3000,()=>console.log('Server running'));
-          JS
-          npm init -y 2>/dev/null
+          curl -sL -o server.js https://raw.githubusercontent.com/Frankie-hue306/moment-app-ios/main/moment-server/json-server.js
+          npm init -y 2>/dev/null || true
           npm install express cors 2>&1 | tail -2
           cat > /etc/nginx/sites-available/moment << 'NX'
-          server { listen 80; server_name momentnow.xyz; client_max_body_size 50m; location / { proxy_pass http://localhost:3000; proxy_set_header Host $host; proxy_read_timeout 120s; } }
+          server { listen 80; server_name momentnow.xyz; client_max_body_size 50m; location / { proxy_pass http://localhost:3000; proxy_http_version 1.1; proxy_set_header Host $host; proxy_read_timeout 120s; } }
           NX
           ln -sf /etc/nginx/sites-available/moment /etc/nginx/sites-enabled/
           rm -f /etc/nginx/sites-enabled/default
@@ -57,5 +49,6 @@ jobs:
           systemctl enable moment
           systemctl restart moment
           sleep 4
-          curl -s http://localhost:3000/health && echo " LIVE"
+          curl -s http://localhost:3000/health && echo LIVE || echo FAIL
+          curl -s http://localhost:3000/api/explore | head -20
           REMOTE
