@@ -36,6 +36,12 @@ jobs:
           echo "Profile installed"
         env:
           PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
+      - name: Set Build Number
+        working-directory: moment-app
+        run: |
+          cd ios/App
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 5" App/Info.plist 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" App/Info.plist
       - name: Build Archive (unsigned)
         working-directory: moment-app
         run: |
