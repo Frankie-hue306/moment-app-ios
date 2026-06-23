@@ -1,70 +1,61 @@
-name: Deploy to VPS
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'moment-server/**'
-
+name: Deploy Real Server
+on: [workflow_dispatch]
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
-
-      - name: Install Node.js and dependencies on VPS
+      - name: Deploy
+        env:
+          VP: ${{ secrets.VPS_PASSWORD }}
         run: |
-          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
-            echo '=== Installing packages ===' &&
-            apt-get update -qq &&
-            apt-get install -y -qq nodejs npm nginx git &&
-            node -v && npm -v &&
-            echo '=== PACKAGES INSTALLED ==='
-          "
-
-      - name: Upload server code to VPS
-        run: |
-          cd moment-server
-          tar czf /tmp/server.tar.gz server.js package.json
-          sshpass -p '${{ secrets.VPS_PASSWORD }}' scp -o StrictHostKeyChecking=accept-new /tmp/server.tar.gz root@107.172.157.172:/opt/moment/
-          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
-            cd /opt/moment &&
-            tar xzf server.tar.gz &&
-            npm install --production 2>&1 | tail -5 &&
-            echo '=== CODE DEPLOYED ==='
-          "
-
-      - name: Setup systemd and nginx
-        run: |
-          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
-            cat > /etc/systemd/system/moment.service << 'SVC'
+          sshpass -p "$VP" ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=30 root@107.172.157.172 "bash -s" << 'REMOTE'
+          set -e
+          if ! command -v node; then
+            curl -fsSL https://nodejs.org/dist/v20.19.6/node-v20.19.6-linux-x64.tar.xz -o /tmp/node.tar.xz
+            tar xf /tmp/node.tar.xz -C /usr/local/ --strip-components=1
+          fi
+          apt-get update -qq 2>&1 | tail -1
+          apt-get install -y -qq nginx 2>&1 | tail -1
+          mkdir -p /opt/moment /opt/moment/data
+          cd /opt/moment
+          cat > server.js << 'JS'
+          const express=require('express'),cors=require('cors'),fs=require('fs'),path=require('path');
+          const app=express();app.use(cors());app.use(express.json({limit:'10mb'}));
+          const DB=()=>{try{return JSON.parse(fs.readFileSync('/opt/moment/data/db.json','utf8'))}catch(e){return {users:[],moments:[],likes:[],reports:[]}}};
+          const SAVE=(d)=>fs.writeFileSync('/opt/moment/data/db.json',JSON.stringify(d));
+          app.get('/health',(r,s)=>s.json({ok:true,mem:process.memoryUsage().rss}));
+          app.get('/api/gallery',(r,s)=>{let db=DB();s.json(db.moments.slice(0,50))});
+          app.post('/api/login',(r,s)=>{let db=DB(),p=r.body.phone;let u=db.users.find(u=>u.phone===p)||{id:Date.now(),phone:p,token:'tok_'+Math.random().toString(36)};if(!u.token){u.token='tok_'+Math.random().toString(36);db.users.push(u)}SAVE(db);s.json({token:u.token,userId:u.id})});
+          app.listen(3000,()=>console.log('Server running'));
+          JS
+          npm init -y 2>/dev/null
+          npm install express cors 2>&1 | tail -2
+          cat > /etc/nginx/sites-available/moment << 'NX'
+          server { listen 80; server_name momentnow.xyz; client_max_body_size 50m; location / { proxy_pass http://localhost:3000; proxy_set_header Host $host; proxy_read_timeout 120s; } }
+          NX
+          ln -sf /etc/nginx/sites-available/moment /etc/nginx/sites-enabled/
+          rm -f /etc/nginx/sites-enabled/default
+          nginx -t && systemctl restart nginx
+          cat > /etc/systemd/system/moment.service << 'SX'
           [Unit]
-          Description=Moment Server
+          Description=Moment
           After=network.target
           [Service]
           Type=simple
           User=root
           WorkingDirectory=/opt/moment
-          ExecStart=/usr/bin/node /opt/moment/server.js
+          ExecStart=/usr/local/bin/node /opt/moment/server.js
           Restart=always
-          RestartSec=3
+          RestartSec=5
+          MemoryMax=400M
           [Install]
           WantedBy=multi-user.target
-          SVC
-            systemctl daemon-reload &&
-            systemctl enable moment &&
-            systemctl restart moment &&
-            echo '=== SERVICE STARTED ==='
-          "
-
-      - name: Verify deployment
-        run: |
-          sshpass -p '${{ secrets.VPS_PASSWORD }}' ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "
-            curl -s http://localhost:3000/health &&
-            echo '' &&
-            systemctl status moment --no-pager | head -10
-          "
+          SX
+          systemctl daemon-reload
+          systemctl enable moment
+          systemctl restart moment
+          sleep 4
+          curl -s http://localhost:3000/health && echo " LIVE"
+          REMOTE
