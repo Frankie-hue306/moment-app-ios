@@ -13,7 +13,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85)}
-body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none;padding-top:constant(safe-area-inset-top,44px);padding-top:env(safe-area-inset-top,44px)}
+body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none;padding-top:44px}
 .app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh}
 .btn{
   display:block;width:100%;padding:18px;border:none;
@@ -279,7 +279,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 <!-- Main App -->
 <div class="app">
   <!-- Top Bar -->
-  <header class="topbar" style="display:flex;align-items:center;justify-content:space-between;padding:env(safe-area-inset-top,44px) 20px 12px 20px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--nav-border)">
+  <header class="topbar" style="display:flex;align-items:center;justify-content:space-between;padding:44px 20px 12px 20px;background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--nav-border)">
     <button onclick="openSideMenu()" style="font-size:22px;background:none;border:none;color:var(--text);padding:4px;cursor:pointer">☰</button>
     <span style="font-size:17px;font-weight:600;letter-spacing:-.3px">此刻</span>
     <button onclick="openQuickSettings()" style="font-size:20px;background:none;border:none;color:var(--text);padding:4px;cursor:pointer">⚙️</button>
@@ -441,7 +441,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 <script>
 var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
-var API='https://d8e9a8596b3679.lhr.life';var AUTH={token:'',userId:0};
+var API='https://daa495b09685df.lhr.life';var AUTH={token:'',userId:0};
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
 function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
 function isLoggedIn(){return !!AUTH.token}
