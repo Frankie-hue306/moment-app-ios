@@ -21,7 +21,7 @@ jobs:
       - name: Setup Auth Key
         run: |
           mkdir -p ~/.appstoreconnect/private_keys
-          echo "$APPSTORE_API_KEY" | base64 -d > ~/.appstoreconnect/private_keys/AuthKey_42KU5BWP3V.p8
+          echo "$APPSTORE_API_KEY" > ~/.appstoreconnect/private_keys/AuthKey_42KU5BWP3V.p8
         env:
           APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
       - name: Create Export Plist
