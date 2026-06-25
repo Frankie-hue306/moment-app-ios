@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v226</title>
+<title>此刻 v227</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -367,13 +367,12 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 
   <!-- Strangers Tab (Immersive / Filmstrip) -->
   <div id="tab-strangers" class="tab-full" style="display:none;flex:1;overflow:visible;background:var(--tab-bg)">
-    <!-- Time Header -->
-    <div style="position:relative;padding:24px 16px 16px;text-align:center;z-index:10">
-      <div style="display:flex;align-items:baseline;justify-content:center;width:100%">
-        <span id="filmTime" style="font-size:42px;font-weight:300;color:#f5f5f7;font-family:-apple-system,'SF Pro Display','SF Mono','PingFang SC',monospace;white-space:nowrap;display:inline-block;letter-spacing:-1px;line-height:1.1"></span>
-        <span class="pulse-dot" style="margin-left:8px;margin-bottom:6px;flex-shrink:0"></span>
+    <!-- World Header -->
+    <div style="position:relative;padding:32px 16px 12px;text-align:center;z-index:10">
+      <div style="display:flex;align-items:center;justify-content:center;width:100%">
+        <span style="font-size:20px;font-weight:500;color:rgba(255,255,255,.7);font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;letter-spacing:4px">世界正在记录</span>
+        <span class="pulse-dot" style="margin-left:8px;flex-shrink:0"></span>
       </div>
-      <div style="font-size:13px;color:rgba(255,255,255,.35);letter-spacing:3px;margin-top:4px;font-weight:400">世界正在记录</div>
     </div>
     <!-- Film Rows -->
     <div id="filmRow1" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
@@ -583,16 +582,15 @@ function navTo(tab,noAnim){
   newEl.style.opacity='1';
   // Animate both
   requestAnimationFrame(function(){
-    oldEl.style.transition='transform .25s ease, opacity .25s ease';
-    oldEl.style.transform='translateX('+(dir==='left'?'-30%':'30%')+')';
-    oldEl.style.opacity='0';
-    newEl.style.transition='transform .25s ease';
+    oldEl.style.transition='transform .28s cubic-bezier(0.25,0.1,0.25,1)';
+    oldEl.style.transform='translateX('+(dir==='left'?'-100%':'100%')+')';
+    newEl.style.transition='transform .28s cubic-bezier(0.25,0.1,0.25,1)';
     newEl.style.transform='translateX(0)';
     setTimeout(function(){
-      oldEl.style.display='none';oldEl.style.transform='';oldEl.style.opacity='';oldEl.style.transition='';
+      oldEl.style.display='none';oldEl.style.transform='';oldEl.style.transition='';
       newEl.style.transform='';newEl.style.transition='';
       tabAnimating=false;
-    },260);
+    },300);
   });
   // Update nav active
   updateNavActive(tab);
@@ -757,7 +755,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v226\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v227\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1427,13 +1425,7 @@ function refreshStrangers(){
   startFilmTime();
 }
 function startFilmTime(){
-  clearInterval(filmTimeTimer);
-  var ft=document.getElementById('filmTime');if(!ft)return;
   var tab=document.getElementById('tab-strangers');if(tab){tab.style.display='block';tab.style.opacity='';tab.style.transform='';tab.style.transition='';}
-  var hdr=ft.parentElement;if(hdr){hdr.style.visibility='visible';hdr.style.opacity='1';}
-  ft.style.visibility='visible';ft.style.opacity='1';
-  function update(){var n=new Date();ft.textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
-  update();filmTimeTimer=setInterval(update,10000);
 }
 function updateStrangerStats(){} // stub - stats now in filmstrip time header
 function loadFilmPool(){
@@ -1620,7 +1612,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v226',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v227',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
