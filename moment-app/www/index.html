@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v228</title>
+<title>此刻 v229</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -52,7 +52,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 /* New layout styles */
 .topbar{position:sticky;top:0;z-index:200}
 .bottom-nav{position:sticky;bottom:0;z-index:100}
-.nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;position:relative;overflow:hidden}
+.nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;position:relative}
 .nav-item.active{opacity:1}
 .nav-item .nav-icon{font-size:24px;width:24px;height:24px;line-height:24px;text-align:center;transition:transform .2s}
 .nav-item.active .nav-icon{transform:scale(1.15);color:#FF6B35}
@@ -142,8 +142,6 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 .archive-warm[data-warm="cocoa"]{--archive-bg:#1A1410}
 .archive-warm[data-warm="classic"]{--archive-bg:#1C1C1E}
 
-.ripple{position:absolute;border-radius:50%;background:rgba(255,107,53,.6);transform:scale(0);animation:rippleAnim .4s ease-out forwards;pointer-events:none;z-index:300}
-@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
 .custom-dialog-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center}
 .custom-dialog{background:#2c2c2e;border-radius:14px;padding:24px 20px 20px;max-width:300px;width:80%;text-align:center;color:#f5f5f7}
 .custom-dialog p{font-size:16px;line-height:1.5;margin-bottom:20px;white-space:pre-wrap}
@@ -756,7 +754,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v228\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v229\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1615,7 +1613,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v228',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v229',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2023,22 +2021,6 @@ setTimeout(function(){
   document.getElementById('warmThemeState').textContent={sunset:'落日余晖',amber:'琥珀暖',terracotta:'棕红陶土',cocoa:'奶油可可',classic:'经典深灰'}[archiveWarm];
   applyArchiveWarm();
 },200);
-
-// ====================== RIPPLE EFFECT ======================
-setTimeout(function(){
-  document.querySelectorAll('.nav-item').forEach(function(el){
-    el.addEventListener('click',function(e){
-      var r=document.createElement('div');r.className='ripple';
-      var rect=el.getBoundingClientRect();
-      var size=Math.max(rect.width,rect.height);
-      r.style.width=r.style.height=size+'px';
-      r.style.left=(e.clientX-rect.left-size/2)+'px';
-      r.style.top=(e.clientY-rect.top-size/2)+'px';
-      el.appendChild(r);
-      setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r)},400);
-    });
-  });
-},700);
 
 // ====================== CUSTOM DIALOG ======================
 function showCustomDialog(msg,onOk,onCancel){
