@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v223</title>
+<title>此刻 v224</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -490,10 +490,10 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 
   <!-- Bottom Nav -->
   <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 calc(18px + env(safe-area-inset-bottom, 0px));background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
-    <div class="nav-item active" id="nav-home" onclick="navTo('photos')">
+    <div class="nav-item" id="nav-photos" onclick="navTo('photos')">
       <span class="nav-icon">📁</span><span class="nav-label">档案</span>
     </div>
-    <div class="nav-item" id="nav-home" onclick="navTo('home')">
+    <div class="nav-item active" id="nav-home" onclick="navTo('home')">
       <span class="nav-icon">📷</span><span class="nav-label">拍摄</span>
     </div>
     <div class="nav-item" id="nav-strangers" onclick="navTo('strangers')">
@@ -591,6 +591,7 @@ function closeAllPanels(){
   document.getElementById('sideMenu').classList.remove('open');
   document.getElementById('quickSettings').classList.remove('open');
   document.getElementById('menuOverlay').style.display='none';
+  closeWarmThemeSheet();
   closeReportSheet();
   closeModeSheet();
   closeDarkModeSheet();
@@ -698,20 +699,21 @@ function togglePureBlack(){
   applyPureBlack(next);
 }
 function applyPureBlack(on){
+  var r=document.documentElement.style;
   if(on){
-    document.documentElement.style.setProperty('--bg','#000');
-    document.documentElement.style.setProperty('--tab-bg','#000');
+    r.setProperty('--bg','#000');
+    r.setProperty('--tab-bg','#000');
     document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
   }else{
     var dm=getDarkMode();
     if(dm==='light'){
-      document.documentElement.style.setProperty('--bg','#f5f5f7');
-      document.documentElement.style.setProperty('--tab-bg','#f5f5f7');
+      r.setProperty('--bg','#f5f5f7');
+      r.setProperty('--tab-bg','#f5f5f7');
       document.body.style.background='#f5f5f7';r.setProperty('--world-bg','#EAE8F0');
     }else{
-      document.documentElement.style.setProperty('--bg','#1c1c1e');
-      document.documentElement.style.setProperty('--tab-bg','#1c1c1e');
-      document.body.style.background='#1c1c1e';
+      r.setProperty('--bg','#1c1c1e');
+      r.setProperty('--tab-bg','#1c1c1e');
+      document.body.style.background='#1c1c1e';r.setProperty('--world-bg','#0B0E1A');
     }
   }
 }
@@ -723,7 +725,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v223\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v224\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1586,12 +1588,20 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v223',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v224',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
   if(!collageCanvas)return;
-  var a=document.createElement('a');a.href=collageCanvas.toDataURL('image/png');a.download='moment-'+collageMonth.year+'-'+collageMonth.month+'.png';a.click();
+  try{
+    if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Filesystem){
+      var base64=collageCanvas.toDataURL('image/png').split(',')[1];
+      var fname='moment-'+collageMonth.year+'-'+collageMonth.month+'.png';
+      Capacitor.Plugins.Filesystem.writeFile({path:fname,data:base64,directory:2}).then(function(f){
+        showToast('已保存到文件');
+      }).catch(function(){showToast('保存失败')});
+    }else{var a=document.createElement('a');a.href=collageCanvas.toDataURL('image/png');a.download='moment-'+collageMonth.year+'-'+collageMonth.month+'.png';a.click()}
+  }catch(e){var a=document.createElement('a');a.href=collageCanvas.toDataURL('image/png');a.download='moment-'+collageMonth.year+'-'+collageMonth.month+'.png';a.click()}
 }
 function shareCollage(){
   if(!collageCanvas)return;
@@ -1878,7 +1888,14 @@ function renderTplFilm(imgs,moments,start,end){
 function pad2(n){return n<10?'0'+n:''+n}
 function downloadTF(){
   if(!tfCanvas)return;
-  var a=document.createElement('a');a.href=tfCanvas.toDataURL('image/png');a.download='时光碎片.png';a.click();
+  try{
+    if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Filesystem){
+      var base64=tfCanvas.toDataURL('image/png').split(',')[1];
+      Capacitor.Plugins.Filesystem.writeFile({path:'时光碎片.png',data:base64,directory:2}).then(function(f){
+        showToast('已保存到文件');
+      }).catch(function(){showToast('保存失败')});
+    }else{var a=document.createElement('a');a.href=tfCanvas.toDataURL('image/png');a.download='时光碎片.png';a.click()}
+  }catch(e){var a=document.createElement('a');a.href=tfCanvas.toDataURL('image/png');a.download='时光碎片.png';a.click()}
 }
 function shareTF(){
   if(!tfCanvas)return;
@@ -2091,7 +2108,6 @@ function startSparkles(){
 }
 // Photo-star interaction: dim stars near photo overlay
 function dimStarsForPhoto(dim){
-  var factor=dim?.5:1;
   _stars.forEach(function(s){
     if(dim){s.classList.add('dimmed')}else{s.classList.remove('dimmed')}
   });
