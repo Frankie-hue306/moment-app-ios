@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v227</title>
+<title>此刻 v228</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -120,18 +120,18 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 /* Pulse dot */
 @keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
 /* ====== Starry World ====== */
-.world-stars{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2;pointer-events:none;overflow:hidden}
+.world-stars{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;overflow:hidden}
 .world-stars::before{content:"";position:fixed;top:0;left:0;width:100vw;height:100vh;background:radial-gradient(ellipse at 30% 20%,rgba(20,40,80,.35) 0%,transparent 55%),radial-gradient(ellipse at 70% 60%,rgba(15,25,45,.25) 0%,transparent 50%),var(--world-bg);z-index:0}
-.star{position:fixed;background:#fff;border-radius:50%;z-index:1;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s)}
+.star{position:fixed;background:#fff;border-radius:50%;z-index:10;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s)}
 .star.tier-bright{box-shadow:0 0 3px 1px rgba(200,220,255,.8),0 0 8px 3px rgba(150,180,255,.4)}
 .star.tier-mid{box-shadow:0 0 1px rgba(200,220,255,.3)}
 .star.tier-dim{box-shadow:none}
 .star.dimmed{opacity:.15!important;transition:opacity .5s}
 @keyframes twinkle{0%,100%{opacity:var(--lo,.3)}50%{opacity:var(--hi,.9)}}
-.meteor{position:fixed;width:2px;height:80px;background:linear-gradient(135deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.6) 25%,rgba(180,210,255,.2) 55%,transparent 100%);z-index:3;border-radius:2px;animation:meteor var(--mDur,1.5s) linear forwards;pointer-events:none;box-shadow:0 0 4px 1px rgba(255,255,255,.5),0 0 12px 4px rgba(180,200,255,.15);transform-origin:top left}
+.meteor{position:fixed;width:2px;height:80px;background:linear-gradient(135deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.6) 25%,rgba(180,210,255,.2) 55%,transparent 100%);z-index:11;border-radius:2px;animation:meteor var(--mDur,1.5s) linear forwards;pointer-events:none;box-shadow:0 0 4px 1px rgba(255,255,255,.5),0 0 12px 4px rgba(180,200,255,.15);transform-origin:top left}
 .meteor::after{content:'';position:absolute;top:0;left:0;width:150%;height:100%;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent 90%);filter:blur(6px);border-radius:2px}
 @keyframes meteor{0%{transform:translate(0,0) rotate(-35deg);opacity:1}30%{opacity:.7}70%{opacity:.15}100%{transform:translate(-900px,900px) rotate(-35deg);opacity:0}}
-.nebula{position:fixed;border-radius:50%;z-index:0;filter:blur(80px);animation:nebulaDrift var(--nd,75s) ease-in-out infinite alternate}
+.nebula{position:fixed;border-radius:50%;z-index:1;filter:blur(80px);animation:nebulaDrift var(--nd,75s) ease-in-out infinite alternate}
 @keyframes nebulaDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--nx,15px),var(--ny,20px)) scale(1.05)}}
 .star-sparkle{animation:sparkleFlash .3s ease-out forwards!important}
 @keyframes sparkleFlash{0%{opacity:1;transform:scale(1);box-shadow:0 0 4px 2px rgba(255,255,255,.9),0 0 16px 6px rgba(180,200,255,.6)}50%{opacity:1;transform:scale(2.5);box-shadow:0 0 6px 3px rgba(255,255,255,1),0 0 24px 10px rgba(200,220,255,.8)}100%{opacity:var(--lo,.3);transform:scale(1);box-shadow:0 0 0px 0px transparent}}
@@ -378,6 +378,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
     <div id="filmRow1" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
     <div id="filmRow2" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
     <div id="filmRow3" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow4" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
     <!-- Bottom space -->
     <div style="height:calc(env(safe-area-inset-bottom, 0px) + 70px);background:linear-gradient(180deg,transparent,var(--bg) 60%)"></div>
   </div>
@@ -755,7 +756,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v227\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v228\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1439,12 +1440,14 @@ function renderFilmRows(){
   if(filmPool.length===0)return;
   // Shuffle and pick for 3 rows
   var pool=filmPool.slice().sort(function(){return Math.random()-.5});
-  var r1=pool.slice(0,Math.max(15,pool.length));
-  var r2=pool.slice(Math.max(0,pool.length-15)).reverse();
-  var r3=pool.slice(0,Math.max(15,pool.length)).sort(function(){return Math.random()-.5});
+  var r1=pool.slice(0,Math.max(12,pool.length));
+  var r2=pool.slice(Math.max(0,pool.length-12)).reverse();
+  var r3=pool.slice(0,Math.max(12,pool.length)).sort(function(){return Math.random()-.5});
+  var r4=pool.slice(Math.max(0,pool.length-12)).sort(function(){return Math.random()-.5});
   buildRow('filmRow1',r1,'left');
   buildRow('filmRow2',r2,'right');
   buildRow('filmRow3',r3,'left');
+  buildRow('filmRow4',r4,'right');
 }
 function buildRow(id,photos,dir){
   var row=document.getElementById(id);
@@ -1612,7 +1615,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v227',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v228',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2134,6 +2137,9 @@ function startSparkles(){
 function dimStarsForPhoto(dim){
   _stars.forEach(function(s){
     if(dim){s.classList.add('dimmed')}else{s.classList.remove('dimmed')}
+  });
+  _nebulaEls.forEach(function(n){
+    if(dim){n.style.opacity='.02'}else{n.style.opacity=''}
   });
 }
 // Init starry world on load if enabled
