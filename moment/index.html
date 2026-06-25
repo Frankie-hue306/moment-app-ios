@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v221</title>
+<title>此刻 v222</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -52,7 +52,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 /* New layout styles */
 .topbar{position:sticky;top:0;z-index:200}
 .bottom-nav{position:sticky;bottom:0;z-index:100}
-.nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0}
+.nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;position:relative;overflow:hidden}
 .nav-item.active{opacity:1}
 .nav-item .nav-icon{font-size:24px;width:24px;height:24px;line-height:24px;text-align:center;transition:transform .2s}
 .nav-item.active .nav-icon{transform:scale(1.15);color:#FF6B35}
@@ -135,6 +135,21 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 .star-sparkle{animation:sparkleFlash .3s ease-out forwards!important}
 @keyframes sparkleFlash{0%{opacity:1;transform:scale(1);box-shadow:0 0 4px 2px rgba(255,255,255,.9),0 0 16px 6px rgba(180,200,255,.6)}50%{opacity:1;transform:scale(2.5);box-shadow:0 0 6px 3px rgba(255,255,255,1),0 0 24px 10px rgba(200,220,255,.8)}100%{opacity:var(--lo,.3);transform:scale(1);box-shadow:0 0 0px 0px transparent}}
 .pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4CD964;margin-left:4px;vertical-align:middle;animation:pulse-dot 1s ease-in-out infinite}
+.archive-warm[data-warm="sunset"]{--archive-bg:#2C1810}
+.archive-warm[data-warm="amber"]{--archive-bg:#1C140F}
+.archive-warm[data-warm="terracotta"]{--archive-bg:#1A100E}
+.archive-warm[data-warm="cocoa"]{--archive-bg:#1A1410}
+.archive-warm[data-warm="classic"]{--archive-bg:#1C1C1E}
+
+.ripple{position:absolute;border-radius:50%;background:rgba(255,107,53,.6);transform:scale(0);animation:rippleAnim .4s ease-out forwards;pointer-events:none;z-index:300}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+.custom-dialog-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center}
+.custom-dialog{background:#2c2c2e;border-radius:14px;padding:24px 20px 20px;max-width:300px;width:80%;text-align:center;color:#f5f5f7}
+.custom-dialog p{font-size:16px;line-height:1.5;margin-bottom:20px;white-space:pre-wrap}
+.custom-dialog .btn-row{display:flex;gap:10px}
+.custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
+.custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
+.custom-dialog .btn-ok{background:#FF6B35;color:#fff;font-weight:600}
 </style>
 </head>
 <body>
@@ -229,6 +244,10 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   <!-- Group 3: 通用 -->
   <div style="margin-bottom:24px">
     <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">通用</div>
+    <div class="menu-row" onclick="openWarmThemeSheet()">
+      <span>🎨 档案暖色主题</span>
+      <span id="warmThemeState" style="color:var(--muted);font-size:13px">经典深灰</span>
+    </div>
     <div class="menu-row" onclick="openDarkModeSheet()">
       <span>🌓 深色模式</span>
       <span id="darkModeState" style="color:var(--muted);font-size:13px">跟随系统</span>
@@ -278,6 +297,16 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   </div>
 </div>
 
+<!-- Warm Theme Picker Sheet -->
+<div id="warmThemeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px + env(safe-area-inset-bottom, 0px));transform:translateY(100%);transition:transform .3s ease">
+  <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">档案暖色主题</div>
+  <div class="menu-row" onclick="setArchiveWarm('sunset')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#2C1810;border-radius:50%;margin-right:10px;vertical-align:middle"></span>落日余晖 <span class="warm-check" id="wcheck-sunset" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="setArchiveWarm('amber')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1C140F;border-radius:50%;margin-right:10px;vertical-align:middle"></span>琥珀暖 <span class="warm-check" id="wcheck-amber" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="setArchiveWarm('terracotta')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1A100E;border-radius:50%;margin-right:10px;vertical-align:middle"></span>棕红陶土 <span class="warm-check" id="wcheck-terracotta" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="setArchiveWarm('cocoa')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1A1410;border-radius:50%;margin-right:10px;vertical-align:middle"></span>奶油可可 <span class="warm-check" id="wcheck-cocoa" style="color:var(--accent);display:none">✓</span></div>
+  <div class="menu-row" onclick="setArchiveWarm('classic')" style="padding-left:20px;padding-right:20px;border-bottom:none"><span style="display:inline-block;width:16px;height:16px;background:#1C1C1E;border:1px solid rgba(255,255,255,.2);border-radius:50%;margin-right:10px;vertical-align:middle"></span>经典深灰 <span class="warm-check" id="wcheck-classic" style="color:var(--accent);display:none">✓</span></div>
+  <button class="btn" onclick="closeWarmThemeSheet()" style="margin:12px 20px 0;text-align:center">取消</button>
+</div>
 <!-- Dark Mode Picker Sheet -->
 <div id="darkModeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px + env(safe-area-inset-bottom, 0px));transform:translateY(100%);transition:transform .3s ease">
   <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">深色模式</div>
@@ -460,7 +489,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 
   <!-- Bottom Nav -->
   <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 calc(18px + env(safe-area-inset-bottom, 0px));background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
-    <div class="nav-item active" id="nav-photos" onclick="navTo('photos')">
+    <div class="nav-item active" id="nav-home" onclick="navTo('photos')">
       <span class="nav-icon">📁</span><span class="nav-label">档案</span>
     </div>
     <div class="nav-item" id="nav-home" onclick="navTo('home')">
@@ -482,7 +511,8 @@ function isLoggedIn(){return !!AUTH.token}
 var onboardPage=0;
 function startApp(){document.getElementById('onboarding').style.display='none';localStorage.setItem('mv_welcome','1');showLogin()}
 function onboardNext(){var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage++;if(onboardPage>=3){startApp();return}t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
-function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext()}},{passive:true})}
+function onboardPrev(){if(onboardPage<=0)return;var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage--;t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
+function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext();else if(dx>0)onboardPrev()}},{passive:true})}
 function showLogin(){document.getElementById('loginScreen').style.display='flex'}
 function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
 function doLogin(){
@@ -522,7 +552,7 @@ function navTo(tab){
     else{clearTimeout(wfIdleTimer);document.getElementById('tab-strangers').style.display='block';refreshStrangers()}
     if(window.showSwipeHint)window.showSwipeHint();
   }else{
-    clearTimeout(wfIdleTimer);clearTimeout(filmTimer);
+    clearTimeout(wfIdleTimer);clearTimeout(filmTimer);clearInterval(filmTimeTimer);
     document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block';
   }
   // Update nav active state
@@ -535,6 +565,7 @@ function navTo(tab){
   if(tab==='home'){updateHomeUI()}
   // Hide overlays
   document.getElementById('captured').style.display='none';
+  if(starryWorldEnabled)dimStarsForPhoto(false);
   document.getElementById('collage').style.display='none';
   stopCountdown();
 }
@@ -631,7 +662,7 @@ function applyDarkMode(mode){
     r.setProperty('--tab-bg','#f5f5f7');
     r.setProperty('--sheet-bg','#fff');
     r.setProperty('--overlay-alpha','rgba(0,0,0,.3)');
-    document.body.style.background='#f5f5f7';
+    document.body.style.background='#f5f5f7';r.setProperty('--world-bg','#EAE8F0');
   }else{
     r.setProperty('--bg','#000');
     r.setProperty('--card','#1c1c1e');
@@ -646,7 +677,7 @@ function applyDarkMode(mode){
     r.setProperty('--tab-bg','#000');
     r.setProperty('--sheet-bg','#1c1c1e');
     r.setProperty('--overlay-alpha','rgba(0,0,0,.55)');
-    document.body.style.background='#000';
+    document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
   }
 }
 function toggleImmersiveFX(){
@@ -669,13 +700,13 @@ function applyPureBlack(on){
   if(on){
     document.documentElement.style.setProperty('--bg','#000');
     document.documentElement.style.setProperty('--tab-bg','#000');
-    document.body.style.background='#000';
+    document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
   }else{
     var dm=getDarkMode();
     if(dm==='light'){
       document.documentElement.style.setProperty('--bg','#f5f5f7');
       document.documentElement.style.setProperty('--tab-bg','#f5f5f7');
-      document.body.style.background='#f5f5f7';
+      document.body.style.background='#f5f5f7';r.setProperty('--world-bg','#EAE8F0');
     }else{
       document.documentElement.style.setProperty('--bg','#1c1c1e');
       document.documentElement.style.setProperty('--tab-bg','#1c1c1e');
@@ -691,7 +722,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v221\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v222\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1109,6 +1140,7 @@ function togglePhotoPublic(){
   localStorage.setItem('photo_public',next?'1':'0');
   document.getElementById('photoPublicState').textContent=next?'已开启':'已关闭';
   document.getElementById('photoPublicState').style.color=next?'var(--accent)':'var(--muted)';
+  if(isLoggedIn()){api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,photo_public:next}}).catch(function(){})}
 }
 function showClearConfirm(){
   if(confirm('此操作将永久删除你所有的照片和记录，无法恢复。\n\n确定清空吗？')){
@@ -1267,7 +1299,6 @@ function closeZoom(){
 function afterCaptureBack(){if(starryWorldEnabled)dimStarsForPhoto(false);
   closeZoom();stopCountdown();
   document.getElementById('captured').style.display='none';
-  closeZoom();
   // Resume all film rows
   document.querySelectorAll('[id^=filmRow]').forEach(function(r){r.setAttribute('data-paused','0');var t=r.querySelector('.film-track');if(t)t.style.animationPlayState='running'});
   navTo('home');
@@ -1460,7 +1491,7 @@ function doWorldLike(btn,momentId){
 function updateAllUI(){
   updateHomeUI();
   if(currentTab==='photos')refreshGallery();
-  if(currentTab==='strangers')refreshStrangers();
+  if(currentTab==='strangers'){if(getWatchMode()==='waterfall')refreshWaterfall(true);else refreshStrangers();}
 }
 
 // ======================== SAVE ========================
@@ -1554,7 +1585,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v221',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v222',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -1926,6 +1957,55 @@ setTimeout(function(){
   });
 },600);
 
+// ====================== WARM THEME ======================
+var archiveWarm=localStorage.getItem('archive_warm')||'classic';
+function openWarmThemeSheet(){
+  document.getElementById('warmThemeSheet').style.transform='translateY(0)';
+  var m=archiveWarm;['sunset','amber','terracotta','cocoa','classic'].forEach(function(k){document.getElementById('wcheck-'+k).style.display=k===m?'inline':'none'});
+}
+function closeWarmThemeSheet(){document.getElementById('warmThemeSheet').style.transform='translateY(100%)'}
+function setArchiveWarm(mode){
+  archiveWarm=mode;localStorage.setItem('archive_warm',mode);
+  document.getElementById('warmThemeState').textContent={sunset:'落日余晖',amber:'琥珀暖',terracotta:'棕红陶土',cocoa:'奶油可可',classic:'经典深灰'}[mode];
+  applyArchiveWarm();closeWarmThemeSheet();
+}
+function applyArchiveWarm(){
+  document.body.classList.toggle('archive-warm',true);
+  document.body.setAttribute('data-warm',archiveWarm);
+}
+// Init warm theme on load
+setTimeout(function(){
+  document.getElementById('warmThemeState').textContent={sunset:'落日余晖',amber:'琥珀暖',terracotta:'棕红陶土',cocoa:'奶油可可',classic:'经典深灰'}[archiveWarm];
+  applyArchiveWarm();
+},200);
+
+// ====================== RIPPLE EFFECT ======================
+setTimeout(function(){
+  document.querySelectorAll('.nav-item').forEach(function(el){
+    el.addEventListener('click',function(e){
+      var r=document.createElement('div');r.className='ripple';
+      var rect=el.getBoundingClientRect();
+      var size=Math.max(rect.width,rect.height);
+      r.style.width=r.style.height=size+'px';
+      r.style.left=(e.clientX-rect.left-size/2)+'px';
+      r.style.top=(e.clientY-rect.top-size/2)+'px';
+      el.appendChild(r);
+      setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r)},400);
+    });
+  });
+},700);
+
+// ====================== CUSTOM DIALOG ======================
+function showCustomDialog(msg,onOk,onCancel){
+  var overlay=document.createElement('div');overlay.className='custom-dialog-overlay';
+  var dlg=document.createElement('div');dlg.className='custom-dialog';
+  dlg.innerHTML='<p>'+msg+'</p><div class="btn-row"><button class="btn-cancel">取消</button><button class="btn-ok">确定</button></div>';
+  overlay.appendChild(dlg);document.body.appendChild(overlay);
+  dlg.querySelector('.btn-ok').onclick=function(){overlay.remove();if(onOk)onOk()};
+  dlg.querySelector('.btn-cancel').onclick=function(){overlay.remove();if(onCancel)onCancel()};
+  overlay.onclick=function(e){if(e.target===overlay){overlay.remove();if(onCancel)onCancel()}};
+}
+
 // ====================== STARRY WORLD ENGINE ======================
 var starryWorldEnabled=localStorage.getItem('starry_world')==='1';
 var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null;
@@ -1990,8 +2070,7 @@ function startMeteorShower(){
   m.className='meteor';
   var W=window.innerWidth,H=window.innerHeight;
   // Start from right side or top-right, cross diagonally across full screen
-  var fromRight=Math.random()>.5;
-  var startX=fromRight?W+Math.random()*100:-100-Math.random()*50;
+  var startX=W+Math.random()*150;
   var startY=Math.random()*H*.25;
   m.style.cssText='left:'+startX+'px;top:'+startY+'px;--mDur:'+(1.2+Math.random()*.8)+'s';
   c.appendChild(m);
