@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v220</title>
+<title>此刻 v221</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -190,9 +190,6 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   </div>
   <div class="menu-row" onclick="closeAllPanels();openTimeFragment()">
     <span>✨ 时光碎片</span><span class="menu-arrow">›</span>
-  </div>
-  <div class="menu-row" onclick="closeAllPanels();openCollage()">
-    <span>🖼️ 拼贴回顾</span><span class="menu-arrow">›</span>
   </div>
   <div class="menu-row" onclick="toggleDailyPick()" style="border-bottom:none">
     <span>📸 每日精选推送</span>
@@ -463,11 +460,11 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 
   <!-- Bottom Nav -->
   <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 calc(18px + env(safe-area-inset-bottom, 0px));background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
-    <div class="nav-item active" id="nav-home" onclick="navTo('home')">
-      <span class="nav-icon">📷</span><span class="nav-label">拍摄</span>
-    </div>
-    <div class="nav-item" id="nav-photos" onclick="navTo('photos')">
+    <div class="nav-item active" id="nav-photos" onclick="navTo('photos')">
       <span class="nav-icon">📁</span><span class="nav-label">档案</span>
+    </div>
+    <div class="nav-item" id="nav-home" onclick="navTo('home')">
+      <span class="nav-icon">📷</span><span class="nav-label">拍摄</span>
     </div>
     <div class="nav-item" id="nav-strangers" onclick="navTo('strangers')">
       <span class="nav-icon">🌍</span><span class="nav-label">看世界</span>
@@ -694,7 +691,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v220\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v221\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1557,7 +1554,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v220',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v221',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
