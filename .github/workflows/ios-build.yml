@@ -82,6 +82,13 @@ jobs:
             -exportOptionsPlist /tmp/export.plist \
             2>&1 | tail -30
           ls -la $PWD/build/*.ipa && echo "SIGNED IPA READY"
+      - name: Upload to TestFlight
+        run: |
+          echo "$APPSTORE_API_KEY" | base64 -d > /tmp/AuthKey.p8
+          xcrun altool --upload-app -f moment-app/ios/App/build/App.ipa -t ios \
+            --apiKey 42KU5BWP3V --apiIssuer 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e 2>&1
+        env:
+          APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
       - uses: actions/upload-artifact@v4
         if: success()
         with:
