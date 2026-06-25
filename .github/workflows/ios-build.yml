@@ -40,7 +40,7 @@ jobs:
         working-directory: moment-app
         run: |
           cd ios/App
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 220" App/Info.plist 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $(date +%y%m%d%H%M)" App/Info.plist 2>/dev/null || true
           /usr/libexec/PlistBuddy -c "Print :CFBundleVersion" App/Info.plist
       - name: Build Archive
         working-directory: moment-app
