@@ -9,10 +9,10 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v233</title>
+<title>此刻 v234</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
+:root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
 body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 .app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh}
 
@@ -37,7 +37,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 @keyframes tilt{0%,100%{transform:perspective(800px) rotateY(-5deg) rotateX(1deg) scale(.97)}25%{transform:perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)}50%{transform:perspective(800px) rotateY(5deg) rotateX(-1deg) scale(.97)}75%{transform:perspective(800px) rotateY(0deg) rotateX(0deg) scale(1)}}
 .depth3d{
   animation:tilt 4s ease-in-out infinite;
-  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 5px rgba(255,255,255,.1),0 0 30px rgba(10,132,255,.08) !important;
+  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 5px rgba(255,255,255,.1),0 0 30px rgba(255,107,53,.08) !important;
   border-radius:20px !important;
   position:relative;
   transform-style:preserve-3d;
@@ -58,16 +58,21 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 .nav-item.active .nav-label{font-weight:700;color:#FF6B35}
 .nav-item .nav-label{font-size:10px;letter-spacing:-.2px}
 .nav-item:active .nav-icon{transform:scale(.9)}
+/* Shoot button + glow ring */
+.btn-shoot-wrap{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center}
+.btn-shoot-glow{position:absolute;top:-14px;left:-14px;width:188px;height:188px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,.25),transparent 70%);animation:glowBreathe 2s ease-in-out infinite;pointer-events:none}
+.btn-shoot-ring{position:absolute;top:-6px;left:-6px;width:172px;height:172px;transform:rotate(-90deg);pointer-events:none}
+.btn-shoot-ring circle{fill:none;stroke:#FF6B35;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
+@keyframes glowBreathe{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 #mainActionBtn{
-  width:180px;height:180px;border-radius:50%;border:none;
-  background:var(--accent);color:#fff;font-size:20px;font-weight:600;
-  letter-spacing:-.3px;cursor:pointer;box-shadow:0 8px 32px rgba(10,132,255,.35);
+  width:160px;height:160px;border-radius:50%;border:none;
+  background:#FF6B35;color:#fff;font-size:17px;font-weight:600;
+  letter-spacing:-.2px;cursor:pointer;box-shadow:0 8px 28px rgba(255,107,53,.35),0 2px 8px rgba(0,0,0,.2);
   transition:all .25s;display:flex;align-items:center;justify-content:center;text-align:center;
-  line-height:1.4;-webkit-tap-highlight-color:transparent;
-  animation:br 3s ease-in-out infinite;
+  line-height:1.4;-webkit-tap-highlight-color:transparent;position:relative;z-index:2;
 }
-#mainActionBtn:active{transform:scale(.94);box-shadow:0 4px 16px rgba(10,132,255,.2)}
-#mainActionBtn.taken{animation:none;background:var(--card);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+#mainActionBtn:active{transform:scale(.94);background:#E55A2B;box-shadow:0 4px 16px rgba(255,107,53,.2)}
+#mainActionBtn.taken{background:#34C759;color:#fff;box-shadow:0 4px 20px rgba(52,199,89,.35),0 2px 8px rgba(0,0,0,.2);font-size:14px}
 #sideMenu{
   position:fixed;top:0;left:-280px;bottom:0;width:280px;background:var(--menu-bg);z-index:4000;
   transition:transform .25s ease;overflow-y:auto;padding:calc(30px + env(safe-area-inset-top, 0px)) 20px calc(30px + env(safe-area-inset-bottom, 0px));
@@ -348,7 +353,11 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   <!-- Home Tab -->
   <div id="tab-home" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 40px;overflow:hidden;overscroll-behavior:none;touch-action:manipulation;position:relative">
     <div id="todayStatus" style="font-size:15px;margin-bottom:20px;color:var(--muted);letter-spacing:-.2px">🌍 今天还没记录</div>
-    <button id="mainActionBtn" onclick="mainAction()">拍下<br>此刻</button>
+    <div class="btn-shoot-wrap">
+  <div class="btn-shoot-glow"></div>
+  <svg class="btn-shoot-ring" id="countdownRing" viewBox="0 0 172 172"><circle cx="86" cy="86" r="83" stroke-dasharray="521.5" stroke-dashoffset="0" opacity="0"/></svg>
+  <button id="mainActionBtn" onclick="mainAction()">拍下<br>此刻</button>
+</div>
     <div style="margin-top:24px;text-align:center">
       <div id="reminderHint" style="color:var(--muted);font-size:13px;margin-top:6px;letter-spacing:-.1px">今天还没有记录，拍下你的此刻吧</div>
       <div id="todayDate" style="position:absolute;top:12px;right:16px;color:rgba(255,255,255,.25);font-size:12px;letter-spacing:0px"></div>
@@ -752,7 +761,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v233\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v234\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1195,17 +1204,20 @@ function updateHomeUI(){
   var btn=document.getElementById('mainActionBtn');
   var status=document.getElementById('todayStatus');
   var idx=todayPhotoIdx();
+  var glow=document.querySelector('.btn-shoot-glow');
   if(idx>=0){
     status.textContent='✅ 今日已记录';
     status.style.color='rgba(72,199,142,.8)';
     btn.innerHTML='查看今日<br>照片';
     btn.classList.add('taken');
+    if(glow){glow.style.background='radial-gradient(circle,rgba(52,199,89,.25),transparent 70%)';glow.style.animationDuration='4s'}
     document.getElementById('reminderHint').textContent='今天已记录 · 明天继续';
   }else{
     status.textContent='🌍';
     status.style.color='var(--muted)';
     btn.innerHTML='拍下<br>此刻';
     btn.classList.remove('taken');
+    if(glow){glow.style.background='radial-gradient(circle,rgba(255,107,53,.25),transparent 70%)';glow.style.animationDuration='2s'}
     document.getElementById('reminderHint').textContent='今天还没有记录，拍下你的此刻吧';
   }
   // Show today's date
@@ -1239,9 +1251,15 @@ function pick(){
 }
 function updateCountdown(){
   var el=document.getElementById('countdownBadge');
-  if(!el)return;
-  el.textContent=countdownSec+'s';
-  el.style.color=countdownSec<=10?'rgba(255,80,80,.9)':'rgba(255,255,255,.6)';
+  if(el){el.textContent=countdownSec+'s';el.style.color=countdownSec<=10?'rgba(255,80,80,.9)':'rgba(255,255,255,.6)'}
+  // Ring progress
+  var ring=document.querySelector('#countdownRing circle');
+  if(ring){
+    ring.setAttribute('opacity','1');
+    var pct=countdownSec/60;
+    ring.style.strokeDashoffset=(521.5*(1-pct));
+    ring.style.stroke=countdownSec<=10?'#FF6B6B':'#FF6B35';
+  }
 }
 function cancelPhoto(){
   clearInterval(countdownTimer);
@@ -1260,6 +1278,8 @@ function cancelPhoto(){
 function stopCountdown(){
   clearInterval(countdownTimer);
   countdownSec=0;
+  var ring=document.querySelector('#countdownRing circle');
+  if(ring){ring.setAttribute('opacity','0');ring.style.strokeDashoffset='0'}
 }
 var pending=null;
 function gotPhoto(e){
@@ -1337,7 +1357,7 @@ function saveTh(){if(D.i>=0&&D.i<D.m.length){D.m[D.i].t=document.getElementById(
 var is3D=false;
 function toggle3D(){
   is3D=!is3D;var img=document.getElementById('ph');var btn=document.getElementById('btn3d');var b2=document.getElementById('btn3dv');
-  if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='#0a84ff';if(b2)b2.textContent='✨ 3D开';if(b2)b2.style.background='#0a84ff'}
+  if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='#FF6B35';if(b2)b2.textContent='✨ 3D开';if(b2)b2.style.background='#FF6B35'}
   else{img.classList.remove('depth3d');btn.textContent='✨ 3D景深';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D景深';if(b2)b2.style.background='var(--accent)'}
 }
 function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=1200;if(w<=maxDim&&h<=maxDim){cb(dataUrl);return}var r=Math.min(maxDim/w,maxDim/h);var cw=Math.round(w*r),ch=Math.round(h*r);var c=document.createElement('canvas');c.width=cw;c.height=ch;c.getContext('2d').drawImage(img,0,0,cw,ch);cb(c.toDataURL('image/jpeg',0.85))};img.src=dataUrl}
@@ -1508,7 +1528,7 @@ function doWorldLike(btn,momentId){
   if(!isLoggedIn()){alert('登录后才能点赞哦');return}
   btn.textContent='❤️ ...';btn.disabled=true;
   api('/api/like',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,momentId:parseInt(momentId)}}).then(function(r){
-    if(!r.error){btn.textContent='❤️ '+r.count;btn.style.background=r.liked?'rgba(255,80,80,.5)':'rgba(10,132,255,.3)'}
+    if(!r.error){btn.textContent='❤️ '+r.count;btn.style.background=r.liked?'rgba(255,80,80,.5)':'rgba(255,107,53,.3)'}
     btn.disabled=false
   }).catch(function(){btn.textContent='❤️ LIKE';btn.disabled=false})
 }
@@ -1586,7 +1606,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   var rows=Math.ceil(N/cols),CH=HH+rows*(cellSize+captionH+GAP)+FH;
   var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;var ctx=canvas.getContext('2d');
   ctx.fillStyle='#08080a';ctx.fillRect(0,0,CW,CH);
-  ctx.fillStyle='#0a84ff';ctx.fillRect(0,0,CW,3);
+  ctx.fillStyle='#FF6B35';ctx.fillRect(0,0,CW,3);
   ctx.fillStyle='#f5f5f7';ctx.font='bold 26px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';ctx.fillText(monthInfo.label,CW/2,38);
   var fd=new Date(moments[0].d||Date.now()),ld=new Date(moments[N-1].d||Date.now());
   var sub=N+'个瞬间 · '+(fd.getMonth()+1)+'.'+fd.getDate()+' - '+(ld.getMonth()+1)+'.'+ld.getDate();
@@ -1611,7 +1631,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v233',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v234',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
