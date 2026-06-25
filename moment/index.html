@@ -9,12 +9,14 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v94</title>
+<title>此刻 v220</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85)}
+:root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
 body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
 .app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh}
+.tab-full{position:relative;z-index:1}
+.tab-full::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:-1;pointer-events:none}
 .btn{
   display:block;width:100%;padding:18px;border:none;
   background:var(--card);color:var(--text);font-size:17px;font-weight:400;
@@ -106,27 +108,55 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 /* Filmstrip scroll */
 @keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes scroll-right{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
-.film-track{display:flex;gap:10px;position:absolute;height:160px;will-change:transform}
+.film-track{display:flex;gap:12px;position:absolute;height:190px;will-change:transform;align-items:center}
 .film-track.left{animation:scroll-left 35s linear infinite}
 .film-track.right{animation:scroll-right 35s linear infinite}
-.film-photo{flex-shrink:0;width:160px;height:160px;border-radius:12px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,.15);cursor:pointer;position:relative;transition:transform .15s;border:1.5px solid rgba(255,255,255,.8)}
-.film-photo:active{transform:scale(.96)}
-.film-photo img{width:100%;height:100%;object-fit:cover}
-.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:rgba(255,255,255,.7);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
-.film-photo .film-time-label{color:#a0a0a0;font-size:10px;flex-shrink:0}
+.film-photo{flex-shrink:0;width:250px;height:190px;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:pointer;position:relative;transition:transform .2s ease;border:.5px solid rgba(255,255,255,.12);background:#1a1a1d}
+.film-photo:active{transform:scale(.97);opacity:.85}
+.film-photo img{width:100%;height:100%;display:block;object-fit:contain;border-radius:10px}
+.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(transparent,rgba(0,0,0,.5));color:rgba(255,255,255,.6);font-size:11px;font-weight:500;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:6px;align-items:center}
+.film-photo .film-time-label{color:rgba(255,255,255,.35);font-size:10px;flex-shrink:0;font-weight:400}
 /* Pulse dot */
 @keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
+/* ====== Starry World ====== */
+.world-stars{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;overflow:hidden}
+.world-stars::before{content:"";position:fixed;top:0;left:0;width:100vw;height:100vh;background:radial-gradient(ellipse at 30% 20%,rgba(20,40,80,.35) 0%,transparent 55%),radial-gradient(ellipse at 70% 60%,rgba(15,25,45,.25) 0%,transparent 50%),var(--world-bg);z-index:0}
+.star{position:fixed;background:#fff;border-radius:50%;z-index:1;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s)}
+.star.tier-bright{box-shadow:0 0 3px 1px rgba(200,220,255,.8),0 0 8px 3px rgba(150,180,255,.4)}
+.star.tier-mid{box-shadow:0 0 1px rgba(200,220,255,.3)}
+.star.tier-dim{box-shadow:none}
+.star.dimmed{opacity:.15!important;transition:opacity .5s}
+@keyframes twinkle{0%,100%{opacity:var(--lo,.3)}50%{opacity:var(--hi,.9)}}
+.meteor{position:fixed;width:2px;height:80px;background:linear-gradient(135deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.6) 25%,rgba(180,210,255,.2) 55%,transparent 100%);z-index:3;border-radius:2px;animation:meteor var(--mDur,1.5s) linear forwards;pointer-events:none;box-shadow:0 0 4px 1px rgba(255,255,255,.5),0 0 12px 4px rgba(180,200,255,.15);transform-origin:top left}
+.meteor::after{content:'';position:absolute;top:0;left:0;width:150%;height:100%;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent 90%);filter:blur(6px);border-radius:2px}
+@keyframes meteor{0%{transform:translate(0,0) rotate(-35deg);opacity:1}30%{opacity:.7}70%{opacity:.15}100%{transform:translate(-900px,900px) rotate(-35deg);opacity:0}}
+.nebula{position:fixed;border-radius:50%;z-index:0;filter:blur(80px);animation:nebulaDrift var(--nd,75s) ease-in-out infinite alternate}
+@keyframes nebulaDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--nx,15px),var(--ny,20px)) scale(1.05)}}
+.star-sparkle{animation:sparkleFlash .3s ease-out forwards!important}
+@keyframes sparkleFlash{0%{opacity:1;transform:scale(1);box-shadow:0 0 4px 2px rgba(255,255,255,.9),0 0 16px 6px rgba(180,200,255,.6)}50%{opacity:1;transform:scale(2.5);box-shadow:0 0 6px 3px rgba(255,255,255,1),0 0 24px 10px rgba(200,220,255,.8)}100%{opacity:var(--lo,.3);transform:scale(1);box-shadow:0 0 0px 0px transparent}}
 .pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4CD964;margin-left:4px;vertical-align:middle;animation:pulse-dot 1s ease-in-out infinite}
 </style>
 </head>
 <body>
 <!-- Overlays -->
-<div id="welcomeScreen" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:2100;flex-direction:column;align-items:center;justify-content:center;padding:30px">
-  <div style="font-size:64px;margin-bottom:20px;animation:br 3s ease-in-out infinite">📸</div>
-  <h1 style="color:var(--text);font-size:38px;font-weight:700;margin-bottom:16px;letter-spacing:-.5px">此刻</h1>
-  <div style="color:var(--muted);font-size:16px;line-height:1.8;text-align:center;max-width:280px;margin-bottom:12px;letter-spacing:-.2px">每天一次，随机时刻</div>
-  <div style="color:rgba(255,255,255,.25);font-size:14px;line-height:2;text-align:center;max-width:280px;margin-bottom:40px;letter-spacing:-.1px">你只有60秒<br>拍下你面前的东西<br>没有滤镜 &nbsp; 没有粉丝 &nbsp; 可以点赞<br>只是你真实的生活</div>
-  <button class="btn" onclick="startApp()" style="width:240px;text-align:center;background:var(--accent);color:#fff;font-size:18px;font-weight:500">✨ 开始</button>
+<div id="onboarding" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:2200;overflow:hidden">
+  <div id="onboard-track" style="display:flex;width:300%;height:100%;transition:transform .35s ease">
+    <div class="onboard-page" style="flex:1;background:linear-gradient(180deg,#FF9A56,#FFD6A5);display:flex;align-items:center;justify-content:center;flex-direction:column">
+      <div style="color:#fff;font-size:32px;font-weight:700;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.15)">这世界<br>这么多人</div>
+    </div>
+    <div class="onboard-page" style="flex:1;background:linear-gradient(180deg,#A0C4FF,#BDB2FF);display:flex;align-items:center;justify-content:center;flex-direction:column">
+      <div style="color:#fff;font-size:28px;font-weight:700;text-align:center;line-height:1.6;text-shadow:0 2px 8px rgba(0,0,0,.15);max-width:300px">总有那么一个瞬间<br>你会心动<br>你会留恋</div>
+    </div>
+    <div class="onboard-page" style="flex:1;background:linear-gradient(180deg,#CA9BF7,#F5B8D9);display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative">
+      <div style="color:#fff;font-size:28px;font-weight:700;text-align:center;line-height:1.6;text-shadow:0 2px 8px rgba(0,0,0,.15);max-width:300px">欢迎来到「此刻」<br>记录真实<br>连接世界</div>
+      <button onclick="startApp()" style="position:absolute;bottom:80px;left:20%;right:20%;padding:16px;background:#FF6B35;color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:600;cursor:pointer;letter-spacing:1px">开始</button>
+    </div>
+  </div>
+  <div id="onboard-dots" style="position:absolute;bottom:40px;left:0;right:0;display:flex;justify-content:center;gap:10px">
+    <div class="onboard-dot active" style="width:10px;height:10px;border-radius:50%;background:#fff;opacity:1;transition:opacity .3s"></div>
+    <div class="onboard-dot" style="width:10px;height:10px;border-radius:50%;background:#fff;opacity:.4;transition:opacity .3s"></div>
+    <div class="onboard-dot" style="width:10px;height:10px;border-radius:50%;background:#fff;opacity:.4;transition:opacity .3s"></div>
+  </div>
 </div>
 <div id="loginScreen" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:2000;flex-direction:column;align-items:center;justify-content:center;padding:40px">
   <div style="font-size:56px;margin-bottom:24px">📸</div>
@@ -210,6 +240,10 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
       <span>📶 图片加载策略</span>
       <span id="imgQualityState" style="color:var(--muted);font-size:13px">省流量</span>
     </div>
+    <div class="menu-row" onclick="toggleStarryWorld()">
+      <span>🌌 星空背景</span>
+      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
+    </div>
     <div class="menu-row" onclick="toggleImmersiveFX()">
       <span>✨ 沉浸特效</span>
       <span id="immersiveFXState" style="color:var(--accent);font-size:13px;flex-shrink:0;margin-left:8px">已开启</span>
@@ -276,6 +310,8 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   <button class="btn" onclick="closeModeSheet()" style="margin:12px 20px 0;text-align:center">取消</button>
 </div>
 
+<!-- Starry World Background -->
+<div id="starryWorld" class="world-stars" style="display:none"></div>
 <!-- Main App -->
 <div class="app">
   
@@ -287,7 +323,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   </header>
 
   <!-- Home Tab -->
-  <div id="tab-home" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 40px;overflow:hidden;overscroll-behavior:none;touch-action:manipulation;position:relative">
+  <div id="tab-home" class="tab-full" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 40px;overflow:hidden;overscroll-behavior:none;touch-action:manipulation;position:relative">
     <div id="todayStatus" style="font-size:15px;margin-bottom:20px;color:var(--muted);letter-spacing:-.2px">🌍 今天还没记录</div>
     <button id="mainActionBtn" onclick="mainAction()">拍下<br>此刻</button>
     <div style="margin-top:24px;text-align:center">
@@ -298,30 +334,30 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
   </div>
 
   <!-- Photos/Gallery Tab -->
-  <div id="tab-photos" style="display:none;flex:1;overflow-y:auto;padding:16px 24px 60px;overscroll-behavior:none">
+  <div id="tab-photos" class="tab-full" style="display:none;flex:1;overflow-y:auto;padding:16px 24px 60px;overscroll-behavior:none">
     <div id="gr"></div>
   </div>
 
   <!-- Strangers Tab (Immersive / Filmstrip) -->
-  <div id="tab-strangers" style="display:none;flex:1;overflow:visible;background:var(--tab-bg)">
+  <div id="tab-strangers" class="tab-full" style="display:none;flex:1;overflow:visible;background:var(--tab-bg)">
     <!-- Time Header -->
-    <div style="position:relative;padding:12px 16px 4px;text-align:center;overflow:visible;z-index:10;min-height:56px">
-      <div style="display:flex;align-items:center;justify-content:center;overflow:visible;width:100%">
-        <span id="filmTime" style="font-size:32px;font-weight:700;color:#f5f5f7;font-family:-apple-system,'SF Pro Display','SF Mono','PingFang SC',monospace;white-space:nowrap;display:inline-block"></span>
-        <span class="pulse-dot" style="margin-left:6px;margin-bottom:4px;flex-shrink:0"></span>
+    <div style="position:relative;padding:24px 16px 16px;text-align:center;z-index:10">
+      <div style="display:flex;align-items:baseline;justify-content:center;width:100%">
+        <span id="filmTime" style="font-size:42px;font-weight:300;color:#f5f5f7;font-family:-apple-system,'SF Pro Display','SF Mono','PingFang SC',monospace;white-space:nowrap;display:inline-block;letter-spacing:-1px;line-height:1.1"></span>
+        <span class="pulse-dot" style="margin-left:8px;margin-bottom:6px;flex-shrink:0"></span>
       </div>
-      <div style="font-size:14px;color:#a0a0a0;letter-spacing:2px;margin-top:2px">世界正在记录</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.35);letter-spacing:3px;margin-top:4px;font-weight:400">世界正在记录</div>
     </div>
     <!-- Film Rows -->
-    <div id="filmRow1" style="overflow:hidden;height:160px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
-    <div id="filmRow2" style="overflow:hidden;height:160px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
-    <div id="filmRow3" style="overflow:hidden;height:160px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow1" style="overflow:hidden;height:190px;position:relative;margin:10px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow2" style="overflow:hidden;height:190px;position:relative;margin:10px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow3" style="overflow:hidden;height:190px;position:relative;margin:10px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
     <!-- Bottom space -->
-    <div style="height:50px"></div>
+    <div style="height:80px;background:linear-gradient(180deg,transparent,var(--bg) 80%)"></div>
   </div>
 
   <!-- Strangers Tab (Waterfall) -->
-  <div id="tab-strangers-waterfall" style="display:none;flex:1;overflow-y:auto;padding:0;background:var(--tab-bg)">
+  <div id="tab-strangers-waterfall" class="tab-full" style="display:none;flex:1;overflow-y:auto;padding:0;background:var(--tab-bg)">
     <div style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px;background:var(--nav-bg)">
       <span></span>
     </div>
@@ -442,11 +478,14 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 <script>
 var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
-var API='https://06c6a609538685.lhr.life';var AUTH={token:'',userId:0};
+var API='http://81.70.102.36:3000';var AUTH={token:'',userId:0};
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
 function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
 function isLoggedIn(){return !!AUTH.token}
-function startApp(){document.getElementById('welcomeScreen').style.display='none';localStorage.setItem('mv_welcome','1');showLogin()}
+var onboardPage=0;
+function startApp(){document.getElementById('onboarding').style.display='none';localStorage.setItem('mv_welcome','1');showLogin()}
+function onboardNext(){var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage++;if(onboardPage>=3){startApp();return}t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
+function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext()}},{passive:true})}
 function showLogin(){document.getElementById('loginScreen').style.display='flex'}
 function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
 function doLogin(){
@@ -655,7 +694,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v94\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v220\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -869,7 +908,7 @@ function renderWaterfallCards(moments,append){
     img.style='width:100%;display:block;background:#111;min-height:120px;object-fit:cover';
     card.appendChild(img);
     card.appendChild(infoDiv);
-    var url=m.imageUrl+'?thumb=1';
+    var url=m.imageUrl;
     if(_imgCache[url]){img.src=_imgCache[url]}
     else{fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}}).then(function(r){return r.blob()}).then(function(blob){var blobUrl=URL.createObjectURL(blob);_imgCache[url]=blobUrl;img.src=blobUrl}).catch(function(){img.src=url})}
     grid.appendChild(card);
@@ -914,9 +953,9 @@ function viewStrangerMoment(m){
   }else{var b=actions.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='看世界';
   document.getElementById('capturedBackBtn').style.display='';
-  document.getElementById('captured').style.display='flex';
+  document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
 }
-function backFromStrangerDetail(){
+function backFromStrangerDetail(){if(starryWorldEnabled)dimStarsForPhoto(false);
   closeZoom();
   document.getElementById('captured').style.display='none';
   document.getElementById('countdownBadge').style.display='';
@@ -1178,7 +1217,7 @@ function gotPhoto(e){
       document.getElementById('publishUI').style.display='block';
       document.getElementById('viewUI').style.display='none';
       document.getElementById('capturedLabel').textContent='已记录';
-      document.getElementById('captured').style.display='flex';
+      document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
       document.getElementById('th').focus();
     });
   };r.readAsDataURL(f);e.target.value='';
@@ -1228,7 +1267,7 @@ function zoomPhoto(){
 function closeZoom(){
   document.getElementById('photoZoom').style.display='none';
 }
-function afterCaptureBack(){
+function afterCaptureBack(){if(starryWorldEnabled)dimStarsForPhoto(false);
   closeZoom();stopCountdown();
   document.getElementById('captured').style.display='none';
   closeZoom();
@@ -1305,8 +1344,8 @@ function view(i){D.i=i;var m=D.m[i];
   var sa=document.getElementById('strangerDetailActions');if(sa)sa.remove();
   document.getElementById('capturedLabel').textContent=m.status==='rejected'?'已被移除':'档案回顾';
   document.getElementById('capturedBackBtn').style.display='';
-  document.getElementById('captured').style.display='flex'}
-function backToGallery(){document.getElementById('captured').style.display='none';navTo('photos')}
+  document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true)}
+function backToGallery(){if(starryWorldEnabled)dimStarsForPhoto(false);document.getElementById('captured').style.display='none';navTo('photos')}
 
 
 var _emojiPool=['🍎','🍊','🍋','🍇','🍓','🥝','🍑','🍒','🥭','🍍','🐱','🐶','🐰','🦊','🐼','🐨','🐯','🐸','🐙','🦋'];
@@ -1408,7 +1447,7 @@ function viewFilmPhoto(id,rowId){
   if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='看世界';
   document.getElementById('capturedBackBtn').style.display='';
-  document.getElementById('captured').style.display='flex';
+  document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
 }
 function doWorldLike(btn,momentId){
   if(!momentId){return}
@@ -1484,7 +1523,7 @@ function generateCollage(){
   });
 }
 function renderCollageCanvas(imgs,moments,monthInfo){
-  var N=moments.length,CW=390,PH=14,GAP=8,HH=90,FH=50,AW=CW-2*PH;
+  var N=moments.length,CW=780,PH=14,GAP=8,HH=90,FH=50,AW=CW-2*PH;
   var cols,cellSize,captionFontSize,captionH;
   if(N===1){cols=1;cellSize=AW;captionFontSize=14;captionH=30}
   else if(N<=4){cols=2;cellSize=(AW-GAP)/2;captionFontSize=12;captionH=26}
@@ -1518,7 +1557,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v94',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v220',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -1623,7 +1662,7 @@ function renderTFCanvas(imgs,moments,start,end,tpl){
 }
 // Template 1: Classic Grid
 function renderTplGrid(imgs,moments,start,end){
-  var N=moments.length,CW=390,PH=12,GAP=6;
+  var N=moments.length,CW=780,PH=12,GAP=6;
   var cols=N<=4?2:3;
   var cellSize=(CW-2*PH-(cols-1)*GAP)/cols;
   var rows=Math.ceil(N/cols);
@@ -1652,7 +1691,7 @@ function renderTplGrid(imgs,moments,start,end){
 }
 // Template 2: Polaroid Stack
 function renderTplPolaroid(imgs,moments,start,end){
-  var N=moments.length,CW=390,CH=Math.max(500,N*120+160);
+  var N=moments.length,CW=780,CH=Math.max(500,N*120+160);
   var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
   var ctx=canvas.getContext('2d');
   ctx.fillStyle='#fdf8f0';ctx.fillRect(0,0,CW,CH);
@@ -1690,7 +1729,7 @@ function renderTplPolaroid(imgs,moments,start,end){
 }
 // Template 3: Magazine Layout
 function renderTplMagazine(imgs,moments,start,end){
-  var N=moments.length,CW=390,CH=600;
+  var N=moments.length,CW=780,CH=600;
   var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
   var ctx=canvas.getContext('2d');
   var grad=ctx.createLinearGradient(0,0,0,CH);
@@ -1734,7 +1773,7 @@ function renderTplMagazine(imgs,moments,start,end){
 }
 // Template 4: Calendar Diary
 function renderTplCalendar(imgs,moments,start,end){
-  var N=moments.length,CW=390;
+  var N=moments.length,CW=780;
   var days=['日','一','二','三','四','五','六'];
   // Group by date, take latest per day
   var dayMap={};
@@ -1779,7 +1818,7 @@ function renderTplCalendar(imgs,moments,start,end){
 }
 // Template 5: Film Strip
 function renderTplFilm(imgs,moments,start,end){
-  var N=Math.min(moments.length,15),CW=Math.max(390,N*120+40),cellW=100,cellH=150;
+  var N=Math.min(moments.length,15),CW=Math.max(780,N*120+40),cellW=100,cellH=150;
   var CH=cellH+120;
   var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;
   var ctx=canvas.getContext('2d');
@@ -1824,7 +1863,7 @@ function shareTF(){
 // ======================== INIT ========================
 var seenWelcome=localStorage.getItem('mv_welcome');
 if(AUTH.token&&AUTH.userId){setTimeout(function(){updateAllUI();updateSideMenuUser()},500)}
-else if(!seenWelcome){setTimeout(function(){document.getElementById('welcomeScreen').style.display='flex'},500)}
+else if(!seenWelcome){setTimeout(function(){document.getElementById('onboarding').style.display='block';initOnboardSwipe()},500)}
 else{setTimeout(showLogin,800)}
 
 // Immersive film pool auto-refreshes every 30s via loadFilmPool timer
@@ -1859,6 +1898,9 @@ setTimeout(function(){
   document.getElementById('darkModeState').textContent=dm==='auto'?'跟随系统':(dm==='light'?'浅色模式':'深色模式');
   var iq=localStorage.getItem('img_quality')||'compressed';
   document.getElementById('imgQualityState').textContent=iq==='compressed'?'省流量':'原图';
+  var sw=localStorage.getItem('starry_world')==='1';
+  document.getElementById('starryWorldState').textContent=sw?'已开启':'已关闭';
+  document.getElementById('starryWorldState').style.color=sw?'var(--accent)':'var(--muted)';
   var ifx=localStorage.getItem('immersive_fx')!=='0';
   document.getElementById('immersiveFXState').textContent=ifx?'已开启':'已关闭';
   document.getElementById('immersiveFXState').style.color=ifx?'var(--accent)':'var(--muted)';
@@ -1887,6 +1929,99 @@ setTimeout(function(){
   });
 },600);
 
+// ====================== STARRY WORLD ENGINE ======================
+var starryWorldEnabled=localStorage.getItem('starry_world')==='1';
+var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null;
+function toggleStarryWorld(){
+  starryWorldEnabled=!starryWorldEnabled;
+  localStorage.setItem('starry_world',starryWorldEnabled?'1':'0');
+  document.getElementById('starryWorldState').textContent=starryWorldEnabled?'已开启':'已关闭';
+  document.getElementById('starryWorldState').style.color=starryWorldEnabled?'var(--accent)':'var(--muted)';
+  if(starryWorldEnabled){initStarryWorld()}else{destroyStarryWorld()}
+}
+function initStarryWorld(){
+  var c=document.getElementById('starryWorld');
+  if(!c)return;
+  c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';
+  _stars=[];_nebulaEls=[];
+  var W=window.innerWidth,H=window.innerHeight;
+  // Create nebulae (1-2 bands)
+  var nebulaColors=[['rgba(80,60,180,.06)','rgba(60,40,140,.04)'],['rgba(180,120,60,.05)','rgba(140,80,40,.03)']];
+  var nebCount=1+Math.floor(Math.random()*2);
+  for(var n=0;n<nebCount;n++){
+    var neb=document.createElement('div');
+    neb.className='nebula';
+    var nSize=Math.min(W,H)*(.25+Math.random()*.15);
+    neb.style.cssText='width:'+nSize+'px;height:'+nSize+'px;top:'+(Math.random()*H*.6)+'px;left:'+(Math.random()*W*.6)+'px;background:radial-gradient(ellipse at center,'+nebulaColors[n][0]+','+nebulaColors[n][1]+',transparent 70%);--nd:'+(60+Math.random()*30)+'s;--nx:'+(10+Math.random()*30)+'px;--ny:'+(10+Math.random()*30)+'px';
+    c.appendChild(neb);_nebulaEls.push(neb);
+  }
+  // Create stars (80-100)
+  var total=80+Math.floor(Math.random()*21);
+  // Tier: 10-15 bright, 30-40 mid, rest dim
+  var brightCount=10+Math.floor(Math.random()*6);
+  var midCount=30+Math.floor(Math.random()*11);
+  for(var i=0;i<total;i++){
+    var tier=i<brightCount?'bright':(i<brightCount+midCount?'mid':'dim');
+    var size=tier==='bright'?2+Math.random()*2:(tier==='mid'?1+Math.random()*1.5:.5+Math.random()*.7);
+    var lo=tier==='bright'?.6+Math.random()*.2:(tier==='mid'?.3+Math.random()*.2:.05+Math.random()*.1);
+    var hi=tier==='bright'?.85+Math.random()*.15:(tier==='mid'?.5+Math.random()*.2:.2+Math.random()*.15);
+    var dur=1+Math.random()*4;
+    var delay=Math.random()*5;
+    var s=document.createElement('div');
+    s.className='star tier-'+tier;
+    s.style.cssText='width:'+size+'px;height:'+size+'px;top:'+(Math.random()*H)+'px;left:'+(Math.random()*W)+'px;--lo:'+lo+';--hi:'+hi+';--d:'+dur+'s;--delay:'+delay+'s';
+    s.setAttribute('data-tier',tier);s.setAttribute('data-lo',lo);s.setAttribute('data-hi',hi);
+    c.appendChild(s);_stars.push(s);
+  }
+  // Start meteor shower
+  startMeteorShower();
+  // Start sparkle effect
+  startSparkles();
+}
+function destroyStarryWorld(){
+  var c=document.getElementById('starryWorld');
+  if(c){c.style.display='none';c.innerHTML=''}
+  _stars=[];_nebulaEls=[];
+  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
+}
+function startMeteorShower(){
+  clearTimeout(_meteorTimer);
+  if(!starryWorldEnabled)return;
+  var c=document.getElementById('starryWorld');
+  if(!c||c.style.display==='none')return;
+  var m=document.createElement('div');
+  m.className='meteor';
+  var W=window.innerWidth,H=window.innerHeight;
+  // Start from right side or top-right, cross diagonally across full screen
+  var fromRight=Math.random()>.5;
+  var startX=fromRight?W+Math.random()*100:-100-Math.random()*50;
+  var startY=Math.random()*H*.25;
+  m.style.cssText='left:'+startX+'px;top:'+startY+'px;--mDur:'+(1.2+Math.random()*.8)+'s';
+  c.appendChild(m);
+  setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m)},2200);
+  _meteorTimer=setTimeout(startMeteorShower,1200+Math.random()*3000);
+}
+function startSparkles(){
+  clearTimeout(_sparkleTimer);
+  if(!starryWorldEnabled)return;
+  var brightStars=_stars.filter(function(s){return s.getAttribute('data-tier')==='bright'});
+  if(brightStars.length>0){
+    var target=brightStars[Math.floor(Math.random()*brightStars.length)];
+    target.classList.add('star-sparkle');
+    setTimeout(function(){target.classList.remove('star-sparkle')},350);
+  }
+  _sparkleTimer=setTimeout(startSparkles,10000+Math.random()*5000);
+}
+// Photo-star interaction: dim stars near photo overlay
+function dimStarsForPhoto(dim){
+  var factor=dim?.5:1;
+  _stars.forEach(function(s){
+    if(dim){s.classList.add('dimmed')}else{s.classList.remove('dimmed')}
+  });
+}
+// Init starry world on load if enabled
+if(starryWorldEnabled){setTimeout(initStarryWorld,300)}
+// ====================== IMAGE PROXY ======================
 // Image proxy cache
 var _imgCache={};
 function proxyImage(imgEl, url){
