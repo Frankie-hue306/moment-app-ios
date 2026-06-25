@@ -32,6 +32,7 @@ jobs:
           <plist version="1.0">
           <dict>
             <key>method</key><string>app-store</string>
+            <key>teamID</key><string>LB37T6L2B3</string>
             <key>uploadSymbols</key><true/>
           </dict>
           </plist>
@@ -42,6 +43,7 @@ jobs:
           cd ios/App
           xcodebuild -workspace App.xcworkspace -scheme App -sdk iphoneos -configuration Release \
             -archivePath $PWD/build/App.xcarchive \
+            DEVELOPMENT_TEAM=LB37T6L2B3 \
             -allowProvisioningUpdates \
             -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_42KU5BWP3V.p8 \
             -authenticationKeyID 42KU5BWP3V \
@@ -51,6 +53,7 @@ jobs:
             -archivePath $PWD/build/App.xcarchive \
             -exportPath $PWD/build \
             -exportOptionsPlist /tmp/export.plist \
+            DEVELOPMENT_TEAM=LB37T6L2B3 \
             -allowProvisioningUpdates \
             -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_42KU5BWP3V.p8 \
             -authenticationKeyID 42KU5BWP3V \
