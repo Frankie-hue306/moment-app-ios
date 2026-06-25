@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v229</title>
+<title>此刻 v230</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -754,7 +754,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v229\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v230\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -938,7 +938,7 @@ function refreshWaterfall(reset){
 function loadWaterfallPage(){
   if(wfLoading||!wfHasMore)return;
   wfLoading=true;document.getElementById('wf-loading').style.display='block';
-  fetch(API+'/api/explore?page='+wfPage+'&limit=15').then(function(r){return r.json()}).then(function(d){
+  fetch(API+'/api/explore?page='+wfPage+'&limit=15&sort=recent').then(function(r){return r.json()}).then(function(d){
     document.getElementById('wf-loading').style.display='none';
     if(d.moments&&d.moments.length>0){
       wfMoments=wfMoments.concat(d.moments);
@@ -1428,7 +1428,7 @@ function startFilmTime(){
 }
 function updateStrangerStats(){} // stub - stats now in filmstrip time header
 function loadFilmPool(){
-  fetch(API+'/api/explore?limit=6').then(function(r){return r.json()}).then(function(d){
+  fetch(API+'/api/explore?limit=6&sort=recent').then(function(r){return r.json()}).then(function(d){
     if(d.moments&&d.moments.length){filmPool=d.moments;renderFilmRows();}
   }).catch(function(){});
   clearTimeout(filmTimer);
@@ -1613,7 +1613,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v229',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v230',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
