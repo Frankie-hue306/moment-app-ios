@@ -52,7 +52,6 @@ jobs:
             -archivePath $PWD/build/App.xcarchive \
             -exportPath $PWD/build \
             -exportOptionsPlist /tmp/export.plist \
-            -allowProvisioningUpdates \
             -authenticationKeyPath ~/.appstoreconnect/private_keys/AuthKey_42KU5BWP3V.p8 \
             -authenticationKeyID 42KU5BWP3V \
             -authenticationKeyIssuerID 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e \
