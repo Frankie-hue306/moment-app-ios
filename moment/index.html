@@ -9,14 +9,13 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v230</title>
+<title>此刻 v231</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#0a84ff;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
 body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
-.app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh}
-.tab-full{position:relative;z-index:1}
-.tab-full::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:-1;pointer-events:none}
+.app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh;position:relative;z-index:2}
+.tab-full{position:relative}
 .btn{
   display:block;width:100%;padding:18px;border:none;
   background:var(--card);color:var(--text);font-size:17px;font-weight:400;
@@ -116,11 +115,10 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 .film-photo img{width:100%;height:100%;display:block;object-fit:contain;border-radius:10px}
 .film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:4px 6px;background:linear-gradient(transparent,rgba(0,0,0,.5));color:rgba(255,255,255,.55);font-size:9px;font-weight:500;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
 .film-photo .film-time-label{color:rgba(255,255,255,.3);font-size:8px;flex-shrink:0;font-weight:400}
-.tab-full.archive-warm::before{background:var(--archive-bg)}
 /* Pulse dot */
 @keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
 /* ====== Starry World ====== */
-.world-stars{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;overflow:hidden}
+.world-stars{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:1;pointer-events:none;overflow:hidden}
 .world-stars::before{content:"";position:fixed;top:0;left:0;width:100vw;height:100vh;background:radial-gradient(ellipse at 30% 20%,rgba(20,40,80,.35) 0%,transparent 55%),radial-gradient(ellipse at 70% 60%,rgba(15,25,45,.25) 0%,transparent 50%),var(--world-bg);z-index:0}
 .star{position:fixed;background:#fff;border-radius:50%;z-index:10;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s)}
 .star.tier-bright{box-shadow:0 0 3px 1px rgba(200,220,255,.8),0 0 8px 3px rgba(150,180,255,.4)}
@@ -559,7 +557,7 @@ function navTo(tab,noAnim){
     if(tab==='strangers'){var m=getWatchMode();if(m==='waterfall'){refreshWaterfall(true)}else{clearTimeout(wfIdleTimer);document.getElementById('tab-strangers').style.display='block';refreshStrangers()}if(window.showSwipeHint)window.showSwipeHint()}
     else{clearTimeout(wfIdleTimer);clearTimeout(filmTimer);clearInterval(filmTimeTimer);document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block'}
     updateNavActive(tab);
-    if(tab==='photos')refreshGallery();
+    if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=getDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
     if(tab==='home')updateHomeUI();
     document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
     document.getElementById('collage').style.display='none';stopCountdown();
@@ -593,7 +591,7 @@ function navTo(tab,noAnim){
   });
   // Update nav active
   updateNavActive(tab);
-  if(tab==='photos')refreshGallery();
+  if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=getDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
   if(tab==='home')updateHomeUI();
   // Hide overlays
   document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
@@ -754,7 +752,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v230\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v231\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1613,7 +1611,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v230',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v231',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2015,6 +2013,10 @@ function setArchiveWarm(mode){
 function applyArchiveWarm(){
   var tab=document.getElementById('tab-photos');
   if(tab){tab.setAttribute('data-warm',archiveWarm)}
+  // Apply warm bg to tab (not via ::before)
+  var warmColors={sunset:'#2C1810',amber:'#1C140F',terracotta:'#1A100E',cocoa:'#1A1410',classic:'#1C1C1E'};
+  document.documentElement.style.setProperty('--bg',warmColors[archiveWarm]||'#1C1C1E');
+  document.body.style.background=warmColors[archiveWarm]||'#1C1C1E';
 }
 // Init warm theme on load
 setTimeout(function(){
