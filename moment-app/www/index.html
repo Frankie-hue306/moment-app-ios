@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v274</title>
+<title>此刻 v275</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -536,21 +536,23 @@ function onboardNext(){var t=document.getElementById('onboard-track');var d=docu
 function onboardPrev(){if(onboardPage<=0)return;var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage--;t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
 function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext();else if(dx>0)onboardPrev()}},{passive:true})}
 function showLogin(){document.getElementById('loginScreen').style.display='flex'}
-function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
+function skipLogin(){_loggingIn=false;document.getElementById('loginScreen').style.display='none';updateAllUI()}
+var _loggingIn=false;
 function doLogin(){
+  if(_loggingIn)return;_loggingIn=true;
   var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
   if(ph.length<11){document.getElementById('loginMsg').textContent='请输入11位手机号';return}
   document.getElementById('loginMsg').textContent='登录中...';
   fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})})
   .then(function(r){return r.json()}).then(function(d){
-    if(d.error){document.getElementById('loginMsg').textContent=d.error;return}
+    if(d.error){document.getElementById('loginMsg').textContent=d.error;_loggingIn=false;return}
     AUTH.token=d.token;AUTH.userId=d.userId;saveAuth();
     // Clear local data from previous account
     if(D.m.length>0){if(!confirm('登录将同步服务器数据。本地'+D.m.length+'条记录将被替换。继续？')){document.getElementById('loginMsg').textContent='';return}}
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
-    document.getElementById('loginScreen').style.display='none';
+    _loggingIn=false;document.getElementById('loginScreen').style.display='none';
     updateSideMenuUser();updateAllUI();
-  }).catch(function(e){document.getElementById('loginMsg').textContent='网络错误，请重试'})
+  }).catch(function(e){document.getElementById('loginMsg').textContent='网络错误，请重试';_loggingIn=false})
 }
 function api(path,opts){
   opts=opts||{};
@@ -763,7 +765,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v274\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v275\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -772,7 +774,15 @@ function showToast(msg){
   t.style.cssText='position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;font-size:14px;padding:10px 24px;border-radius:20px;z-index:5000;opacity:0;transition:opacity .3s;pointer-events:none';
   document.body.appendChild(t);
   requestAnimationFrame(function(){t.style.opacity='1'});
-  setTimeout(function(){t.style.opacity='0';setTimeout(function(){t.remove()},300)},1500);
+  // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){t.style.opacity='0';// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){t.remove()},300)},1500);
 }
 // ======================== REPORT ========================
 var reportTargetMomentId=null;
@@ -859,7 +869,11 @@ function slideSwitchMode(from,to){
     fromEl.style.opacity='0';
     toEl.style.transition='transform .25s ease';
     toEl.style.transform='translateX(0)';
-    setTimeout(function(){
+    // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){
       if(animId!==slideAnimId)return; // cancelled by newer animation
       fromEl.style.display='none';
       fromEl.style.transform='';
@@ -883,7 +897,11 @@ function showModeToast(mode){
   toast.textContent=mode==='waterfall'?'瀑布流':'沉浸';
   toast.style.opacity='1';
   clearTimeout(modeToastTimer);
-  modeToastTimer=setTimeout(function(){toast.style.opacity='0'},800);
+  modeToastTimer=// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){toast.style.opacity='0'},800);
 }
 // Swipe gesture for tab-strangers and tab-strangers-waterfall
 function initSwipeGestures(){
@@ -922,7 +940,15 @@ function initSwipeGestures(){
     tip.textContent='← 滑动切换模式 →';
     document.body.appendChild(tip);
     requestAnimationFrame(function(){tip.style.opacity='1'});
-    swipeHintTimer=setTimeout(function(){tip.style.opacity='0';setTimeout(function(){tip.remove()},400)},2000);
+    swipeHintTimer=// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){tip.style.opacity='0';// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){tip.remove()},400)},2000);
   };
 }
 setTimeout(initSwipeGestures,800);
@@ -931,7 +957,11 @@ setTimeout(initSwipeGestures,800);
 var wfPage=1,wfHasMore=true,wfLoading=false,wfMoments=[],wfIdleTimer=null;
 function resetWFIdleTimer(){
   clearTimeout(wfIdleTimer);
-  wfIdleTimer=setTimeout(function(){
+  wfIdleTimer=// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){
     if(currentTab==='strangers'&&getWatchMode()==='waterfall'){
       refreshWaterfall(true);
     }
@@ -996,7 +1026,7 @@ function formatTimeAgo(dateStr){
 }
 function viewStrangerMoment(m){
   stopCountdown();
-  document.getElementById('countdownBadge').style.display='none';
+  stopCountdown();document.getElementById('countdownBadge').style.display='none';
   document.getElementById('ph').src=imgUrl(m.imageUrl);
   document.getElementById('viewText').textContent=m.thought||'(无文字)';
   document.getElementById('viewDate').textContent=formatTimeAgo(m.created_at);
@@ -1033,6 +1063,10 @@ function backFromStrangerDetail(){if(starryWorldEnabled)dimStarsForPhoto(false);
   navTo('strangers');
 }
 // Scroll load for waterfall
+// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
 setTimeout(function(){
   var wfEl=document.getElementById('tab-strangers-waterfall');
   if(wfEl){
@@ -1072,7 +1106,11 @@ setTimeout(function(){
         if(pullEl)pullEl.textContent='刷新中...';
         refreshWaterfall(true);
       }
-      if(pullEl){setTimeout(function(){if(pullEl)pullEl.remove();pullEl=null},300)}
+      if(pullEl){// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){if(pullEl)pullEl.remove();pullEl=null},300)}
       pulling=false;
     },{passive:true});
   }
@@ -1081,7 +1119,11 @@ function scrollToTop(){
   var wfEl=document.getElementById('tab-strangers-waterfall');
   if(wfEl){
     wfEl.scrollTo({top:0,behavior:'smooth'});
-    setTimeout(function(){refreshWaterfall(true)},400);
+    // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){refreshWaterfall(true)},400);
   }
 }
 
@@ -1367,7 +1409,11 @@ function saveMoment(){
         var b=r.newBadge;
         var msg='🎉 恭喜！你已连续打卡'+b.days+'天，获得【'+b.name+'】徽章 '+b.emoji;
         if(b.days===306)msg='🎈 恭喜！连续打卡306天，获得【诞辰之光】徽章 🎈 这一天，因你而特别。';
-        setTimeout(function(){alert(msg)},500);
+        // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){alert(msg)},500);
       }
       afterCaptureBack();
       updateAllUI();
@@ -1550,7 +1596,7 @@ function viewFilmPhoto(id,rowId){
   }
   document.getElementById('viewText').textContent=found.thought||'(无文字)';
   document.getElementById('viewDate').textContent=formatTimeAgo(found.created_at);
-  document.getElementById('countdownBadge').style.display='none';
+  stopCountdown();document.getElementById('countdownBadge').style.display='none';
   document.getElementById('publishUI').style.display='none';
   document.getElementById('viewUI').style.display='block';
   document.getElementById('btn3dv').style.display='none';
@@ -1673,7 +1719,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v274',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v275',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -1787,13 +1833,21 @@ function genTF(start,end){
     // Show fullscreen result overlay
     var overlay=document.getElementById('tfResultOverlay');
     overlay.style.display='flex';
-    setTimeout(function(){overlay.style.transform='translateY(0)'},20);
+    // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){overlay.style.transform='translateY(0)'},20);
   });
 }
 function closeTFResult(){
   var overlay=document.getElementById('tfResultOverlay');
   overlay.style.transform='translateY(100%)';
-  setTimeout(function(){overlay.style.display='none'},350);
+  // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){overlay.style.display='none'},350);
 }
 function renderTFCanvas(imgs,moments,start,end,tpl){
   tpl=tpl||0;
@@ -2018,14 +2072,26 @@ function shareTF(){
 
 // ======================== INIT ========================
 var seenWelcome=localStorage.getItem('mv_welcome');
-if(AUTH.token&&AUTH.userId){setTimeout(function(){updateAllUI();updateSideMenuUser()},500)}
-else if(!seenWelcome){setTimeout(function(){document.getElementById('onboarding').style.display='block';initOnboardSwipe()},500)}
+if(AUTH.token&&AUTH.userId){// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){updateAllUI();updateSideMenuUser()},500)}
+else if(!seenWelcome){// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){document.getElementById('onboarding').style.display='block';initOnboardSwipe()},500)}
 else{setTimeout(showLogin,800)}
 
 // Immersive film pool auto-refreshes every 30s via loadFilmPool timer
 
 // Status bar spacing now handled via env(safe-area-inset-top) in CSS
 // Init UI
+// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
 setTimeout(function(){
   updateHomeUI();updateSideMenuUser();
   // Init quick settings states
@@ -2075,6 +2141,10 @@ function hapticClick(){
   }catch(e){}
 }
 // Add haptic to all interactive elements
+// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
 setTimeout(function(){
   document.querySelectorAll('button, .menu-row, .nav-item, .btn, #mainActionBtn, .wf-card, [onclick]').forEach(function(el){
     if(!el.hasAttribute('data-haptic')){
@@ -2107,6 +2177,10 @@ function applyArchiveWarm(){
   }
 }
 // Init warm theme on load
+// Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
 setTimeout(function(){
   document.getElementById('warmThemeState').textContent={sunset:'落日余晖',amber:'琥珀暖',terracotta:'棕红陶土',cocoa:'奶油可可',classic:'经典深灰'}[archiveWarm];
   applyArchiveWarm();
@@ -2138,20 +2212,23 @@ function initStarryWorld(){
   if(!c)return;
   c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
   var dm=effectiveDarkMode();
+  _stars=[];_nebulaEls=[];
   if(dm==='light'){
     document.body.style.background='#F8F6F3';c.setAttribute('data-mode','light');c.style.display='none';
     var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
     var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
-    return;
+  }else{
+    document.body.style.background='#0B0E1A';c.setAttribute('data-mode','dark');c.style.display='block';
   }
-  document.body.style.background='#0B0E1A';
+  // Always create stars (hidden in light via display:none)
+  var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
   c.setAttribute('data-mode',dm);
   // Make bars transparent in dark mode so stars show through
   if(dm!=='light'){
     var tb=document.querySelector('.topbar');if(tb){tb.style.background='transparent';tb.style.backdropFilter='none';tb.style.webkitBackdropFilter='none';tb.style.borderBottom='none'}
     var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='transparent';bn.style.backdropFilter='none';bn.style.webkitBackdropFilter='none';bn.style.borderTop='none'}
   }
-  _stars=[];_nebulaEls=[];
+  
   var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
   // Create nebulae (1-2 bands)
   var nebulaColors=[['rgba(80,60,180,.06)','rgba(60,40,140,.04)'],['rgba(180,120,60,.05)','rgba(140,80,40,.03)']];
@@ -2234,7 +2311,11 @@ function createMeteor(){
   m.style.cssText='left:'+sx+'px;top:'+sy+'px;--ang:135deg;--dx:'+dx+'px;--dy:'+dy+'px;--mDur:'+(.6+Math.random()*.2)+'s';
   var trail=document.createElement('div');trail.className='meteor-trail';m.appendChild(trail);
   c.appendChild(m);
-  setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m)},900);
+  // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m)},900);
 }
 function startMeteorShower(){
   clearTimeout(_meteorTimer);
@@ -2252,7 +2333,11 @@ function startSparkles(){
   if(brightStars.length>0){
     var target=brightStars[Math.floor(Math.random()*brightStars.length)];
     target.classList.add('star-sparkle');
-    setTimeout(function(){target.classList.remove('star-sparkle')},350);
+    // Listen for system dark mode changes
+try{window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){
+  if(getDarkMode()==='auto')applyDarkMode('auto');
+})}catch(e){}
+setTimeout(function(){target.classList.remove('star-sparkle')},350);
   }
   _sparkleTimer=setTimeout(startSparkles,10000+Math.random()*5000);
 }
