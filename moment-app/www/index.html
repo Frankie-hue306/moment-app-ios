@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v235</title>
+<title>此刻 v236</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -131,9 +131,11 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 .star.tier-dim{box-shadow:none}
 .star.dimmed{opacity:.15!important;transition:opacity .5s}
 @keyframes twinkle{0%,100%{opacity:var(--lo,.3)}50%{opacity:var(--hi,.9)}}
-.meteor{position:fixed;width:2px;height:80px;background:linear-gradient(135deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.6) 25%,rgba(180,210,255,.2) 55%,transparent 100%);z-index:2;border-radius:2px;animation:meteor var(--mDur,1.5s) linear forwards;pointer-events:none;box-shadow:0 0 4px 1px rgba(255,255,255,.5),0 0 12px 4px rgba(180,200,255,.15);transform-origin:top left}
-.meteor::after{content:'';position:absolute;top:0;left:0;width:150%;height:100%;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent 90%);filter:blur(6px);border-radius:2px}
-@keyframes meteor{0%{transform:translate(0,0) rotate(-35deg);opacity:1}30%{opacity:.7}70%{opacity:.15}100%{transform:translate(-900px,900px) rotate(-35deg);opacity:0}}
+.meteor{position:fixed;z-index:2;pointer-events:none;animation:meteor var(--mDur,.7s) linear forwards}
+.meteor::before{content:'';position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(255,255,255,.9),0 0 24px 8px rgba(200,210,255,.5);z-index:1}
+.meteor-trail{position:absolute;top:0;left:0;width:100px;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.95) 0%,rgba(200,180,255,.5) 40%,rgba(167,139,250,.2) 70%,transparent 100%);border-radius:1px;filter:blur(.5px);transform-origin:left center}
+.meteor-trail::after{content:'';position:absolute;top:-3px;left:0;width:100%;height:8px;background:linear-gradient(90deg,rgba(255,255,255,.3) 0%,rgba(167,139,250,.1) 50%,transparent 100%);filter:blur(4px);border-radius:4px}
+@keyframes meteor{0%{transform:translate(0,0) rotate(var(--ang,-45deg));opacity:1}15%{opacity:1}70%{opacity:.2}100%{transform:translate(var(--dx,500px),var(--dy,500px)) rotate(var(--ang,-45deg));opacity:0}}
 .nebula{position:fixed;border-radius:50%;z-index:0;filter:blur(80px);animation:nebulaDrift var(--nd,75s) ease-in-out infinite alternate}
 @keyframes nebulaDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--nx,15px),var(--ny,20px)) scale(1.05)}}
 .star-sparkle{animation:sparkleFlash .3s ease-out forwards!important}
@@ -761,7 +763,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v235\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v236\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1443,6 +1445,7 @@ function refreshStrangers(){
 }
 function startFilmTime(){
   var tab=document.getElementById('tab-strangers');if(tab){tab.style.display='block';tab.style.opacity='';tab.style.transform='';tab.style.transition='';}
+  if(starryWorldEnabled){setTimeout(welcomeMeteorShower,3000)}
 }
 function updateStrangerStats(){} // stub - stats now in filmstrip time header
 function loadFilmPool(){
@@ -1631,7 +1634,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v235',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v236',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2112,21 +2115,35 @@ function destroyStarryWorld(){
   clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
   document.body.style.background='';
 }
-function startMeteorShower(){
-  clearTimeout(_meteorTimer);
+function createMeteor(){
   if(!starryWorldEnabled)return;
   var c=document.getElementById('starryWorld');
   if(!c||c.style.display==='none')return;
-  var m=document.createElement('div');
-  m.className='meteor';
-  var W=window.innerWidth,H=window.innerHeight;
-  // Start from right side or top-right, cross diagonally across full screen
-  var startX=W+Math.random()*150;
-  var startY=Math.random()*H*.25;
-  m.style.cssText='left:'+startX+'px;top:'+startY+'px;--mDur:'+(1.2+Math.random()*.8)+'s';
+  var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
+  // Angle: 40-50 deg (top-left to bottom-right)
+  var angle=40+Math.random()*10;
+  var rad=angle*Math.PI/180;
+  var diag=Math.sqrt(W*W+H*H);
+  var dist=diag*(.33+Math.random()*.17);
+  var dx=dist*Math.cos(rad),dy=dist*Math.sin(rad);
+  // Start from top 20% or corners
+  var sx,sy;
+  if(Math.random()<.5){sx=Math.random()*W*.3;sy=Math.random()*H*.15}
+  else{sx=W*.6+Math.random()*W*.4;sy=Math.random()*H*.1}
+  var m=document.createElement('div');m.className='meteor';
+  m.style.cssText='left:'+sx+'px;top:'+sy+'px;--ang:-'+angle+'deg;--dx:'+dx+'px;--dy:'+dy+'px;--mDur:'+(.6+Math.random()*.2)+'s';
+  var trail=document.createElement('div');trail.className='meteor-trail';m.appendChild(trail);
   c.appendChild(m);
-  setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m)},2200);
-  _meteorTimer=setTimeout(startMeteorShower,1200+Math.random()*3000);
+  setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m)},900);
+}
+function startMeteorShower(){
+  clearTimeout(_meteorTimer);
+  createMeteor();
+  _meteorTimer=setTimeout(startMeteorShower,8000+Math.random()*22000);
+}
+function welcomeMeteorShower(){
+  var count=3+Math.floor(Math.random()*3);
+  for(var i=0;i<count;i++){setTimeout(createMeteor,i*200+Math.random()*200)}
 }
 function startSparkles(){
   clearTimeout(_sparkleTimer);
