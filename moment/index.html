@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v266</title>
+<title>此刻 v267</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -115,14 +115,14 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 /* Filmstrip scroll */
 @keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes scroll-right{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
-.film-track{display:flex;gap:8px;position:absolute;height:120px;will-change:transform;align-items:center}
+.film-track{display:flex;gap:14px;position:absolute;height:170px;will-change:transform;align-items:center}
 .film-track.left{animation:scroll-left 35s linear infinite}
 .film-track.right{animation:scroll-right 35s linear infinite}
-.film-photo{flex-shrink:0;width:115px;height:115px;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.15);cursor:pointer;position:relative;transition:transform .2s ease;border:.5px solid rgba(255,255,255,.1);background:#1a1a1d}
+.film-photo{flex-shrink:0;width:160px;height:160px;border-radius:10px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.15);cursor:pointer;position:relative;transition:transform .2s ease;border:.5px solid rgba(255,255,255,.1);background:#1a1a1d}
 .film-photo:active{transform:scale(.97);opacity:.85}
 .film-photo img{width:100%;height:100%;display:block;object-fit:cover;border-radius:8px}
-.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:4px 6px;background:linear-gradient(transparent,rgba(0,0,0,.5));color:rgba(255,255,255,.55);font-size:9px;font-weight:500;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
-.film-photo .film-time-label{color:rgba(255,255,255,.3);font-size:8px;flex-shrink:0;font-weight:400}
+.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.5));color:rgba(255,255,255,.6);font-size:10px;font-weight:500;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
+.film-photo .film-time-label{color:#8E8E93;font-size:10px;flex-shrink:0;font-weight:400}
 /* Pulse dot */
 @keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
 /* ====== Starry World ====== */
@@ -393,10 +393,9 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       </div>
     </div>
     <!-- Film Rows -->
-    <div id="filmRow1" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
-    <div id="filmRow2" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
-    <div id="filmRow3" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
-    <div id="filmRow4" style="overflow:hidden;height:120px;position:relative;margin:6px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow1" style="overflow:hidden;height:170px;position:relative;margin:14px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow2" style="overflow:hidden;height:170px;position:relative;margin:14px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow3" style="overflow:hidden;height:170px;position:relative;margin:14px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
     <!-- Bottom space -->
     <div style="height:calc(env(safe-area-inset-bottom, 0px) + 70px);background:linear-gradient(180deg,transparent,var(--bg) 60%)"></div>
   </div>
@@ -764,7 +763,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v266\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v267\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1463,14 +1462,12 @@ function renderFilmRows(){
   if(filmPool.length===0)return;
   // Shuffle and pick for 3 rows
   var pool=filmPool.slice().sort(function(){return Math.random()-.5});
-  var r1=pool.slice(0,Math.max(12,pool.length));
-  var r2=pool.slice(Math.max(0,pool.length-12)).reverse();
-  var r3=pool.slice(0,Math.max(12,pool.length)).sort(function(){return Math.random()-.5});
-  var r4=pool.slice(Math.max(0,pool.length-12)).sort(function(){return Math.random()-.5});
+  var r1=pool.slice(0,Math.max(15,pool.length));
+  var r2=pool.slice(Math.max(0,pool.length-15)).reverse();
+  var r3=pool.slice(0,Math.max(15,pool.length)).sort(function(){return Math.random()-.5});
   buildRow('filmRow1',r1,'left');
   buildRow('filmRow2',r2,'right');
   buildRow('filmRow3',r3,'left');
-  buildRow('filmRow4',r4,'right');
 }
 function buildRow(id,photos,dir){
   var row=document.getElementById(id);
@@ -1638,7 +1635,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v266',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v267',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
