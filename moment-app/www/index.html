@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v262</title>
+<title>此刻 v263</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -388,7 +388,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
     <!-- World Header -->
     <div style="position:relative;padding:32px 16px 12px;text-align:center;z-index:10">
       <div style="display:flex;align-items:center;justify-content:center;width:100%">
-        <span style="font-size:20px;font-weight:500;color:rgba(255,255,255,.7);font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;letter-spacing:4px">世界正在记录</span>
+        <span style="font-size:20px;font-weight:500;color:var(--muted);font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;letter-spacing:4px">世界正在记录</span>
         <span class="pulse-dot" style="margin-left:8px;flex-shrink:0"></span>
       </div>
     </div>
@@ -679,12 +679,12 @@ function applyDarkMode(mode){
   // Update starry world bg if enabled
   if(starryWorldEnabled){
     var sw=document.getElementById('starryWorld');
-    document.body.style.background=mode==='light'?'#1a1a2e':'#0B0E1A';
+    document.body.style.background=mode==='light'?'#F8F6F3':'#0B0E1A';
     document.body.style.transition='background .3s ease';
     if(sw){sw.setAttribute('data-mode',mode)}
   }
   if(mode==='light'){
-    r.setProperty('--bg','#f5f5f7');
+    r.setProperty('--bg','#f5f5f7');r.setProperty('--accent','#D4A373');
     r.setProperty('--card','#fff');
     r.setProperty('--text','#1c1c1e');
     r.setProperty('--muted','#8e8e93');
@@ -701,7 +701,7 @@ function applyDarkMode(mode){
     else{var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.remove('light-glass')}
     r.setProperty('--world-bg','#0B0E1A');
   }else{
-    r.setProperty('--bg','#000');
+    r.setProperty('--bg','#000');r.setProperty('--accent','#FF6B35');
     r.setProperty('--card','#1c1c1e');
     r.setProperty('--text','#f5f5f7');
     r.setProperty('--muted','#98989d');
@@ -738,13 +738,13 @@ function togglePureBlack(){
 function applyPureBlack(on){
   var r=document.documentElement.style;
   if(on){
-    r.setProperty('--bg','#000');
+    r.setProperty('--bg','#000');r.setProperty('--accent','#FF6B35');
     r.setProperty('--tab-bg','#000');
     document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
   }else{
     var dm=effectiveDarkMode();
     if(dm==='light'){
-      r.setProperty('--bg','#f5f5f7');
+      r.setProperty('--bg','#f5f5f7');r.setProperty('--accent','#D4A373');
       r.setProperty('--tab-bg','#f5f5f7');
       document.body.style.background='#f5f5f7';r.setProperty('--world-bg','#EAE8F0');
     }else{
@@ -762,7 +762,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v262\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v263\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1636,7 +1636,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v262',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v263',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2095,11 +2095,19 @@ function initStarryWorld(){
   if(!c)return;
   c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
   var dm=effectiveDarkMode();
-  document.body.style.background=dm==='light'?'#1a1a2e':'#0B0E1A';
+  if(dm==='light'){
+    document.body.style.background='#F8F6F3';c.setAttribute('data-mode','light');
+    var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
+    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
+    return;
+  }
+  document.body.style.background='#0B0E1A';
   c.setAttribute('data-mode',dm);
-  // Make bars transparent so stars show through
-  var tb=document.querySelector('.topbar');if(tb){tb.style.background='transparent';tb.style.backdropFilter='none';tb.style.webkitBackdropFilter='none';tb.style.borderBottom='none'}
-  var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='transparent';bn.style.backdropFilter='none';bn.style.webkitBackdropFilter='none';bn.style.borderTop='none'}
+  // Make bars transparent in dark mode so stars show through
+  if(dm!=='light'){
+    var tb=document.querySelector('.topbar');if(tb){tb.style.background='transparent';tb.style.backdropFilter='none';tb.style.webkitBackdropFilter='none';tb.style.borderBottom='none'}
+    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='transparent';bn.style.backdropFilter='none';bn.style.webkitBackdropFilter='none';bn.style.borderTop='none'}
+  }
   _stars=[];_nebulaEls=[];
   var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
   // Create nebulae (1-2 bands)
