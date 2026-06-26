@@ -9,11 +9,11 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v239</title>
+<title>此刻 v240</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
-body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none;transition:background .3s ease}
 .app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh}
 
 .btn{
@@ -154,6 +154,7 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
 .custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
 .custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
 .custom-dialog .btn-ok{background:#FF6B35;color:#fff;font-weight:600}
+.world-stars[data-mode="light"]::before{background:#F5F0EB}
 </style>
 </head>
 <body>
@@ -690,6 +691,19 @@ function setDarkMode(mode){
 }
 function applyDarkMode(mode){
   var r=document.documentElement.style;
+  // Update starry world bg if enabled
+  if(starryWorldEnabled){
+    var sw=document.getElementById('starryWorld');
+    if(mode==='light'){
+      document.body.style.background='linear-gradient(180deg,#F5F0EB,#FDF8F0)';
+      document.body.style.transition='background .3s ease';
+      if(sw){sw.setAttribute('data-mode','light')}
+    }else{
+      document.body.style.background='#0B0E1A';
+      document.body.style.transition='background .3s ease';
+      if(sw){sw.setAttribute('data-mode','dark');sw.innerHTML='';_stars=[];_nebulaEls=[];initStarryWorld()}
+    }
+  }
   if(mode==='light'){
     r.setProperty('--bg','#f5f5f7');
     r.setProperty('--card','#fff');
@@ -765,7 +779,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v239\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v240\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1636,7 +1650,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v239',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v240',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2086,7 +2100,9 @@ function initStarryWorld(){
   var c=document.getElementById('starryWorld');
   if(!c)return;
   c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';
-  document.body.style.background='#0B0E1A';
+  var dm=getDarkMode();
+  if(dm==='light'){document.body.style.background='linear-gradient(180deg,#F5F0EB,#FDF8F0)';c.setAttribute('data-mode','light');return}
+  document.body.style.background='#0B0E1A';c.setAttribute('data-mode','dark');
   _stars=[];_nebulaEls=[];
   var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
   // Create nebulae (1-2 bands)
@@ -2124,10 +2140,12 @@ function initStarryWorld(){
 }
 function destroyStarryWorld(){
   var c=document.getElementById('starryWorld');
-  if(c){c.style.display='none';c.innerHTML=''}
+  if(c){c.style.display='none';c.innerHTML='';c.removeAttribute('data-mode')}
   _stars=[];_nebulaEls=[];
   clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
   document.body.style.background='';
+  // Re-apply dark mode to restore correct bg
+  applyDarkMode(getDarkMode());
 }
 function createMeteor(){
   if(!starryWorldEnabled)return;
