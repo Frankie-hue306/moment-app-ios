@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v265</title>
+<title>此刻 v266</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -764,7 +764,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v265\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v266\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1638,20 +1638,22 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v265',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v266',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
   if(!collageCanvas)return;
-  collageCanvas.toBlob(function(blob){
+  if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Filesystem){
+    var base64=collageCanvas.toDataURL('image/png').split(',')[1];
     var fname='moment-'+collageMonth.year+'-'+collageMonth.month+'.png';
-    var file=new File([blob],fname,{type:'image/png'});
-    if(navigator.share){
-      navigator.share({files:[file]}).then(function(){showToast('已保存')}).catch(function(e){
-        var a=document.createElement('a');a.href=collageCanvas.toDataURL('image/png');a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
-      });
-    }else{showToast('请长按图片保存')}
-  },'image/png');
+    Capacitor.Plugins.Filesystem.writeFile({path:fname,data:base64,directory:2}).then(function(){
+      showToast('已保存到文件');
+    }).catch(function(){
+      showToast('保存失败');
+    });
+    return;
+  }
+  var a=document.createElement('a');a.href=collageCanvas.toDataURL('image/png');a.download='moment-'+collageMonth.year+'-'+collageMonth.month+'.png';document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 function shareCollage(){
   if(!collageCanvas)return;
@@ -1956,15 +1958,18 @@ function renderTplFilm(imgs,moments,start,end){
 function pad2(n){return n<10?'0'+n:''+n}
 function saveTF(){
   if(!tfCanvas)return;
-  tfCanvas.toBlob(function(blob){
-    var file=new File([blob],'时光碎片.png',{type:'image/png'});
-    if(navigator.share){
-      navigator.share({files:[file]}).then(function(){showToast('已保存')}).catch(function(e){
-        // Fallback: try download
-        var a=document.createElement('a');a.href=tfCanvas.toDataURL('image/png');a.download='时光碎片.png';document.body.appendChild(a);a.click();document.body.removeChild(a);
-      });
-    }else{showToast('请长按图片保存')}
-  },'image/png');
+  // Try Capacitor native save first
+  if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Filesystem){
+    var base64=tfCanvas.toDataURL('image/png').split(',')[1];
+    Capacitor.Plugins.Filesystem.writeFile({path:'时光碎片_'+Date.now()+'.png',data:base64,directory:2}).then(function(){
+      showToast('已保存到文件');
+    }).catch(function(){
+      showToast('保存失败');
+    });
+    return;
+  }
+  // Fallback: download link for browser
+  var a=document.createElement('a');a.href=tfCanvas.toDataURL('image/png');a.download='时光碎片.png';document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 function shareTF(){
   if(!tfCanvas)return;
