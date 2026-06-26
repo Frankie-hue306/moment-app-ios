@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v273</title>
+<title>此刻 v274</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -212,7 +212,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   </div>
   <div style="height:1px;background:var(--menu-sep);margin:8px 0 12px"></div>
   <div class="menu-row" onclick="closeAllPanels();navTo('photos')">
-    <span>📁 我的档案</span><span class="menu-arrow">›</span>
+    <span>📁 我的日记</span><span class="menu-arrow">›</span>
   </div>
   <div class="menu-row" onclick="closeAllPanels();openTimeFragment()">
     <span>✨ 时光碎片</span><span class="menu-arrow">›</span>
@@ -264,7 +264,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       <span id="pureBlackState" style="color:var(--muted);font-size:13px;flex-shrink:0;margin-left:8px">已关闭</span>
     </div>
     <div class="menu-row" onclick="openWarmThemeSheet()" style="border-bottom:none">
-      <span>🎨 档案暖色</span>
+      <span>🎨 日记暖色</span>
       <span id="warmThemeState" style="color:var(--muted);font-size:13px">经典深灰</span>
     </div>
   </div>
@@ -290,7 +290,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   <!-- Group 4: 支持 -->
   <div style="margin-bottom:24px">
     <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">支持</div>
-    <div class="menu-row" onclick="alert('常见问题：\n1. 如何删除照片？在档案中点照片进入详情，点击删除\n2. 如何切换模式？在看世界页面左右滑动\n\n联系开发者：moment.app@163.com')">
+    <div class="menu-row" onclick="alert('常见问题：\n1. 如何删除照片？在日记中点照片进入详情，点击删除\n2. 如何切换模式？在探索页面左右滑动\n\n联系开发者：moment.app@163.com')">
       <span>❓ 帮助与反馈</span><span class="menu-arrow">›</span>
     </div>
     <div class="menu-row" onclick="showAbout()">
@@ -299,7 +299,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
     <div class="menu-row" onclick="alert('用户协议：\n此刻App是一款个人生活记录工具。用户上传内容需遵守社区规范，不得发布违法违规内容。')">
       <span>📄 用户协议</span><span class="menu-arrow">›</span>
     </div>
-    <div class="menu-row" onclick="alert('隐私政策：\n你的照片和数据仅存储在本地和你的账号中。公开照片会显示在看世界模块。')" style="border-bottom:none">
+    <div class="menu-row" onclick="alert('隐私政策：\n你的照片和数据仅存储在本地和你的账号中。公开照片会显示在探索模块。')" style="border-bottom:none">
       <span>🔒 隐私政策</span><span class="menu-arrow">›</span>
     </div>
   </div>
@@ -314,7 +314,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 
 <!-- Warm Theme Picker Sheet -->
 <div id="warmThemeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px + env(safe-area-inset-bottom, 0px));transform:translateY(100%);transition:transform .3s ease">
-  <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">档案暖色主题</div>
+  <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">日记暖色主题</div>
   <div class="menu-row" onclick="setArchiveWarm('sunset')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#2C1810;border-radius:50%;margin-right:10px;vertical-align:middle"></span>落日余晖 <span class="warm-check" id="wcheck-sunset" style="color:var(--accent);display:none">✓</span></div>
   <div class="menu-row" onclick="setArchiveWarm('amber')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1C140F;border-radius:50%;margin-right:10px;vertical-align:middle"></span>琥珀暖 <span class="warm-check" id="wcheck-amber" style="color:var(--accent);display:none">✓</span></div>
   <div class="menu-row" onclick="setArchiveWarm('terracotta')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1A100E;border-radius:50%;margin-right:10px;vertical-align:middle"></span>棕红陶土 <span class="warm-check" id="wcheck-terracotta" style="color:var(--accent);display:none">✓</span></div>
@@ -436,7 +436,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       <div id="viewDate" style="font-size:12px;color:var(--muted);margin-bottom:20px"></div>
       <button class="btn depth-btn" onclick="toggle3D()" id="btn3dv" style="text-align:center">✨ 3D景深</button>
     </div>
-    <button class="btn" id="capturedBackBtn" onclick="var l=document.getElementById('capturedLabel').textContent;if(l==='看世界')backFromStrangerDetail();else if(l==='档案回顾'||l==='已被移除')backToGallery();else afterCaptureBack()" style="text-align:center;background:transparent;color:var(--muted);margin-top:20px">← 返回</button>
+    <button class="btn" id="capturedBackBtn" onclick="var l=document.getElementById('capturedLabel').textContent;if(l==='探索')backFromStrangerDetail();else if(l==='日记回顾'||l==='已被移除')backToGallery();else afterCaptureBack()" style="text-align:center;background:transparent;color:var(--muted);margin-top:20px">← 返回</button>
   </div>
 
   <!-- Collage Screen (overlay) -->
@@ -511,13 +511,13 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   <!-- Bottom Nav -->
   <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 calc(18px + env(safe-area-inset-bottom, 0px));background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
     <div class="nav-item" id="nav-photos" onclick="navTo('photos')">
-      <span class="nav-icon">📁</span><span class="nav-label">档案</span>
+      <span class="nav-icon">📁</span><span class="nav-label">日记</span>
     </div>
     <div class="nav-item active" id="nav-home" onclick="navTo('home')">
-      <span class="nav-icon">📷</span><span class="nav-label">拍摄</span>
+      <span class="nav-icon">📷</span><span class="nav-label">此刻</span>
     </div>
     <div class="nav-item" id="nav-strangers" onclick="navTo('strangers')">
-      <span class="nav-icon">🌍</span><span class="nav-label">看世界</span>
+      <span class="nav-icon">🌍</span><span class="nav-label">探索</span>
     </div>
   </nav>
 </div>
@@ -763,7 +763,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v273\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v274\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1020,7 +1020,7 @@ function viewStrangerMoment(m){
       if(b)b.textContent='❤️ '+(r.count||0);
     }).catch(function(){var b=actions.querySelector('button');if(b)b.textContent='❤️ LIKE'})
   }else{var b=actions.querySelector('button');if(b)b.textContent='❤️ 0'}
-  document.getElementById('capturedLabel').textContent='看世界';
+  document.getElementById('capturedLabel').textContent='探索';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
 }
@@ -1463,7 +1463,7 @@ function view(i){D.i=i;var m=D.m[i];
   document.querySelectorAll('#viewUI > button').forEach(function(b){b.style.display=''});
   // Remove stranger actions
   var sa=document.getElementById('strangerDetailActions');if(sa)sa.remove();
-  document.getElementById('capturedLabel').textContent=m.status==='rejected'?'已被移除':'档案回顾';
+  document.getElementById('capturedLabel').textContent=m.status==='rejected'?'已被移除':'日记回顾';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true)}
 function backToGallery(){if(starryWorldEnabled)dimStarsForPhoto(false);document.getElementById('captured').style.display='none';navTo('photos')}
@@ -1561,7 +1561,7 @@ function viewFilmPhoto(id,rowId){
   a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+found.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+found.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
   viewUI.appendChild(a);
   if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
-  document.getElementById('capturedLabel').textContent='看世界';
+  document.getElementById('capturedLabel').textContent='探索';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
 }
@@ -1673,7 +1673,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v273',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v274',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
