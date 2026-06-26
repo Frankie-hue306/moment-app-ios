@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v252</title>
+<title>此刻 v253</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -252,13 +252,25 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
       <span id="photoPublicState" style="color:var(--muted);font-size:13px">已开启</span>
     </div>
   </div>
-  <!-- Group 3: 通用 -->
+  <!-- Group 3: 背景定制 -->
   <div style="margin-bottom:24px">
-    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">通用</div>
-    <div class="menu-row" onclick="openWarmThemeSheet()">
-      <span>🎨 档案暖色主题</span>
+    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">背景定制</div>
+    <div class="menu-row" onclick="toggleStarryWorld()">
+      <span>🌌 星空背景</span>
+      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
+    </div>
+    <div class="menu-row" onclick="togglePureBlack()">
+      <span>⬛ 纯黑模式</span>
+      <span id="pureBlackState" style="color:var(--muted);font-size:13px;flex-shrink:0;margin-left:8px">已关闭</span>
+    </div>
+    <div class="menu-row" onclick="openWarmThemeSheet()" style="border-bottom:none">
+      <span>🎨 档案暖色</span>
       <span id="warmThemeState" style="color:var(--muted);font-size:13px">经典深灰</span>
     </div>
+  </div>
+  <!-- Group 4: 通用 -->
+  <div style="margin-bottom:24px">
+    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">通用</div>
     <div class="menu-row" onclick="openDarkModeSheet()">
       <span>🌓 深色模式</span>
       <span id="darkModeState" style="color:var(--muted);font-size:13px">跟随系统</span>
@@ -267,17 +279,9 @@ img.pv{width:180px;height:180px;object-fit:cover;background:var(--card);border-r
       <span>📶 图片加载策略</span>
       <span id="imgQualityState" style="color:var(--muted);font-size:13px">省流量</span>
     </div>
-    <div class="menu-row" onclick="toggleStarryWorld()">
-      <span>🌌 星空背景</span>
-      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
-    </div>
     <div class="menu-row" onclick="toggleImmersiveFX()">
       <span>✨ 沉浸特效</span>
       <span id="immersiveFXState" style="color:var(--accent);font-size:13px;flex-shrink:0;margin-left:8px">已开启</span>
-    </div>
-    <div class="menu-row" onclick="togglePureBlack()">
-      <span>⬛ 纯黑背景模式</span>
-      <span id="pureBlackState" style="color:var(--muted);font-size:13px;flex-shrink:0;margin-left:8px">已关闭</span>
     </div>
     <div class="menu-row" onclick="doClearCache()" style="border-bottom:none">
       <span>🗑️ 清除缓存</span><span class="menu-arrow">›</span>
@@ -559,63 +563,32 @@ function api(path,opts){
 function logout(){if(confirm('退出登录？本地数据保留。')){AUTH={token:'',userId:0};saveAuth();updateSideMenuUser();updateAllUI()}}
 
 // ======================== NAVIGATION ========================
-var currentTab='home',prevTab='home',tabAnimating=false;
+var currentTab='home';
 var tabOrder=['photos','home','strangers'];
-function navTo(tab,noAnim){
+function navTo(tab){
   if(tab===currentTab)return;
-  if(tabAnimating){tabAnimating=false;['tab-home','tab-photos','tab-strangers','tab-strangers-waterfall'].forEach(function(x){var el=document.getElementById(x);if(el){el.style.display='none';el.style.transform='';el.style.opacity='';el.style.transition=''}})}
-  // Determine slide direction
-  var curIdx=tabOrder.indexOf(currentTab);
-  var newIdx=tabOrder.indexOf(tab);
-  var dir=newIdx>curIdx?'left':'right'; // 'left' means new tab slides in from right
-  var oldEl=document.getElementById('tab-'+currentTab);
-  if(currentTab==='strangers'){var m=getWatchMode();oldEl=document.getElementById(m==='waterfall'?'tab-strangers-waterfall':'tab-strangers')}
-  var newTabId=tab==='strangers'?(getWatchMode()==='waterfall'?'tab-strangers-waterfall':'tab-strangers'):('tab-'+tab);
-  var newEl=document.getElementById(newTabId);
-  prevTab=currentTab;currentTab=tab;
-
-  if(noAnim||!oldEl){
-    // Instant switch (no animation)
-    ['tab-home','tab-photos','tab-strangers','tab-strangers-waterfall'].forEach(function(x){var el=document.getElementById(x);if(el){el.style.display='none';el.style.transform='';el.style.opacity='';el.style.transition=''}});
-    if(tab==='strangers'){var m=getWatchMode();if(m==='waterfall'){refreshWaterfall(true)}else{clearTimeout(wfIdleTimer);document.getElementById('tab-strangers').style.display='block';refreshStrangers()}if(window.showSwipeHint)window.showSwipeHint()}
-    else{clearTimeout(wfIdleTimer);clearTimeout(filmTimer);document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block'}
-    updateNavActive(tab);
-    if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
-    if(tab==='home')updateHomeUI();
-    document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
-    document.getElementById('collage').style.display='none';stopCountdown();
-    return;
-  }
-
-  tabAnimating=true;
-  // Prepare new tab
-  if(tab==='strangers'){
-    // Strangers tab skips slide animation, just show directly
-    if(getWatchMode()==='waterfall'){refreshWaterfall(true)}
-    else{clearTimeout(wfIdleTimer);refreshStrangers()}
-    if(window.showSwipeHint)window.showSwipeHint();
-    tabAnimating=false;
-    return;
-  }else{clearTimeout(wfIdleTimer);clearTimeout(filmTimer);clearInterval(filmTimeTimer)}
-  newEl.style.display=tab==='home'?'flex':'block';
-  newEl.style.transition='none';
-  newEl.style.transform='translateX('+(dir==='left'?'100%':'-100%')+')';
-  newEl.style.opacity='1';
-  // Animate both
-  requestAnimationFrame(function(){
-    oldEl.style.transition='transform .28s cubic-bezier(0.25,0.1,0.25,1)';
-    oldEl.style.transform='translateX('+(dir==='left'?'-100%':'100%')+')';
-    newEl.style.transition='transform .28s cubic-bezier(0.25,0.1,0.25,1)';
-    newEl.style.transform='translateX(0)';
-    setTimeout(function(){
-      oldEl.style.display='none';oldEl.style.transform='';oldEl.style.transition='';
-      newEl.style.transform='';newEl.style.transition='';
-      tabAnimating=false;
-    },300);
+  // Hide all tabs
+  ['tab-home','tab-photos','tab-strangers','tab-strangers-waterfall'].forEach(function(x){
+    var el=document.getElementById(x);if(el){el.style.display='none';el.style.transform='';el.style.opacity='';el.style.transition=''}
   });
-  // Update nav active
+  // Clean up old tab timers
+  clearTimeout(wfIdleTimer);clearTimeout(filmTimer);
+  // Show target tab
+  if(tab==='strangers'){
+    var m=getWatchMode();
+    if(m==='waterfall'){refreshWaterfall(true)}
+    else{document.getElementById('tab-strangers').style.display='block';refreshStrangers()}
+    if(window.showSwipeHint)window.showSwipeHint();
+  }else{
+    document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block';
+  }
+  currentTab=tab;
   updateNavActive(tab);
   if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
+  if(tab==='home')updateHomeUI();
+  document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
+  document.getElementById('collage').style.display='none';stopCountdown();
+}
   if(tab==='home')updateHomeUI();
   // Hide overlays
   document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
@@ -793,7 +766,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v252\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v253\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1667,7 +1640,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v252',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v253',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
