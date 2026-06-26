@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v240</title>
+<title>此刻 v241</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -535,6 +535,7 @@ function doLogin(){
     if(d.error){document.getElementById('loginMsg').textContent=d.error;return}
     AUTH.token=d.token;AUTH.userId=d.userId;saveAuth();
     // Clear local data from previous account
+    if(D.m.length>0){if(!confirm('登录将同步服务器数据。本地'+D.m.length+'条记录将保留在本地。继续？')){document.getElementById('loginMsg').textContent='';return}}
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
     document.getElementById('loginScreen').style.display='none';
     updateSideMenuUser();updateAllUI();
@@ -571,7 +572,7 @@ function navTo(tab,noAnim){
     if(tab==='strangers'){var m=getWatchMode();if(m==='waterfall'){refreshWaterfall(true)}else{clearTimeout(wfIdleTimer);document.getElementById('tab-strangers').style.display='block';refreshStrangers()}if(window.showSwipeHint)window.showSwipeHint()}
     else{clearTimeout(wfIdleTimer);clearTimeout(filmTimer);clearInterval(filmTimeTimer);document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block'}
     updateNavActive(tab);
-    if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=getDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
+    if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
     if(tab==='home')updateHomeUI();
     document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
     document.getElementById('collage').style.display='none';stopCountdown();
@@ -605,7 +606,7 @@ function navTo(tab,noAnim){
   });
   // Update nav active
   updateNavActive(tab);
-  if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=getDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
+  if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
   if(tab==='home')updateHomeUI();
   // Hide overlays
   document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
@@ -682,6 +683,11 @@ function closeDarkModeSheet(){
 function getDarkMode(){
   return localStorage.getItem('dark_mode')||'auto';
 }
+function effectiveDarkMode(){
+  var dm=effectiveDarkMode();
+  if(dm==='auto'){return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
+  return dm;
+}
 function setDarkMode(mode){
   localStorage.setItem('dark_mode',mode);
   var label=mode==='auto'?'跟随系统':(mode==='light'?'浅色模式':'深色模式');
@@ -691,6 +697,7 @@ function setDarkMode(mode){
 }
 function applyDarkMode(mode){
   var r=document.documentElement.style;
+  if(mode==='auto'){mode=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}
   // Update starry world bg if enabled
   if(starryWorldEnabled){
     var sw=document.getElementById('starryWorld');
@@ -759,7 +766,7 @@ function applyPureBlack(on){
     r.setProperty('--tab-bg','#000');
     document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
   }else{
-    var dm=getDarkMode();
+    var dm=effectiveDarkMode();
     if(dm==='light'){
       r.setProperty('--bg','#f5f5f7');
       r.setProperty('--tab-bg','#f5f5f7');
@@ -779,7 +786,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v240\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v241\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1453,7 +1460,7 @@ function getNickname(phone){
 }
 
 // ======================== IMMERSIVE FILMSTRIP ========================
-var filmPool=[],filmTimer=null,filmTimeTimer=null;
+var filmPool=[],filmTimer=null;
 function refreshStrangers(){
   document.getElementById('tab-strangers').style.display='block';
   loadFilmPool();
@@ -1650,7 +1657,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v240',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v241',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -1710,7 +1717,6 @@ function openTimeFragment(){
   document.getElementById('tfEnd').value=today.toISOString().split('T')[0];
   var weekAgo=new Date(today-7*86400000);
   document.getElementById('tfStart').value=weekAgo.toISOString().split('T')[0];
-  document.getElementById('tfResult').style.display='none';
   document.getElementById('tfLoading').style.display='none';
   document.getElementById('timeFragment').style.display='block';
 }
@@ -2014,7 +2020,7 @@ setTimeout(function(){
   var photoPublic=localStorage.getItem('photo_public')!=='0';
   document.getElementById('photoPublicState').textContent=photoPublic?'已开启':'已关闭';
   document.getElementById('photoPublicState').style.color=photoPublic?'var(--accent)':'var(--muted)';
-  var dm=getDarkMode();
+  var dm=effectiveDarkMode();
   document.getElementById('darkModeState').textContent=dm==='auto'?'跟随系统':(dm==='light'?'浅色模式':'深色模式');
   var iq=localStorage.getItem('img_quality')||'compressed';
   document.getElementById('imgQualityState').textContent=iq==='compressed'?'省流量':'原图';
@@ -2100,7 +2106,7 @@ function initStarryWorld(){
   var c=document.getElementById('starryWorld');
   if(!c)return;
   c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';
-  var dm=getDarkMode();
+  var dm=effectiveDarkMode();
   if(dm==='light'){document.body.style.background='linear-gradient(180deg,#F5F0EB,#FDF8F0)';c.setAttribute('data-mode','light');return}
   document.body.style.background='#0B0E1A';c.setAttribute('data-mode','dark');
   _stars=[];_nebulaEls=[];
