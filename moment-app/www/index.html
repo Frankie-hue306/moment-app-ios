@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v258</title>
+<title>此刻 v259</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -761,7 +761,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v258\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v259\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1635,7 +1635,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v258',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v259',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2072,7 +2072,7 @@ function showCustomDialog(msg,onOk,onCancel){
 
 // ====================== STARRY WORLD ENGINE ======================
 var starryWorldEnabled=localStorage.getItem('starry_world')!=='0';
-var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null;
+var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null,_driftTimer=null;
 function toggleStarryWorld(){
   starryWorldEnabled=!starryWorldEnabled;
   localStorage.setItem('starry_world',starryWorldEnabled?'1':'0');
@@ -2121,12 +2121,30 @@ function initStarryWorld(){
   startMeteorShower();
   // Start sparkle effect
   startSparkles();
+  // Start slow drift
+  startStarDrift();
+}
+function startStarDrift(){
+  clearInterval(_driftTimer);
+  if(!starryWorldEnabled)return;
+  var W=screen.width||window.innerWidth;
+  var speed=.5+Math.random()*.5;
+  _driftTimer=setInterval(function(){
+    if(!starryWorldEnabled){clearInterval(_driftTimer);return}
+    for(var i=0;i<_stars.length;i++){
+      var s=_stars[i];
+      var l=parseFloat(s.style.left)||0;
+      l-=speed;
+      if(l<-10)l=W+10+Math.random()*50;
+      s.style.left=l+'px';
+    }
+  },500);
 }
 function destroyStarryWorld(){
   var c=document.getElementById('starryWorld');
   if(c){c.style.display='none';c.innerHTML='';c.removeAttribute('data-mode')}
   _stars=[];_nebulaEls=[];
-  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
+  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);
   document.body.style.background='';
   // Re-apply dark mode to restore correct bg
   applyDarkMode(getDarkMode());
