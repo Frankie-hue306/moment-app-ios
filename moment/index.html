@@ -296,10 +296,10 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
     <div class="menu-row" onclick="showAbout()">
       <span>ℹ️ 关于我们</span><span class="menu-arrow">›</span>
     </div>
-    <div class="menu-row" onclick="openLink(API+'/terms.html')">
+    <div class="menu-row" onclick="openLegalPage('terms')">
       <span>📄 用户协议</span><span class="menu-arrow">›</span>
     </div>
-    <div class="menu-row" onclick="openLink(API+'/privacy.html')" style="border-bottom:none">
+    <div class="menu-row" onclick="openLegalPage('privacy')" style="border-bottom:none">
       <span>🔒 隐私政策</span><span class="menu-arrow">›</span>
     </div>
   </div>
@@ -506,6 +506,15 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       <button class="btn" onclick="saveTF()" style="flex:1;text-align:center;background:var(--accent);color:#fff">💾 保存</button>
       <button class="btn" onclick="shareTF()" style="flex:1;text-align:center">📤 分享</button>
     </div>
+  </div>
+
+  <!-- Legal Pages Overlay -->
+  <div id="legalOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;overflow-y:auto;padding:calc(60px + env(safe-area-inset-top, 0px)) 24px calc(100px + env(safe-area-inset-bottom, 0px))">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <span id="legalTitle" style="font-size:20px;font-weight:700;letter-spacing:-.3px"></span>
+      <span style="font-size:22px;cursor:pointer;color:var(--muted)" onclick="closeLegalPage()">✕</span>
+    </div>
+    <div id="legalContent" style="color:var(--text);font-size:15px;line-height:1.8;letter-spacing:-.1px"></div>
   </div>
 
   <!-- Bottom Nav -->
@@ -768,7 +777,19 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v277\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v278\n记录真实瞬间，连接世界此刻');
+}
+var _legalTexts={
+terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
+privacy:"<h2>隐私政策</h2><p>更新日期：2026年6月26日</p><h3>1. 信息收集</h3><p>仅收集您的手机号（用于登录）和您主动拍摄的照片及文字。不收集位置、通讯录等额外信息。</p><h3>2. 信息使用</h3><p>手机号仅用于账号识别。照片可设为公开（显示在探索）或私密。</p><h3>3. 信息存储</h3><p>数据存储于中国大陆云服务器，采取加密和访问控制保护。</p><h3>4. 信息共享</h3><p>我们不会出售或转让您的个人信息给第三方。</p><h3>5. 您的权利</h3><p>您可随时删除照片或注销账号，注销后数据永久删除。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>"
+};
+function openLegalPage(type){
+  document.getElementById('legalTitle').textContent=type==='terms'?'用户协议':'隐私政策';
+  document.getElementById('legalContent').innerHTML=_legalTexts[type];
+  document.getElementById('legalOverlay').style.display='block';
+}
+function closeLegalPage(){
+  document.getElementById('legalOverlay').style.display='none';
 }
 // Toast helper
 function showToast(msg){
