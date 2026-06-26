@@ -9,10 +9,10 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v268</title>
+<title>此刻 v269</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
+:root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
 body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none;transition:background .3s ease}
 .app{width:100%;max-width:428px;display:flex;flex-direction:column;min-height:100vh}
 
@@ -159,7 +159,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 .custom-dialog .btn-row{display:flex;gap:10px}
 .custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
 .custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
-.custom-dialog .btn-ok{background:#FF6B35;color:#fff;font-weight:600}
+.custom-dialog .btn-ok{background:#D4A373;color:#fff;font-weight:600}
 .world-stars[data-mode="light"]::before{background:#F5F0EB}
 </style>
 </head>
@@ -175,7 +175,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
     </div>
     <div class="onboard-page" style="flex:1;background:linear-gradient(180deg,#CA9BF7,#F5B8D9);display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative">
       <div style="color:#fff;font-size:28px;font-weight:700;text-align:center;line-height:1.6;text-shadow:0 2px 8px rgba(0,0,0,.15);max-width:300px">欢迎来到「此刻」<br>记录真实<br>连接世界</div>
-      <button onclick="startApp()" style="position:absolute;bottom:80px;left:20%;right:20%;padding:16px;background:#FF6B35;color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:600;cursor:pointer;letter-spacing:1px">开始</button>
+      <button onclick="startApp()" style="position:absolute;bottom:80px;left:20%;right:20%;padding:16px;background:#D4A373;color:#fff;border:none;border-radius:12px;font-size:18px;font-weight:600;cursor:pointer;letter-spacing:1px">开始</button>
     </div>
   </div>
   <div id="onboard-dots" style="position:absolute;bottom:40px;left:0;right:0;display:flex;justify-content:center;gap:10px">
@@ -701,7 +701,7 @@ function applyDarkMode(mode){
     else{var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.remove('light-glass')}
     r.setProperty('--world-bg','#0B0E1A');
   }else{
-    r.setProperty('--bg','#000');r.setProperty('--accent','#FF6B35');
+    r.setProperty('--bg','#000');r.setProperty('--accent','#D4A373');
     r.setProperty('--card','#1c1c1e');
     r.setProperty('--text','#f5f5f7');
     r.setProperty('--muted','#98989d');
@@ -739,7 +739,7 @@ function togglePureBlack(){
 function applyPureBlack(on){
   var r=document.documentElement.style;
   if(on){
-    r.setProperty('--bg','#000');r.setProperty('--accent','#FF6B35');
+    r.setProperty('--bg','#000');r.setProperty('--accent','#D4A373');
     r.setProperty('--tab-bg','#000');
     document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
   }else{
@@ -763,7 +763,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v268\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v269\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1362,7 +1362,7 @@ function saveTh(){if(D.i>=0&&D.i<D.m.length){D.m[D.i].t=document.getElementById(
 var is3D=false;
 function toggle3D(){
   is3D=!is3D;var img=document.getElementById('ph');var btn=document.getElementById('btn3d');var b2=document.getElementById('btn3dv');
-  if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='#FF6B35';if(b2)b2.textContent='✨ 3D开';if(b2)b2.style.background='#FF6B35'}
+  if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D开';if(b2)b2.style.background='var(--accent)'}
   else{img.classList.remove('depth3d');btn.textContent='✨ 3D景深';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D景深';if(b2)b2.style.background='var(--accent)'}
 }
 function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=1200;if(w<=maxDim&&h<=maxDim){cb(dataUrl);return}var r=Math.min(maxDim/w,maxDim/h);var cw=Math.round(w*r),ch=Math.round(h*r);var c=document.createElement('canvas');c.width=cw;c.height=ch;c.getContext('2d').drawImage(img,0,0,cw,ch);cb(c.toDataURL('image/jpeg',0.85))};img.src=dataUrl}
@@ -1610,7 +1610,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   var rows=Math.ceil(N/cols),CH=HH+rows*(cellSize+captionH+GAP)+FH;
   var canvas=document.createElement('canvas');canvas.width=CW;canvas.height=CH;var ctx=canvas.getContext('2d');
   ctx.fillStyle='#08080a';ctx.fillRect(0,0,CW,CH);
-  ctx.fillStyle='#FF6B35';ctx.fillRect(0,0,CW,3);
+  ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#D4A373';ctx.fillRect(0,0,CW,3);
   ctx.fillStyle='#f5f5f7';ctx.font='bold 26px -apple-system,"PingFang SC",sans-serif';ctx.textAlign='center';ctx.fillText(monthInfo.label,CW/2,38);
   var fd=new Date(moments[0].d||Date.now()),ld=new Date(moments[N-1].d||Date.now());
   var sub=N+'个瞬间 · '+(fd.getMonth()+1)+'.'+fd.getDate()+' - '+(ld.getMonth()+1)+'.'+ld.getDate();
@@ -1635,7 +1635,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v268',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v269',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
