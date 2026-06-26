@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v259</title>
+<title>此刻 v260</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -476,23 +476,24 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
     </div>
     <!-- Quick presets -->
     <div style="margin-bottom:24px">
-      <div style="color:var(--muted);font-size:12px;margin-bottom:10px;letter-spacing:1px">一键生成</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn" onclick="genTimeFragment(7)" style="flex:1;text-align:center;padding:14px">最近7天</button>
-        <button class="btn" onclick="genTimeFragment(30)" style="flex:1;text-align:center;padding:14px">最近30天</button>
-        <button class="btn" onclick="genTimeFragment(90)" style="flex:1;text-align:center;padding:14px">最近90天</button>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px;letter-spacing:1px">选择天数</div>
+      <div style="display:flex;gap:8px" id="tfDayBtns">
+        <button class="btn" onclick="setTFDays(7,this)" style="flex:1;text-align:center;padding:14px">最近7天</button>
+        <button class="btn" onclick="setTFDays(30,this)" style="flex:1;text-align:center;padding:14px">最近30天</button>
+        <button class="btn" onclick="setTFDays(90,this)" style="flex:1;text-align:center;padding:14px">最近90天</button>
       </div>
     </div>
     <!-- Custom date range -->
     <div style="margin-bottom:24px">
-      <div style="color:var(--muted);font-size:12px;margin-bottom:10px;letter-spacing:1px">自定义日期</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:10px;letter-spacing:1px">或自定义日期</div>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
-        <input type="date" id="tfStart" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-size:14px;outline:none">
+        <input type="date" id="tfStart" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-size:14px;outline:none" onchange="onTFCustomDate()">
         <span style="color:var(--muted)">至</span>
-        <input type="date" id="tfEnd" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-size:14px;outline:none">
+        <input type="date" id="tfEnd" style="flex:1;padding:12px;border:none;border-radius:12px;background:var(--card);color:var(--text);font-size:14px;outline:none" onchange="onTFCustomDate()">
       </div>
-      <button class="btn" onclick="genTimeFragmentCustom()" style="text-align:center;background:var(--accent);color:#fff">生成时光碎片</button>
     </div>
+    <!-- Generate button -->
+    <button class="btn" onclick="genTFNow()" style="text-align:center;background:var(--accent);color:#fff;font-size:17px;padding:16px">✨ 生成时光碎片</button>
     <!-- Loading -->
     <div id="tfLoading" style="display:none;text-align:center;padding:40px;color:var(--muted);font-size:14px">✨ 正在生成时光碎片...</div>
     <div onclick="closeTimeFragment()" style="text-align:center;color:var(--muted);font-size:15px;margin-top:16px;cursor:pointer">← 返回</div>
@@ -761,7 +762,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v259\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v260\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1635,7 +1636,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v259',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v260',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -1667,6 +1668,7 @@ function backFromCollage(){
 
 // ======================== TIME FRAGMENT ========================
 var tfCanvas=null,tfTemplate=0,tfMoments=[],tfImgs=[],tfStart=null,tfEnd=null;
+var tfSelectedDays=7;
 function selectTF(idx){
   tfTemplate=idx;
   var items=document.querySelectorAll('.tf-tpl');
@@ -1674,20 +1676,37 @@ function selectTF(idx){
     items[i].style.borderColor=i===idx?'var(--accent)':'transparent';
     items[i].classList.toggle('active',i===idx);
   }
-  // Re-generate if we have data
-  if(tfMoments.length>=3){
-    document.getElementById('tfLoading').style.display='block';
-    setTimeout(function(){
-      loadAllImages(tfMoments,function(imgs){
-        tfImgs=imgs;
-        document.getElementById('tfLoading').style.display='none';
-        tfCanvas=renderTFCanvas(imgs,tfMoments,tfStart,tfEnd,tfTemplate);
-        document.getElementById('tfImg').src=tfCanvas.toDataURL('image/png');
-        var overlay=document.getElementById('tfResultOverlay');
-        overlay.style.display='flex';
-        setTimeout(function(){overlay.style.transform='translateY(0)'},20);
-      });
-    },100);
+}
+function setTFDays(days,btn){
+  tfSelectedDays=days;
+  // Highlight selected button
+  var btns=document.querySelectorAll('#tfDayBtns .btn');
+  for(var i=0;i<btns.length;i++){btns[i].style.background='var(--card)';btns[i].style.color='var(--text)'}
+  btn.style.background='var(--accent)';btn.style.color='#fff';
+  // Update date inputs
+  var end=new Date();
+  var start=new Date(end-days*86400000);
+  document.getElementById('tfEnd').value=end.toISOString().split('T')[0];
+  document.getElementById('tfStart').value=start.toISOString().split('T')[0];
+}
+function onTFCustomDate(){
+  tfSelectedDays=0;
+  var btns=document.querySelectorAll('#tfDayBtns .btn');
+  for(var i=0;i<btns.length;i++){btns[i].style.background='var(--card)';btns[i].style.color='var(--text)'}
+}
+function genTFNow(){
+  if(tfSelectedDays>0){
+    var end=new Date();
+    var start=new Date(end-tfSelectedDays*86400000);
+    genTF(start,end);
+  }else{
+    var start=new Date(document.getElementById('tfStart').value);
+    var end=new Date(document.getElementById('tfEnd').value);
+    if(isNaN(start.getTime())||isNaN(end.getTime())){alert('请选择日期');return}
+    if(end<start){alert('结束日期不能早于起始日期');return}
+    var diffDays=Math.ceil((end-start)/86400000);
+    if(diffDays>90){alert('日期范围不能超过90天');return}
+    genTF(start,end);
   }
 }
 function openTimeFragment(){
@@ -1697,23 +1716,14 @@ function openTimeFragment(){
   document.getElementById('tfStart').value=weekAgo.toISOString().split('T')[0];
   document.getElementById('tfLoading').style.display='none';
   document.getElementById('timeFragment').style.display='block';
+  // Highlight 7-day preset
+  tfSelectedDays=7;
+  var btns=document.querySelectorAll('#tfDayBtns .btn');
+  for(var i=0;i<btns.length;i++){btns[i].style.background='var(--card)';btns[i].style.color='var(--text)'}
+  if(btns[0]){btns[0].style.background='var(--accent)';btns[0].style.color='#fff'}
 }
 function closeTimeFragment(){
   document.getElementById('timeFragment').style.display='none';
-}
-function genTimeFragment(days){
-  var end=new Date();
-  var start=new Date(end-days*86400000);
-  genTF(start,end);
-}
-function genTimeFragmentCustom(){
-  var start=new Date(document.getElementById('tfStart').value);
-  var end=new Date(document.getElementById('tfEnd').value);
-  if(isNaN(start.getTime())||isNaN(end.getTime())){alert('请选择日期');return}
-  if(end<start){alert('结束日期不能早于起始日期');return}
-  var diffDays=Math.ceil((end-start)/86400000);
-  if(diffDays>90){alert('日期范围不能超过90天');return}
-  genTF(start,end);
 }
 function genTF(start,end){
   end.setHours(23,59,59,999);
