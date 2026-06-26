@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v243</title>
+<title>此刻 v244</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#FF6B35;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -787,7 +787,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v243\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v244\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1264,15 +1264,15 @@ function viewTodayPhoto(idx){
 // ======================== PHOTO TAKING ========================
 var countdownTimer=null,countdownSec=0,countdownDeadline=0;
 function pick(){
-  document.getElementById('pkr').click();
   var now=Date.now();
-  // Continue existing countdown if still active
-  if(countdownDeadline>now){countdownSec=Math.ceil((countdownDeadline-now)/1000)}
-  else{countdownSec=60;countdownDeadline=now+60000}
+  // One-shot: deadline set once, never resets until expired or photo taken
+  if(countdownDeadline<=now){countdownDeadline=now+60000}
+  countdownSec=Math.max(0,Math.ceil((countdownDeadline-now)/1000));
+  document.getElementById('pkr').click();
   updateCountdown();
   clearInterval(countdownTimer);
   countdownTimer=setInterval(function(){
-    countdownSec--;
+    countdownSec=Math.max(0,Math.ceil((countdownDeadline-Date.now())/1000));
     updateCountdown();
     if(countdownSec<=0){cancelPhoto()}
   },1000);
@@ -1661,7 +1661,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v243',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v244',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
