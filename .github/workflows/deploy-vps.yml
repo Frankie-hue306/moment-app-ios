@@ -1,60 +1,26 @@
-name: Deploy Server to VPS
+name: Deploy to VPS
 on: [workflow_dispatch]
 jobs:
-  deploy:
+  deploy-frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build node_modules on Linux
-        run: |
-          cd moment-server
-          npm install --production 2>&1 | tail -10
-          tar czf /tmp/node_modules.tar.gz node_modules package.json server.js
-          ls -lh /tmp/node_modules.tar.gz
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
-      - name: Deploy to VPS
+      - name: Deploy Frontend to VPS
         env:
           VP: ${{ secrets.VPS_PASSWORD }}
         run: |
-          sshpass -p "$VP" scp -o StrictHostKeyChecking=accept-new /tmp/node_modules.tar.gz root@107.172.157.172:/tmp/
-          sshpass -p "$VP" ssh -o StrictHostKeyChecking=accept-new root@107.172.157.172 "bash -s" << 'REMOTE'
+          tar czf /tmp/frontend.tar.gz moment/index.html moment/manifest.json moment/sw.js
+          sshpass -p "$VP" scp -o StrictHostKeyChecking=accept-new /tmp/frontend.tar.gz root@81.70.102.36:/tmp/
+          sshpass -p "$VP" ssh -o StrictHostKeyChecking=accept-new root@81.70.102.36 "bash -s" << 'REMOTE'
           set -e
-          if ! command -v node; then
-            curl -fsSL https://nodejs.org/dist/v20.19.6/node-v20.19.6-linux-x64.tar.xz -o /tmp/node.tar.xz
-            tar xf /tmp/node.tar.xz -C /usr/local/ --strip-components=1
-          fi
-          apt-get update -qq 2>&1 | tail -1
-          apt-get install -y -qq nginx 2>&1 | tail -1
-          mkdir -p /opt/moment
+          mkdir -p /opt/moment/public
+          cd /opt/moment/public
+          tar xzf /tmp/frontend.tar.gz --strip-components=1
+          pkill -f "node /opt/moment/server.js" 2>/dev/null || true
           cd /opt/moment
-          tar xzf /tmp/node_modules.tar.gz
-          node -e "require('better-sqlite3')" && echo "SQLite OK" || echo "SQLite FAIL"
-          cat > /etc/nginx/sites-available/moment << 'NX'
-          server { listen 80; server_name momentnow.xyz; client_max_body_size 50m; location / { proxy_pass http://localhost:3000; proxy_http_version 1.1; proxy_set_header Host $host; proxy_read_timeout 120s; } }
-          NX
-          ln -sf /etc/nginx/sites-available/moment /etc/nginx/sites-enabled/
-          rm -f /etc/nginx/sites-enabled/default
-          nginx -t && systemctl restart nginx
-          pkill -f "node /opt/moment" 2>/dev/null || true
-          cat > /etc/systemd/system/moment.service << 'SX'
-          [Unit]
-          Description=Moment Server
-          After=network.target
-          [Service]
-          Type=simple
-          User=root
-          WorkingDirectory=/opt/moment
-          ExecStart=/usr/local/bin/node /opt/moment/server.js
-          Restart=always
-          RestartSec=5
-          MemoryMax=350M
-          [Install]
-          WantedBy=multi-user.target
-          SX
-          systemctl daemon-reload
-          systemctl enable moment
-          systemctl restart moment
-          sleep 4
-          curl -s http://localhost:3000/health && echo " LIVE" || echo " FAIL"
+          nohup node server.js > /var/log/moment.log 2>&1 &
+          sleep 2
+          curl -s http://localhost:3000/ | head -1 && echo " LIVE" || echo " FAIL"
           REMOTE
