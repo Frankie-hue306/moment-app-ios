@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v271</title>
+<title>此刻 v272</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -763,7 +763,7 @@ function toggleImageQuality(){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v271\n记录真实瞬间，连接世界此刻');
+  alert('此刻 v272\n记录真实瞬间，连接世界此刻');
 }
 // Toast helper
 function showToast(msg){
@@ -1202,6 +1202,44 @@ function todayPhotoIdx(){
   return -1;
 }
 function isTodayTaken(){return todayPhotoIdx()>=0}
+var _dailyQuotes={
+  unrecorded:[
+    '流光容易把人抛，且记此刻。','今日尚未定格，等你按下快门。','花开花谢，此刻最值得记录。',
+    '盛年不重来，一日难再晨。','眼下时光，稍纵即逝。','这个世界，正在等你记录。',
+    '韶华不再，吾辈须当惜阴。','人生直作百岁翁，亦是万古一瞬中。','总得花看能几日，最难留惜是芳时。',
+    '百年能几日，忍不惜光阴。','今天的空白，等你来填满。','此刻安静，世界在等你看见。',
+    '日子匆忙，别忘了抬头看看。','时间在走，今天还没留下痕迹。','每一个当下，都是未来的礼物。',
+    '你有多久，没有好好看过眼前了？','记录此刻，便是留住永恒。','今日的光，尚未被收藏。',
+    '一瞬一世界，此刻最真实。','今天的故事，还没有开头。','浮生若梦，为欢几何。记下此刻。',
+    '人生如逆旅，我亦是行人。此刻即风景。','世间万物，皆在流转。唯有此刻可留。','莫待明朝花落尽，今朝有景今朝拍。',
+    '晨昏交替，此刻唯一。','每一天，都是余生的第一天。','此情此景，此时此地。',
+    '按下快门，把今天留住。','今日晴好，宜记录。','世界很大，你看到了什么？'
+  ],
+  recorded:[
+    '此时情绪此时天，无事小神仙。','今日已存档，人间又值得。','时光清浅处，一步一安然。',
+    '今日无事，小神仙。','今天扫完今天的落叶。','今日定格，明日可期。',
+    '此刻已留，余事皆安。','日日是好日，今朝尤可记。','往事不回头，今日已存档。',
+    '莫道桑榆晚，为霞尚满天。','人间有味是清欢，今日已记。','此中有真意，欲辨已忘言。',
+    '今天的风，今天的云，今天的光，都存好了。','花开了，我看见了。今日无憾。','日子发光，是因为你记录了它。',
+    '今日之一瞬，已成永恒。','这一页今天，翻过去了。','很好，今天没有被辜负。',
+    '时间路过，我按下了快门。','今日收工，人间值得。','无事小神仙，今日已归档。',
+    '此情可待成追忆，今日已录。','一瞬已留，万事从容。','今天，到此为止。余事皆安。',
+    '岁月不居，时节如流。今日已存。','花看半开，酒饮微醺，今日恰好。','今天的故事，已经讲完了。',
+    '今日美景，已存入记忆。','日光之下，并无新事。但今日是我之唯一。','已完成今日仪式。明日再见。'
+  ]
+};
+function getDailyQuote(type){
+  var today=new Date().toLocaleDateString('zh-CN');
+  var stored=localStorage.getItem('mv_daily_quote');
+  var data=stored?JSON.parse(stored):{date:'',unIdx:-1,recIdx:-1};
+  if(data.date!==today){
+    data.date=today;
+    data.unIdx=Math.floor(Math.random()*_dailyQuotes.unrecorded.length);
+    data.recIdx=Math.floor(Math.random()*_dailyQuotes.recorded.length);
+    localStorage.setItem('mv_daily_quote',JSON.stringify(data));
+  }
+  return type==='recorded'?_dailyQuotes.recorded[data.recIdx]:_dailyQuotes.unrecorded[data.unIdx];
+}
 function updateHomeUI(){
   var btn=document.getElementById('mainActionBtn');
   var status=document.getElementById('todayStatus');
@@ -1213,14 +1251,14 @@ function updateHomeUI(){
     btn.innerHTML='查看今日<br>照片';
     btn.classList.add('taken');
     if(glow){glow.style.background='radial-gradient(circle,rgba(212,163,115,.2),transparent 70%)';glow.style.animationDuration='4s'}
-    document.getElementById('reminderHint').textContent='今天已记录 · 明天继续';
+    document.getElementById('reminderHint').textContent=getDailyQuote('recorded');
   }else{
     status.textContent='🌍';
     status.style.color='var(--muted)';
     btn.innerHTML='拍下<br>此刻';
     btn.classList.remove('taken');
     if(glow){glow.style.background='radial-gradient(circle,rgba(167,139,250,.2),transparent 70%)';glow.style.animationDuration='2s'}
-    document.getElementById('reminderHint').textContent='今天还没有记录，拍下你的此刻吧';
+    document.getElementById('reminderHint').textContent=getDailyQuote('unrecorded');
   }
   // Show today's date
   var now=new Date();
@@ -1635,7 +1673,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v271',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v272',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
