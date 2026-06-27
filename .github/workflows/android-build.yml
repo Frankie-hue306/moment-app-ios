@@ -1,5 +1,5 @@
 name: Android AAB Build
-on: [workflow_dispatch]
+on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,7 +12,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0'
       - name: Decode Keystore
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
@@ -24,7 +27,7 @@ jobs:
         working-directory: moment-app/android
         env:
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-        run: ./gradlew bundleRelease 2>&1 | tail -20
+        run: ./gradlew bundleRelease
       - uses: actions/upload-artifact@v4
         if: success()
         with:
