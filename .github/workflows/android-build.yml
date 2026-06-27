@@ -11,13 +11,18 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v3
+      - name: Decode Keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: echo "$KEYSTORE_B64" | base64 -d > moment-app/android/app/moment-release.keystore
       - name: Install & Build
         working-directory: moment-app
         run: npm install && npm run build && npx cap sync android
-      - name: Build AAB
+      - name: Build Signed AAB
         working-directory: moment-app/android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: ./gradlew bundleRelease 2>&1 | tail -20
       - uses: actions/upload-artifact@v4
         if: success()
