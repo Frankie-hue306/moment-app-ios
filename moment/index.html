@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v274</title>
+<title>此刻 v279</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -188,7 +188,11 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   <div style="font-size:56px;margin-bottom:24px">📸</div>
   <h1 style="color:var(--text);font-size:32px;font-weight:700;margin-bottom:12px;letter-spacing:-.5px">此刻</h1>
   <div style="color:var(--muted);font-size:16px;line-height:1.6;text-align:center;max-width:260px;margin-bottom:40px;letter-spacing:-.2px">每天一次，随机时刻<br>拍下你面前真实的生活<br>反社交媒体档案</div>
-  <input id="loginPhone" type="tel" maxlength="11" placeholder="输入手机号" style="width:280px;padding:16px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:20px;text-align:center;outline:none;letter-spacing:4px;margin-bottom:16px">
+  <input id="loginPhone" type="tel" maxlength="11" placeholder="输入手机号" style="width:280px;padding:16px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:20px;text-align:center;outline:none;letter-spacing:4px;margin-bottom:12px">
+  <div style="display:flex;gap:8px;width:280px;margin-bottom:12px">
+    <input id="loginCode" type="tel" maxlength="6" placeholder="验证码" style="flex:1;padding:14px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:18px;text-align:center;outline:none;letter-spacing:4px">
+    <button id="smsBtn" onclick="sendSMS()" style="flex-shrink:0;padding:14px 12px;border:none;border-radius:14px;background:var(--card);color:var(--accent);font-size:13px;cursor:pointer;white-space:nowrap">获取验证码</button>
+  </div>
   <button class="btn" onclick="doLogin()" style="width:280px;text-align:center;background:var(--accent);color:#fff;font-size:17px">登录 / 注册</button>
   <button class="btn" onclick="skipLogin()" style="width:280px;text-align:center;background:transparent;color:var(--muted);font-size:15px;margin-top:8px">跳过，先体验</button>
   <div id="loginMsg" style="color:#ff6b6b;font-size:13px;margin-top:16px"></div>
@@ -534,7 +538,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 <script>
 var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
-var API='http://81.70.102.36:3000';var AUTH={token:'',userId:0};
+var API=(localStorage.getItem('mv_api')||'').replace(/\/+$/,'')||'http://81.70.102.36:3000';var AUTH={token:'',tokenCreatedAt:0,userId:0};
 function imgUrl(path){if(!path)return'';return path.indexOf('http')===0?path:API+path}
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
 function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
@@ -547,31 +551,50 @@ function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=
 function showLogin(){document.getElementById('loginScreen').style.display='flex'}
 function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
 var _loggingIn=false;
+function sendSMS(){
+  var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
+  var msg=document.getElementById('loginMsg');
+  if(ph.length<11){msg.textContent='请输入11位手机号';return}
+  msg.textContent='';
+  var btn=document.getElementById('smsBtn');
+  if(!btn)return;
+  btn.disabled=true;btn.textContent='发送中...';
+  fetch(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})})
+  .then(function(r){return r.json()}).then(function(d){
+    if(d.error){msg.textContent=d.error;btn.disabled=false;btn.textContent='获取验证码';return}
+    msg.textContent='验证码已发送';
+    var sec=60;btn.textContent=sec+'s';
+    var t=setInterval(function(){sec--;if(sec<=0){clearInterval(t);btn.disabled=false;btn.textContent='重新获取'}else{btn.textContent=sec+'s'}},1000);
+  }).catch(function(){msg.textContent='网络错误';btn.disabled=false;btn.textContent='获取验证码'})
+}
 function doLogin(){
   if(_loggingIn)return;_loggingIn=true;
   var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
-  if(ph.length<11){document.getElementById('loginMsg').textContent='请输入11位手机号';return}
-  document.getElementById('loginMsg').textContent='登录中...';
-  fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})})
+  var code=document.getElementById('loginCode').value.replace(/\s/g,'');
+  var msg=document.getElementById('loginMsg');
+  if(ph.length<11){msg.textContent='请输入11位手机号';_loggingIn=false;return}
+  if(code.length!==6){msg.textContent='请输入6位验证码';_loggingIn=false;return}
+  msg.textContent='登录中...';
+  fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})})
   .then(function(r){return r.json()}).then(function(d){
-    if(d.error){document.getElementById('loginMsg').textContent=d.error;_loggingIn=false;return}
-    AUTH.token=d.token;AUTH.userId=d.userId;saveAuth();
-    // Clear local data from previous account
-    if(D.m.length>0){if(!confirm('登录将同步服务器数据。本地'+D.m.length+'条记录将被替换。继续？')){document.getElementById('loginMsg').textContent='';return}}
+    if(d.error){msg.textContent=d.error;_loggingIn=false;return}
+    AUTH.token=d.token;AUTH.tokenCreatedAt=d.tokenCreatedAt||Date.now();AUTH.userId=d.userId;saveAuth();
+    if(d.nickname){localStorage.setItem('user_nickname',d.nickname)}
+    if(d.avatar){localStorage.setItem('user_avatar',d.avatar);applyAvatar(d.avatar)}
+    if(D.m.length>0){if(!confirm('登录将同步服务器数据。本地'+D.m.length+'条记录将被替换。继续？')){msg.textContent='';_loggingIn=false;return}}
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
     _loggingIn=false;document.getElementById('loginScreen').style.display='none';
     updateSideMenuUser();updateAllUI();
-  }).catch(function(e){document.getElementById('loginMsg').textContent='网络错误，请重试';_loggingIn=false})
+  }).catch(function(e){msg.textContent='网络错误，请重试';_loggingIn=false})
 }
 function api(path,opts){
   opts=opts||{};
-  var params='userId='+AUTH.userId+'&token='+AUTH.token;
-  var url=API+path+(path.indexOf('?')>=0?'&':'?')+params;
-  var o={method:opts.method||'GET',headers:{}};
+  var url=API+path;
+  var o={method:opts.method||'GET',headers:{'x-auth-token':AUTH.token}};
   if(opts.body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(opts.body)}
   return fetch(url,o).then(function(r){return r.json()})
 }
-function logout(){if(confirm('退出登录？本地数据保留。')){AUTH={token:'',userId:0};saveAuth();updateSideMenuUser();updateAllUI()}}
+function logout(){if(confirm('退出登录？本地数据保留。')){AUTH={token:'',tokenCreatedAt:0,userId:0};saveAuth();updateSideMenuUser();updateAllUI()}}
 
 // ======================== NAVIGATION ========================
 var currentTab='home';
@@ -634,7 +657,7 @@ function toggleDailyPick(){
   el.textContent=next?'已开启':'已关闭';
   el.style.color=next?'var(--accent)':'var(--muted)';
   if(isLoggedIn()){
-    api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,daily_pick_enabled:next}}).catch(function(){});
+    api('/api/user/preferences',{method:'POST',body:{daily_pick_enabled:next}}).catch(function(){});
   }else{
     localStorage.setItem('daily_pick_enabled',next?'1':'0');
   }
@@ -777,7 +800,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v278\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d');
+  alert('此刻 v279\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv279: 验证码登录、图片存文件、token过期、bug修复');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -815,7 +838,6 @@ function submitReport(reason){
   if(!isLoggedIn()){alert('登录后才能举报哦');closeReportSheet();return}
   if(!reportTargetMomentId)return;
   api('/api/report',{method:'POST',body:{
-    userId:AUTH.userId,token:AUTH.token,
     momentId:parseInt(reportTargetMomentId),reason:reason
   }}).then(function(r){
     if(r.error){alert(r.error)}
@@ -1041,7 +1063,7 @@ function viewStrangerMoment(m){
   viewUI.appendChild(actions);
   // Fetch like count
   if(m.id&&isLoggedIn()){
-    api('/api/like?userId='+AUTH.userId+'&momentId='+m.id).then(function(r){
+    api('/api/like?momentId='+m.id).then(function(r){
       var b=actions.querySelector('button');
       if(b)b.textContent='❤️ '+(r.count||0);
     }).catch(function(){var b=actions.querySelector('button');if(b)b.textContent='❤️ LIKE'})
@@ -1125,9 +1147,8 @@ function updateSideMenuUser(){
     var savedAvatar=localStorage.getItem('user_avatar');
     if(savedAvatar)applyAvatar(savedAvatar);
     document.getElementById('sideMenuPhoneSmall').textContent=phone;
-    // Stats - try server first for streak
-    var streak=0;
-    if(D.m.length>0){var first=new Date(D.m[D.m.length-1].d||Date.now());streak=Math.floor((Date.now()-first.getTime())/86400000)+1}
+    // Stats — calc real consecutive days from local photos
+    var streak=calcLocalStreak();
     document.getElementById('sideMenuStats').innerHTML='🔥 连续'+streak+'天 &nbsp; 📷 已记录'+D.c+'张';
     // Sync streak from server
     api('/api/stats').then(function(r){if(!r.error&&r.streak!==undefined){
@@ -1145,7 +1166,7 @@ function editNickname(){
   if(name&&name.trim()){
     name=name.trim().substring(0,12);
     localStorage.setItem('user_nickname',name);
-    document.getElementById('sideMenuNick').textContent=name;
+    api('/api/user/nickname',{method:'POST',body:{nickname:name}}).then(function(){updateSideMenuUser()}).catch(function(){});
   }
 }
 function pickAvatar(){
@@ -1191,7 +1212,7 @@ function deleteAccount(){
   if(!isLoggedIn()){alert('请先登录');return}
   if(!confirm('确定注销账号吗？\n\n此操作将永久删除你的账号、所有照片、点赞和记录，无法恢复！'))return;
   if(!confirm('再次确认：注销后数据将彻底删除，不可找回。确定继续吗？'))return;
-  api('/api/account/delete',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token}}).then(function(r){
+  api('/api/account/delete',{method:'POST',body:{}}).then(function(r){
     if(r.error){alert(r.error);return}
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
     AUTH={token:'',userId:0};saveAuth();
@@ -1207,7 +1228,7 @@ function togglePhotoPublic(){
   localStorage.setItem('photo_public',next?'1':'0');
   document.getElementById('photoPublicState').textContent=next?'已开启':'已关闭';
   document.getElementById('photoPublicState').style.color=next?'var(--accent)':'var(--muted)';
-  if(isLoggedIn()){api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,photo_public:next}}).catch(function(){})}
+  if(isLoggedIn()){api('/api/user/preferences',{method:'POST',body:{photo_public:next}}).catch(function(){})}
 }
 function showClearConfirm(){
   if(confirm('此操作将永久删除你所有的照片和记录，无法恢复。\n\n确定清空吗？')){
@@ -1216,6 +1237,30 @@ function showClearConfirm(){
     alert('所有记录已清空');
     location.reload();
   }
+}
+
+// ======================== LOCAL STREAK (real consecutive days) ========================
+function calcLocalStreak(){
+  if(D.m.length===0)return 0;
+  // Sort by date descending
+  var sorted=D.m.slice().sort(function(a,b){return (b.d||0)-(a.d||0)});
+  var streak=1,todayStr=new Date().toLocaleDateString('zh-CN');
+  // Check if the most recent photo is today or yesterday
+  var latest=new Date(sorted[0].d||Date.now());
+  var latestStr=latest.toLocaleDateString('zh-CN');
+  var yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  var yesterdayStr=yesterday.toLocaleDateString('zh-CN');
+  if(latestStr!==todayStr&&latestStr!==yesterdayStr)return 0;
+  // Walk backwards counting consecutive days
+  for(var i=0;i<sorted.length-1;i++){
+    var cur=new Date(sorted[i].d||Date.now());
+    var nxt=new Date(sorted[i+1].d||Date.now());
+    var diffDays=Math.round((cur.getTime()-nxt.getTime())/86400000);
+    if(diffDays===1){streak++}
+    else if(diffDays===0){continue} // same day, skip
+    else{break}
+  }
+  return streak;
 }
 
 // ======================== TODAY STATUS ========================
@@ -1383,22 +1428,25 @@ function saveMoment(){
     if(publishBtn){publishBtn.style.opacity='';publishBtn.style.pointerEvents=''}
   }
   if(isLoggedIn()){
-    api('/api/moments',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,dataUrl:document.getElementById('ph').src,thought:t}}).then(function(r){
-      if(r.error){
-        if(r.code==='CONTENT_REJECTED'){alert('内容不符合社区规范，未发布');done();return}
-        else{alert(r.error);done();return}
-      }
-      D.c++;D.m.unshift({u:document.getElementById('ph').src,t:t,d:Date.now(),id:r.id});D.i=0;save();
-      if(r.newBadge){
-        var b=r.newBadge;
-        var msg='🎉 恭喜！你已连续打卡'+b.days+'天，获得【'+b.name+'】徽章 '+b.emoji;
-        if(b.days===306)msg='🎈 恭喜！连续打卡306天，获得【诞辰之光】徽章 🎈 这一天，因你而特别。';
-        setTimeout(function(){alert(msg)},500);
-      }
-      afterCaptureBack();
-      updateAllUI();
-      done();
-    }).catch(function(){D.c++;var u=document.getElementById('ph').src;D.m.unshift({u:u,t:t,d:Date.now()});D.i=0;save();afterCaptureBack();updateAllUI();done()})
+    // Compress image before upload
+    compressForUpload(document.getElementById('ph').src,function(compressed){
+      api('/api/moments',{method:'POST',body:{dataUrl:compressed,thought:t}}).then(function(r){
+        if(r.error){
+          if(r.code==='CONTENT_REJECTED'){alert('内容不符合社区规范，未发布');done();return}
+          else{alert(r.error);done();return}
+        }
+        D.c++;D.m.unshift({u:r.imageUrl||document.getElementById('ph').src,t:t,d:Date.now(),id:r.id});D.i=0;save();
+        if(r.newBadge){
+          var b=r.newBadge;
+          var msg='🎉 恭喜！你已连续打卡'+b.days+'天，获得【'+b.name+'】徽章 '+b.emoji;
+          if(b.days===306)msg='🎈 恭喜！连续打卡306天，获得【诞辰之光】徽章 🎈 这一天，因你而特别。';
+          setTimeout(function(){alert(msg)},500);
+        }
+        afterCaptureBack();
+        updateAllUI();
+        done();
+      }).catch(function(){D.c++;var u=document.getElementById('ph').src;D.m.unshift({u:u,t:t,d:Date.now()});D.i=0;save();afterCaptureBack();updateAllUI();done()})
+    });
   }else{
     D.c++;var u=document.getElementById('ph').src;D.m.unshift({u:u,t:t,d:Date.now()});D.i=0;save();
     afterCaptureBack();
@@ -1436,7 +1484,7 @@ function refreshGallery(){
   var g=document.getElementById('gr');
   if(isLoggedIn()){
     api('/api/gallery').then(function(r){
-      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id){existsIdx=k;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage}else{D.m.push({u:sm.dataUrl,t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage})}});D.c=D.m.length;save()}
+      if(r.moments&&r.moments.length){D.m=r.moments.map(function(sm){return {u:sm.imageUrl||'',t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage||'',likeCount:sm.likeCount||0}});D.c=D.m.length;save()}
       renderGallery();
     }).catch(renderGallery)
   }else{renderGallery()}
@@ -1586,7 +1634,7 @@ function viewFilmPhoto(id,rowId){
   var a=document.createElement('div');a.id='strangerDetailActions';
   a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+found.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+found.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
   viewUI.appendChild(a);
-  if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
+  if(found.id&&isLoggedIn()){api('/api/like?momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='探索';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
@@ -1595,7 +1643,7 @@ function doWorldLike(btn,momentId){
   if(!momentId){return}
   if(!isLoggedIn()){alert('登录后才能点赞哦');return}
   btn.textContent='❤️ ...';btn.disabled=true;
-  api('/api/like',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,momentId:parseInt(momentId)}}).then(function(r){
+  api('/api/like',{method:'POST',body:{momentId:parseInt(momentId)}}).then(function(r){
     if(!r.error){btn.textContent='❤️ '+r.count;btn.style.background=r.liked?'rgba(255,80,80,.5)':'rgba(255,107,53,.3)'}
     btn.disabled=false
   }).catch(function(){btn.textContent='❤️ LIKE';btn.disabled=false})
@@ -2294,13 +2342,25 @@ function dimStarsForPhoto(dim){
 // Init starry world on load if enabled
 if(starryWorldEnabled){setTimeout(initStarryWorld,300)}
 // ====================== IMAGE PROXY ======================
-// Image proxy cache
+// Image proxy cache with LRU limit (max 30 entries)
 var _imgCache={};
+var _imgCacheKeys=[];
+var _IMG_CACHE_MAX=30;
+function cacheImage(url, blobUrl){
+  if(_imgCache[url])return;
+  // Evict oldest if cache full
+  while(_imgCacheKeys.length>=_IMG_CACHE_MAX){
+    var oldest=_imgCacheKeys.shift();
+    if(_imgCache[oldest]){URL.revokeObjectURL(_imgCache[oldest]);delete _imgCache[oldest]}
+  }
+  _imgCache[url]=blobUrl;
+  _imgCacheKeys.push(url);
+}
 function proxyImage(imgEl, url){
   if(_imgCache[url]){imgEl.src=_imgCache[url];return;}
   fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}}).then(function(r){return r.blob()}).then(function(blob){
     var blobUrl=URL.createObjectURL(blob);
-    _imgCache[url]=blobUrl;
+    cacheImage(url,blobUrl);
     imgEl.src=blobUrl;
   }).catch(function(){imgEl.style.display='none'});
 }
