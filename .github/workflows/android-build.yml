@@ -1,0 +1,26 @@
+name: Android AAB Build
+on: [workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 20}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install & Build
+        working-directory: moment-app
+        run: npm install && npm run build && npx cap sync android
+      - name: Build AAB
+        working-directory: moment-app/android
+        run: ./gradlew bundleRelease 2>&1 | tail -20
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: android-aab
+          path: moment-app/android/app/build/outputs/bundle/release/*.aab

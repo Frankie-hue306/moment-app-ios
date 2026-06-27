@@ -1,0 +1,127 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4] [cursor=pointer]: 登录同步数据 →
+    - generic [ref=e6] [cursor=pointer]:
+      - generic [ref=e7]: 📁 我的日记
+      - generic [ref=e8]: ›
+    - generic [ref=e9] [cursor=pointer]:
+      - generic [ref=e10]: ✨ 时光碎片
+      - generic [ref=e11]: ›
+    - generic [ref=e12] [cursor=pointer]:
+      - generic [ref=e13]: 📸 每日精选推送
+      - generic [ref=e14]: 已开启
+    - generic [ref=e16]:
+      - generic [ref=e17] [cursor=pointer]: 退出登录
+      - generic [ref=e18] [cursor=pointer]: 注销账号
+  - generic [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]: 设置
+      - generic [ref=e22] [cursor=pointer]: ✕
+    - generic [ref=e23]:
+      - generic [ref=e24]: 通知
+      - generic [ref=e25] [cursor=pointer]:
+        - generic [ref=e26]: 🔔 通知总开关
+        - generic [ref=e27]: 已关闭
+    - generic [ref=e28]:
+      - generic [ref=e29]: 隐私与安全
+      - generic [ref=e30] [cursor=pointer]:
+        - generic [ref=e31]: 📍 位置权限
+        - generic [ref=e32]: ›
+      - generic [ref=e33] [cursor=pointer]:
+        - generic [ref=e34]: 🌐 照片默认公开
+        - generic [ref=e35]: 已开启
+    - generic [ref=e36]:
+      - generic [ref=e37]: 背景定制
+      - generic [ref=e38] [cursor=pointer]:
+        - generic [ref=e39]: 🌌 星空背景
+        - generic [ref=e40]: 已开启
+      - generic [ref=e41] [cursor=pointer]:
+        - generic [ref=e42]: ⬛ 纯黑模式
+        - generic [ref=e43]: 已关闭
+      - generic [ref=e44] [cursor=pointer]:
+        - generic [ref=e45]: 🎨 日记暖色
+        - generic [ref=e46]: 经典深灰
+    - generic [ref=e47]:
+      - generic [ref=e48]: 通用
+      - generic [ref=e49] [cursor=pointer]:
+        - generic [ref=e50]: 🌓 深色模式
+        - generic [ref=e51]: 深色模式
+      - generic [ref=e52] [cursor=pointer]:
+        - generic [ref=e53]: 📶 图片加载策略
+        - generic [ref=e54]: 省流量
+      - generic [ref=e55] [cursor=pointer]:
+        - generic [ref=e56]: ✨ 沉浸特效
+        - generic [ref=e57]: 已开启
+      - generic [ref=e58] [cursor=pointer]:
+        - generic [ref=e59]: 🗑️ 清除缓存
+        - generic [ref=e60]: ›
+    - generic [ref=e61]:
+      - generic [ref=e62]: 支持
+      - generic [ref=e63] [cursor=pointer]:
+        - generic [ref=e64]: ❓ 帮助与反馈
+        - generic [ref=e65]: ›
+      - generic [ref=e66] [cursor=pointer]:
+        - generic [ref=e67]: ℹ️ 关于我们
+        - generic [ref=e68]: ›
+      - generic [ref=e69] [cursor=pointer]:
+        - generic [ref=e70]: 📄 用户协议
+        - generic [ref=e71]: ›
+      - generic [ref=e72] [cursor=pointer]:
+        - generic [ref=e73]: 🔒 隐私政策
+        - generic [ref=e74]: ›
+    - generic [ref=e75]:
+      - generic [ref=e76]: 危险操作
+      - generic [ref=e78] [cursor=pointer]: 清空全部记录
+  - generic [ref=e79]:
+    - generic [ref=e80]: 日记暖色主题
+    - generic [ref=e81] [cursor=pointer]: 落日余晖
+    - generic [ref=e83] [cursor=pointer]: 琥珀暖
+    - generic [ref=e85] [cursor=pointer]: 棕红陶土
+    - generic [ref=e87] [cursor=pointer]: 奶油可可
+    - generic [ref=e89] [cursor=pointer]: 经典深灰
+    - button "取消" [ref=e91] [cursor=pointer]
+  - generic [ref=e92]:
+    - generic [ref=e93]: 深色模式
+    - generic [ref=e94] [cursor=pointer]: 跟随系统
+    - generic [ref=e95] [cursor=pointer]: 浅色模式
+    - generic [ref=e96] [cursor=pointer]: 深色模式
+    - button "取消" [ref=e97] [cursor=pointer]
+  - generic [ref=e98]:
+    - generic [ref=e99]: 举报内容
+    - generic [ref=e100] [cursor=pointer]: 色情低俗
+    - generic [ref=e101] [cursor=pointer]: 暴力血腥
+    - generic [ref=e102] [cursor=pointer]: 骚扰辱骂
+    - generic [ref=e103] [cursor=pointer]: 垃圾广告
+    - generic [ref=e104] [cursor=pointer]: 隐私侵犯
+    - generic [ref=e105] [cursor=pointer]: 其他
+    - button "取消" [ref=e106] [cursor=pointer]
+  - generic [ref=e107]:
+    - generic [ref=e108]: 显示模式
+    - generic [ref=e109] [cursor=pointer]: 瀑布流
+    - generic [ref=e110] [cursor=pointer]: 沉浸
+    - button "取消" [ref=e111] [cursor=pointer]
+  - generic [ref=e112]:
+    - banner [ref=e113]:
+      - button "☰" [ref=e114] [cursor=pointer]
+      - generic [ref=e115]: 此刻
+      - button "⚙️" [ref=e116] [cursor=pointer]
+    - generic [ref=e117]:
+      - generic [ref=e118]: 🌍
+      - generic [ref=e119]:
+        - img
+        - button "拍下 此刻" [ref=e120] [cursor=pointer]:
+          - text: 拍下
+          - text: 此刻
+      - generic [ref=e121]:
+        - generic [ref=e122]: 此刻安静，世界在等你看见。
+        - generic [ref=e123]: 6月27日
+    - navigation [ref=e124]:
+      - generic [ref=e125] [cursor=pointer]:
+        - generic [ref=e126]: 📁
+        - generic [ref=e127]: 日记
+      - generic [ref=e128] [cursor=pointer]:
+        - generic [ref=e129]: 📷
+        - generic [ref=e130]: 此刻
+      - generic [ref=e131] [cursor=pointer]:
+        - generic [ref=e132]: 🌍
+        - generic [ref=e133]: 探索

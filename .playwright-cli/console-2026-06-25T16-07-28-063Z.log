@@ -1,0 +1,7 @@
+[     545ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8769/favicon.ico:0
+[    5942ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8769/api/image/8:0
+[    5950ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8769/api/image/7:0
+[    5961ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8769/api/image/6:0
+[   14902ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8769/api/image/7:0
+[   14910ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8769/api/image/8:0
+[   14911ms] [ERROR] Failed to load resource: the server responded with a status of 404 (File not found) @ http://localhost:8769/api/image/6:0
