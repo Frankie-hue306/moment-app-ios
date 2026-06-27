@@ -1572,13 +1572,12 @@ function loadFilmPool(){
 }
 function renderFilmRows(){
   if(filmPool.length===0)return;
-  // Each row independently shuffled for variety
-  var r1=filmPool.slice().sort(function(){return Math.random()-.5});
-  var r2=filmPool.slice().sort(function(){return Math.random()-.5});
-  var r3=filmPool.slice().sort(function(){return Math.random()-.5});
-  buildRow('filmRow1',r1,'left');
-  buildRow('filmRow2',r2,'right');
-  buildRow('filmRow3',r3,'left');
+  // Split pool into 3 non-overlapping groups for visual variety
+  var shuffled=filmPool.slice().sort(function(){return Math.random()-.5});
+  var third=Math.ceil(shuffled.length/3);
+  buildRow('filmRow1',shuffled.slice(0,third),'left');
+  buildRow('filmRow2',shuffled.slice(third,third*2),'right');
+  buildRow('filmRow3',shuffled.slice(third*2),'left');
 }
 function buildRow(id,photos,dir){
   var row=document.getElementById(id);
