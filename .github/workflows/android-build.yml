@@ -1,33 +1,9 @@
-name: Android AAB Build
+name: Android Test
 
 on: workflow_dispatch
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-      - name: Decode Keystore
-        env:
-          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
-        run: echo "$KEYSTORE_B64" | base64 -d > moment-app/android/app/moment-release.keystore
-      - name: Install and Sync
-        working-directory: moment-app
-        run: npm install && npm run build && npx cap sync android
-      - name: Build AAB
-        working-directory: moment-app/android
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-        run: ./gradlew bundleRelease
-      - uses: actions/upload-artifact@v4
-        if: success()
-        with:
-          name: android-aab
-          path: moment-app/android/app/build/outputs/bundle/release/*.aab
+      - run: echo "hello"
