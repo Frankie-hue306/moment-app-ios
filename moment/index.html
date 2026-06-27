@@ -190,7 +190,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   <div style="color:var(--muted);font-size:16px;line-height:1.6;text-align:center;max-width:260px;margin-bottom:40px;letter-spacing:-.2px">每天一次，随机时刻<br>拍下你面前真实的生活<br>反社交媒体档案</div>
   <input id="loginPhone" type="tel" maxlength="11" placeholder="输入手机号" style="width:280px;padding:16px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:20px;text-align:center;outline:none;letter-spacing:4px;margin-bottom:12px">
   <div style="display:flex;gap:8px;width:280px;margin-bottom:12px">
-    <input id="loginCode" type="tel" maxlength="6" placeholder="验证码" style="flex:1;padding:14px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:18px;text-align:center;outline:none;letter-spacing:4px">
+    <input id="loginCode" type="tel" maxlength="6" placeholder="验证码" style="width:140px;padding:14px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:18px;text-align:center;outline:none;letter-spacing:4px">
     <button id="smsBtn" onclick="sendSMS()" style="flex-shrink:0;padding:14px 12px;border:none;border-radius:14px;background:var(--card);color:var(--accent);font-size:13px;cursor:pointer;white-space:nowrap">获取验证码</button>
   </div>
   <button class="btn" onclick="doLogin()" style="width:280px;text-align:center;background:var(--accent);color:#fff;font-size:17px">登录 / 注册</button>
@@ -692,7 +692,7 @@ function closeDarkModeSheet(){
   document.getElementById('darkModeSheet').style.transform='translateY(100%)';
 }
 function getDarkMode(){
-  return localStorage.getItem('dark_mode')||'dark';
+  return localStorage.getItem('dark_mode')||'light';
 }
 function effectiveDarkMode(){
   var dm=getDarkMode();
@@ -1564,7 +1564,7 @@ function startFilmTime(){
 }
 function updateStrangerStats(){} // stub - stats now in filmstrip time header
 function loadFilmPool(){
-  fetch(API+'/api/explore?limit=6&sort=recent').then(function(r){return r.json()}).then(function(d){
+  fetch(API+'/api/explore?limit=50&sort=recent').then(function(r){return r.json()}).then(function(d){
     if(d.moments&&d.moments.length){filmPool=d.moments;renderFilmRows();}
   }).catch(function(){});
   clearTimeout(filmTimer);
@@ -1572,11 +1572,10 @@ function loadFilmPool(){
 }
 function renderFilmRows(){
   if(filmPool.length===0)return;
-  // Shuffle and pick for 3 rows
-  var pool=filmPool.slice().sort(function(){return Math.random()-.5});
-  var r1=pool.slice(0,Math.max(15,pool.length));
-  var r2=pool.slice(Math.max(0,pool.length-15)).reverse();
-  var r3=pool.slice(0,Math.max(15,pool.length)).sort(function(){return Math.random()-.5});
+  // Each row independently shuffled for variety
+  var r1=filmPool.slice().sort(function(){return Math.random()-.5});
+  var r2=filmPool.slice().sort(function(){return Math.random()-.5});
+  var r3=filmPool.slice().sort(function(){return Math.random()-.5});
   buildRow('filmRow1',r1,'left');
   buildRow('filmRow2',r2,'right');
   buildRow('filmRow3',r3,'left');
