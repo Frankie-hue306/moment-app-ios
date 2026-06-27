@@ -1,5 +1,7 @@
 name: Android AAB Build
+
 on: workflow_dispatch
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,26 +14,14 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Setup Android SDK
-        run: |
-          export ANDROID_SDK_ROOT=$HOME/android-sdk
-          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-          cd $ANDROID_SDK_ROOT/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
-          unzip -qo tools.zip
-          yes | cmdline-tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platforms;android-34" "build-tools;34.0.0" 2>&1 | tail -3
-          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-      - name: Create local.properties
-        run: echo "sdk.dir=$HOME/android-sdk" > moment-app/android/local.properties
       - name: Decode Keystore
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
         run: echo "$KEYSTORE_B64" | base64 -d > moment-app/android/app/moment-release.keystore
-      - name: Install and Build
+      - name: Install and Sync
         working-directory: moment-app
         run: npm install && npm run build && npx cap sync android
-      - name: Build Signed AAB
+      - name: Build AAB
         working-directory: moment-app/android
         env:
           KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
