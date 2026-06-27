@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v282</title>
+<title>此刻 v283</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -144,11 +144,6 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 .star-sparkle{animation:sparkleFlash .3s ease-out forwards!important}
 @keyframes sparkleFlash{0%{opacity:1;transform:scale(1);box-shadow:0 0 4px 2px rgba(255,255,255,.9),0 0 16px 6px rgba(180,200,255,.6)}50%{opacity:1;transform:scale(2.5);box-shadow:0 0 6px 3px rgba(255,255,255,1),0 0 24px 10px rgba(200,220,255,.8)}100%{opacity:var(--lo,.3);transform:scale(1);box-shadow:0 0 0px 0px transparent}}
 .pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4CD964;margin-left:4px;vertical-align:middle;animation:pulse-dot 1s ease-in-out infinite}
-.archive-warm[data-warm="sunset"]{--archive-bg:#2C1810}
-.archive-warm[data-warm="amber"]{--archive-bg:#1C140F}
-.archive-warm[data-warm="terracotta"]{--archive-bg:#1A100E}
-.archive-warm[data-warm="cocoa"]{--archive-bg:#1A1410}
-.archive-warm[data-warm="classic"]{--archive-bg:#1C1C1E}
 
 #mainActionBtn.taken.light-glass{background:rgba(212,163,115,.15);color:#1C1C1E;border-color:rgba(212,163,115,.25)}
 #mainActionBtn.light-glass{color:#1C1C1E;border-color:rgba(0,0,0,.15);background:rgba(0,0,0,.06)}
@@ -267,10 +262,6 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       <span>⬛ 纯黑模式</span>
       <span id="pureBlackState" style="color:var(--muted);font-size:13px;flex-shrink:0;margin-left:8px">已关闭</span>
     </div>
-    <div class="menu-row" onclick="openWarmThemeSheet()" style="border-bottom:none">
-      <span>🎨 日记暖色</span>
-      <span id="warmThemeState" style="color:var(--muted);font-size:13px">经典深灰</span>
-    </div>
   </div>
   <!-- Group 4: 通用 -->
   <div style="margin-bottom:24px">
@@ -316,16 +307,6 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   </div>
 </div>
 
-<!-- Warm Theme Picker Sheet -->
-<div id="warmThemeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px + env(safe-area-inset-bottom, 0px));transform:translateY(100%);transition:transform .3s ease">
-  <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">日记暖色主题</div>
-  <div class="menu-row" onclick="setArchiveWarm('sunset')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#2C1810;border-radius:50%;margin-right:10px;vertical-align:middle"></span>落日余晖 <span class="warm-check" id="wcheck-sunset" style="color:var(--accent);display:none">✓</span></div>
-  <div class="menu-row" onclick="setArchiveWarm('amber')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1C140F;border-radius:50%;margin-right:10px;vertical-align:middle"></span>琥珀暖 <span class="warm-check" id="wcheck-amber" style="color:var(--accent);display:none">✓</span></div>
-  <div class="menu-row" onclick="setArchiveWarm('terracotta')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1A100E;border-radius:50%;margin-right:10px;vertical-align:middle"></span>棕红陶土 <span class="warm-check" id="wcheck-terracotta" style="color:var(--accent);display:none">✓</span></div>
-  <div class="menu-row" onclick="setArchiveWarm('cocoa')" style="padding-left:20px;padding-right:20px"><span style="display:inline-block;width:16px;height:16px;background:#1A1410;border-radius:50%;margin-right:10px;vertical-align:middle"></span>奶油可可 <span class="warm-check" id="wcheck-cocoa" style="color:var(--accent);display:none">✓</span></div>
-  <div class="menu-row" onclick="setArchiveWarm('classic')" style="padding-left:20px;padding-right:20px;border-bottom:none"><span style="display:inline-block;width:16px;height:16px;background:#1C1C1E;border:1px solid rgba(255,255,255,.2);border-radius:50%;margin-right:10px;vertical-align:middle"></span>经典深灰 <span class="warm-check" id="wcheck-classic" style="color:var(--accent);display:none">✓</span></div>
-  <button class="btn" onclick="closeWarmThemeSheet()" style="margin:12px 20px 0;text-align:center">取消</button>
-</div>
 <!-- Dark Mode Picker Sheet -->
 <div id="darkModeSheet" style="position:fixed;bottom:0;left:0;right:0;background:var(--sheet-bg);z-index:4100;border-radius:20px 20px 0 0;padding:0 0 calc(30px + env(safe-area-inset-bottom, 0px));transform:translateY(100%);transition:transform .3s ease">
   <div style="text-align:center;padding:14px;color:var(--muted);font-size:13px;border-bottom:1px solid var(--menu-sep)">深色模式</div>
@@ -383,7 +364,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   </div>
 
   <!-- Photos/Gallery Tab -->
-  <div id="tab-photos" class="tab-full archive-warm" data-warm="classic" style="display:none;flex:1;overflow-y:auto;padding:16px 24px 60px;overscroll-behavior:none">
+  <div id="tab-photos" style="display:none;flex:1;overflow-y:auto;padding:16px 24px 60px;overscroll-behavior:none">
     <div id="gr"></div>
   </div>
 
@@ -620,7 +601,7 @@ function navTo(tab){
   }
   currentTab=tab;
   updateNavActive(tab);
-  if(tab==='photos'){refreshGallery();applyArchiveWarm();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}else{applyArchiveWarm()}}
+  if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}else{}}
   if(tab==='home')updateHomeUI();
   document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
   document.getElementById('collage').style.display='none';stopCountdown();
@@ -646,7 +627,6 @@ function closeAllPanels(){
   document.getElementById('sideMenu').classList.remove('open');
   document.getElementById('quickSettings').classList.remove('open');
   document.getElementById('menuOverlay').style.display='none';
-  closeWarmThemeSheet();
   closeReportSheet();
   closeModeSheet();
   closeDarkModeSheet();
@@ -802,7 +782,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v282\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv282: 验证码登录、图片存文件、token过期、bug修复');
+  alert('此刻 v283\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv283: 验证码登录、图片存文件、token过期、bug修复');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -2183,8 +2163,6 @@ function applyArchiveWarm(){
 }
 // Init warm theme on load
 setTimeout(function(){
-  document.getElementById('warmThemeState').textContent={sunset:'落日余晖',amber:'琥珀暖',terracotta:'棕红陶土',cocoa:'奶油可可',classic:'经典深灰'}[archiveWarm];
-  applyArchiveWarm();
 },200);
 
 // ====================== CUSTOM DIALOG ======================
