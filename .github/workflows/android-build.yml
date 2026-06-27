@@ -12,5 +12,20 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Test
-        run: echo "OK"
+      - name: Decode Keystore
+        run: echo "$KEYSTORE_B64" | base64 -d > moment-app/android/app/moment-release.keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+      - name: Install and Build
+        working-directory: moment-app
+        run: npm install && npm run build && npx cap sync android
+      - name: Build Signed AAB
+        working-directory: moment-app/android
+        run: chmod +x gradlew && ./gradlew bundleRelease
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: android-aab
+          path: moment-app/android/app/build/outputs/bundle/release/*.aab
