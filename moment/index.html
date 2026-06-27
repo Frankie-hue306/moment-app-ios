@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v279</title>
+<title>此刻 v280</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -190,7 +190,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   <div style="color:var(--muted);font-size:16px;line-height:1.6;text-align:center;max-width:260px;margin-bottom:40px;letter-spacing:-.2px">每天一次，随机时刻<br>拍下你面前真实的生活<br>反社交媒体档案</div>
   <input id="loginPhone" type="tel" maxlength="11" placeholder="输入手机号" style="width:280px;padding:16px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:20px;text-align:center;outline:none;letter-spacing:4px;margin-bottom:12px">
   <div style="display:flex;gap:8px;width:280px;margin-bottom:12px">
-    <input id="loginCode" type="tel" maxlength="6" placeholder="验证码" style="width:140px;padding:14px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:18px;text-align:center;outline:none;letter-spacing:4px">
+    <input id="loginCode" type="tel" maxlength="6" placeholder="验证码" style="flex:1;padding:14px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:18px;text-align:center;outline:none;letter-spacing:4px">
     <button id="smsBtn" onclick="sendSMS()" style="flex-shrink:0;padding:14px 12px;border:none;border-radius:14px;background:var(--card);color:var(--accent);font-size:13px;cursor:pointer;white-space:nowrap">获取验证码</button>
   </div>
   <button class="btn" onclick="doLogin()" style="width:280px;text-align:center;background:var(--accent);color:#fff;font-size:17px">登录 / 注册</button>
@@ -589,7 +589,9 @@ function doLogin(){
 }
 function api(path,opts){
   opts=opts||{};
-  var url=API+path;
+  var hasQS=path.indexOf('?')>=0;
+  var params='userId='+AUTH.userId;
+  var url=API+path+(hasQS?'&':'?')+params;
   var o={method:opts.method||'GET',headers:{'x-auth-token':AUTH.token}};
   if(opts.body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(opts.body)}
   return fetch(url,o).then(function(r){return r.json()})
@@ -657,7 +659,7 @@ function toggleDailyPick(){
   el.textContent=next?'已开启':'已关闭';
   el.style.color=next?'var(--accent)':'var(--muted)';
   if(isLoggedIn()){
-    api('/api/user/preferences',{method:'POST',body:{daily_pick_enabled:next}}).catch(function(){});
+    api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,daily_pick_enabled:next}}).catch(function(){});
   }else{
     localStorage.setItem('daily_pick_enabled',next?'1':'0');
   }
@@ -800,7 +802,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v279\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv279: 验证码登录、图片存文件、token过期、bug修复');
+  alert('此刻 v280\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv280: 验证码登录、图片存文件、token过期、bug修复');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -1063,7 +1065,7 @@ function viewStrangerMoment(m){
   viewUI.appendChild(actions);
   // Fetch like count
   if(m.id&&isLoggedIn()){
-    api('/api/like?momentId='+m.id).then(function(r){
+    api('/api/like?userId='+AUTH.userId+'&momentId='+m.id).then(function(r){
       var b=actions.querySelector('button');
       if(b)b.textContent='❤️ '+(r.count||0);
     }).catch(function(){var b=actions.querySelector('button');if(b)b.textContent='❤️ LIKE'})
@@ -1166,7 +1168,8 @@ function editNickname(){
   if(name&&name.trim()){
     name=name.trim().substring(0,12);
     localStorage.setItem('user_nickname',name);
-    api('/api/user/nickname',{method:'POST',body:{nickname:name}}).then(function(){updateSideMenuUser()}).catch(function(){});
+    document.getElementById('sideMenuNick').textContent=name;
+    api('/api/user/nickname',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,nickname:name}}).then(function(){updateSideMenuUser()}).catch(function(){});
   }
 }
 function pickAvatar(){
@@ -1212,7 +1215,7 @@ function deleteAccount(){
   if(!isLoggedIn()){alert('请先登录');return}
   if(!confirm('确定注销账号吗？\n\n此操作将永久删除你的账号、所有照片、点赞和记录，无法恢复！'))return;
   if(!confirm('再次确认：注销后数据将彻底删除，不可找回。确定继续吗？'))return;
-  api('/api/account/delete',{method:'POST',body:{}}).then(function(r){
+  api('/api/account/delete',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token}}).then(function(r){
     if(r.error){alert(r.error);return}
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
     AUTH={token:'',userId:0};saveAuth();
@@ -1228,7 +1231,7 @@ function togglePhotoPublic(){
   localStorage.setItem('photo_public',next?'1':'0');
   document.getElementById('photoPublicState').textContent=next?'已开启':'已关闭';
   document.getElementById('photoPublicState').style.color=next?'var(--accent)':'var(--muted)';
-  if(isLoggedIn()){api('/api/user/preferences',{method:'POST',body:{photo_public:next}}).catch(function(){})}
+  if(isLoggedIn()){api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,photo_public:next}}).catch(function(){})}
 }
 function showClearConfirm(){
   if(confirm('此操作将永久删除你所有的照片和记录，无法恢复。\n\n确定清空吗？')){
@@ -1430,7 +1433,7 @@ function saveMoment(){
   if(isLoggedIn()){
     // Compress image before upload
     compressForUpload(document.getElementById('ph').src,function(compressed){
-      api('/api/moments',{method:'POST',body:{dataUrl:compressed,thought:t}}).then(function(r){
+      api('/api/moments',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,dataUrl:compressed,thought:t}}).then(function(r){
         if(r.error){
           if(r.code==='CONTENT_REJECTED'){alert('内容不符合社区规范，未发布');done();return}
           else{alert(r.error);done();return}
@@ -1484,7 +1487,7 @@ function refreshGallery(){
   var g=document.getElementById('gr');
   if(isLoggedIn()){
     api('/api/gallery').then(function(r){
-      if(r.moments&&r.moments.length){D.m=r.moments.map(function(sm){return {u:sm.imageUrl||'',t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage||'',likeCount:sm.likeCount||0}});D.c=D.m.length;save()}
+      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id){existsIdx=k;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage}else{D.m.push({u:sm.dataUrl,t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage})}});D.c=D.m.length;save()}
       renderGallery();
     }).catch(renderGallery)
   }else{renderGallery()}
@@ -1632,7 +1635,7 @@ function viewFilmPhoto(id,rowId){
   var a=document.createElement('div');a.id='strangerDetailActions';
   a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+found.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+found.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
   viewUI.appendChild(a);
-  if(found.id&&isLoggedIn()){api('/api/like?momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
+  if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='探索';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
@@ -1641,7 +1644,7 @@ function doWorldLike(btn,momentId){
   if(!momentId){return}
   if(!isLoggedIn()){alert('登录后才能点赞哦');return}
   btn.textContent='❤️ ...';btn.disabled=true;
-  api('/api/like',{method:'POST',body:{momentId:parseInt(momentId)}}).then(function(r){
+  api('/api/like',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,momentId:parseInt(momentId)}}).then(function(r){
     if(!r.error){btn.textContent='❤️ '+r.count;btn.style.background=r.liked?'rgba(255,80,80,.5)':'rgba(255,107,53,.3)'}
     btn.disabled=false
   }).catch(function(){btn.textContent='❤️ LIKE';btn.disabled=false})
