@@ -115,7 +115,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 /* Filmstrip scroll */
 @keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes scroll-right{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
-.film-track{display:flex;gap:14px;position:absolute;height:170px;will-change:transform;align-items:center}
+.film-track{display:flex;gap:14px;position:absolute;left:0;top:0;height:170px;will-change:transform;align-items:center}
 .film-track.left{animation:scroll-left 35s linear infinite}
 .film-track.right{animation:scroll-right 35s linear infinite}
 .film-photo{flex-shrink:0;width:160px;height:160px;border-radius:10px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.15);cursor:pointer;position:relative;transition:transform .2s ease;border:.5px solid rgba(255,255,255,.1);background:#1a1a1d}
@@ -1041,13 +1041,13 @@ function renderWaterfallCards(moments,append){
     var infoDiv=document.createElement('div');
     infoDiv.className='wf-info';
     infoDiv.innerHTML='<div class="wf-time">'+timeAgo+'</div>'+thoughtHtml;
-    var img=new Image();
-    img.style='width:100%;display:block;background:#111;min-height:120px;object-fit:cover';
+    var img=document.createElement('img');
+    img.style='width:100%;display:block;background:#222;min-height:120px;object-fit:cover';
+    img.src=imgUrl(m.imageUrl);
+    img.loading='lazy';
+    img.onerror=function(){this.style.display='none'};
     card.appendChild(img);
     card.appendChild(infoDiv);
-    var url=imgUrl(m.imageUrl);
-    if(_imgCache[url]){img.src=_imgCache[url]}
-    else{fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}}).then(function(r){return r.blob()}).then(function(blob){var blobUrl=URL.createObjectURL(blob);cacheImage(url,blobUrl);img.src=blobUrl}).catch(function(){img.src=url})}
     grid.appendChild(card);
   });
 }
@@ -1506,7 +1506,7 @@ function refreshGallery(){
   var g=document.getElementById('gr');
   if(isLoggedIn()){
     api('/api/gallery').then(function(r){
-      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id||((sm.imageUrl||sm.dataUrl)&&D.m[k].u===(sm.imageUrl||sm.dataUrl)&&Math.abs(D.m[k].d-new Date(sm.created_at+'Z').getTime())<5000)){existsIdx=k;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage;D.m[existsIdx].id=sm.id;D.m[existsIdx]._localId=null;}else{D.m.push({u:sm.dataUrl,t:sm.thought||'',d:new Date(sm.created_at+'Z').getTime(),id:sm.id,status:sm.status,rejectedMessage:sm.rejectedMessage})}});D.c=D.m.length;save()}
+      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){var matched=false;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id||((sm.imageUrl||sm.dataUrl)&&D.m[k].u===(sm.imageUrl||sm.dataUrl)&&Math.abs(D.m[k].d-new Date(sm.created_at+'Z').getTime())<5000)||(D.m[k]._localId&&sm.imageUrl)){existsIdx=k;matched=true;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage;D.m[existsIdx].id=sm.id;D.m[existsIdx]._localId=null}});D.c=D.m.length;save()}
       renderGallery();
     }).catch(renderGallery)
   }else{renderGallery()}
@@ -1678,7 +1678,7 @@ function updateAllUI(){
 }
 
 // ======================== SAVE ========================
-function save(){try{localStorage.setItem('mv21',JSON.stringify(D))}catch(e){if(confirm('存储空间不足，要清空旧记录吗？')){D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');location.reload()}else{alert('无法保存，请手动清理浏览器数据')}}}
+function save(){try{localStorage.setItem('mv21',JSON.stringify(D))}catch(e){if(confirm('存储空间不足。\n\n可尝试：\n1. 清除缓存释放空间\n2. 备份当前记录再清空\n\n要备份并清空本地记录吗？')){try{localStorage.setItem('mv21_quota_backup',JSON.stringify(D));localStorage.setItem('mv21_quota_backup_at',String(Date.now()))}catch(ex){}D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');showToast('已备份并清空本地记录，可在设置中恢复');setTimeout(function(){location.reload()},1500)}else{showToast('无法保存，请手动清理浏览器数据或减少本地记录')}}}
 
 // ======================== COLLAGE ========================
 var collageMonth=null,collageCanvas=null,collageAvailable=[];

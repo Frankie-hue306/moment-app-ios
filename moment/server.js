@@ -10,9 +10,9 @@ const DATA=process.env.MOMENT_DATA_DIR||'/opt/moment/data';
 const DB_LOCK_FILE=DATA+'/.dblock';
 
 // File-based mutex for DB write safety
-function dbLock(){for(let i=0;i<50;i++){try{fs.writeFileSync(DB_LOCK_FILE,process.pid.toString(),{flag:'wx'});return true}catch(e){const d=require('child_process').spawnSync('sleep',['0.05'])} }return false}
+function dbLock(){for(let i=0;i<50;i++){try{fs.writeFileSync(DB_LOCK_FILE,JSON.stringify({pid:process.pid,ts:Date.now()}),{flag:'wx'});return true}catch(e){try{const data=JSON.parse(fs.readFileSync(DB_LOCK_FILE,'utf8'));if(Date.now()-data.ts>30000){try{fs.unlinkSync(DB_LOCK_FILE)}catch(_){}} }catch(_){}}const d=require('child_process');d.spawnSync('sleep',['0.05'])}return false}
 function dbUnlock(){try{fs.unlinkSync(DB_LOCK_FILE)}catch(e){}}
-function withLock(fn){const ok=dbLock();try{fn()}finally{if(ok)dbUnlock()}}
+function withLock(fn){const ok=dbLock();if(!ok)throw new Error('DB_LOCK_FAILED');try{fn()}finally{dbUnlock()}}
 
 const DB=()=>{try{return JSON.parse(fs.readFileSync(DATA+'/db.json','utf8'))}catch(e){return {users:[],moments:[],likes:[],reports:[],nextId:1}}};
 const SAVE=(d)=>{try{mkdir(DATA);fs.writeFileSync(DATA+'/db.json',JSON.stringify(d,null,2));return true}catch(e){console.error('[ERROR] Failed to save db.json:',e.message);return false}};
@@ -148,7 +148,7 @@ app.post('/api/moments',auth,(r,s)=>{
   const imagePath=saveImage(dataUrl);
   const imageForDb=imagePath||dataUrl;
   dbWrite(r,s,()=>{
-    const m={id:r.db.nextId++,userId:r.user.id,imagePath:imageForDb,thought:(thought||'').slice(0,500),created_at:new Date().toISOString(),status:'approved',like_count:0};
+    const m={id:r.db.nextId++,userId:r.user.id,imagePath:imagePath||'',dataUrl:imagePath?'':dataUrl,thought:(thought||'').slice(0,500),created_at:new Date().toISOString(),status:'approved',like_count:0};
     r.db.moments.unshift(m);
     const now=new Date();const today=now.toISOString().slice(0,10);
     if(!r.user.last_upload_date||r.user.last_upload_date!==today){
@@ -156,14 +156,16 @@ app.post('/api/moments',auth,(r,s)=>{
       r.user.last_upload_date=today;
     }
     SAVE(r.db);
-    s.json({id:m.id,imageUrl:imgUrl(imagePath||m.dataUrl)});
+    s.json({id:m.id,imageUrl:imgUrl(imagePath||m.dataUrl||dataUrl)});
   });
 });
 
 // Helper: check photo_public preference
-function isPublicMoment(m,db){
+function isPublicMoment(m,dbOrMap){
   if(m.status!=='approved')return false;
-  const author=db.users.find(u=>u.id===m.userId);
+  var author;
+  if(Array.isArray(dbOrMap)){author=dbOrMap.find(function(u){return u.id===m.userId})}
+  else{author=dbOrMap[m.userId]}
   if(author&&author.preferences&&author.preferences.photo_public===false)return false;
   return true;
 }
@@ -181,18 +183,20 @@ app.get('/api/gallery',auth,(r,s)=>{
 app.get('/api/explore',(r,s)=>{
   const pg=parseInt(r.query.page)||1,lim=Math.min(parseInt(r.query.limit)||15,50);
   const db=DB();
-  const pub=db.moments.filter(m=>isPublicMoment(m,db));
-  const moments=pub.slice((pg-1)*lim,pg*lim).map(m=>({
-    imageUrl:imgUrl(m.imagePath||m.dataUrl),
-    like_count:m.like_count||0,author_phone_masked:mask(m.userId?db.users.find(u=>u.id===m.userId)?.phone:'')
-  }));
+  var userMap={};db.users.forEach(function(u){userMap[u.id]=u});
+  var pub=db.moments.filter(function(m){return isPublicMoment(m,userMap)});
+  var moments=pub.slice((pg-1)*lim,pg*lim).map(function(m){
+    var u=userMap[m.userId];
+    return {imageUrl:imgUrl(m.imagePath||m.dataUrl),like_count:m.like_count||0,author_phone_masked:mask(u?u.phone:'')};
+  });
   s.json({moments,hasMore:moments.length===lim,total:pub.length});
 });
 
 // Stranger (random public moment) — respect photo_public
 app.get('/api/stranger',(r,s)=>{
   const db=DB();
-  const pub=db.moments.filter(m=>isPublicMoment(m,db));
+  var userMap={};db.users.forEach(function(u){userMap[u.id]=u});
+  var pub=db.moments.filter(function(m){return isPublicMoment(m,userMap)});
   if(!pub.length)return s.json({moment:null});
   const m=pub[Math.floor(Math.random()*pub.length)];
   s.json({imageUrl:imgUrl(m.imagePath||m.dataUrl),thought:m.thought||"",created_at:m.created_at,like_count:m.like_count||0});
@@ -239,6 +243,10 @@ app.delete('/api/moment/:id',auth,(r,s)=>{
     const mid=parseInt(r.params.id);
     const idx=r.db.moments.findIndex(m=>m.id===mid&&m.userId===r.user.id);
     if(idx<0)return s.status(404).json({error:'不存在'});
+    var delM=r.db.moments[idx];
+    if(delM&&delM.imagePath&&delM.imagePath.startsWith('/uploads/')){
+      try{fs.unlinkSync(require('path').join(UPLOADS_DIR,require('path').basename(delM.imagePath)))}catch(e){}
+    }
     r.db.moments.splice(idx,1);
     r.db.likes=r.db.likes.filter(l=>l.momentId!==mid);
     r.db.reports=r.db.reports.filter(r=>r.momentId!==mid);
