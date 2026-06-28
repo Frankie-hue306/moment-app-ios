@@ -1,5 +1,5 @@
 name: Debug Server
-on: [workflow_dispatch, push]
+on: [workflow_dispatch]
 jobs:
   debug:
     runs-on: ubuntu-latest
