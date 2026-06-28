@@ -67,7 +67,7 @@ function genSMSCode(phone){
   // Clean up expired codes (memory leak prevention)
   const now=Date.now();
   for(const ph of Object.keys(SMS_CODES)){if(SMS_CODES[ph].expiresAt<now-600000)delete SMS_CODES[ph]}
-  const code=String(100000+Math.floor(Math.random()*900000));
+  const code=String(crypto.randomInt(100000,999999));
   SMS_CODES[phone]={code,expiresAt:now+5*60*1000};
   console.log('[DEV] SMS code for '+mask(phone)+': '+code);
   return code;
@@ -123,7 +123,7 @@ function auth(r,s,next){
   if(!u)return s.status(401).json({error:'请先登录'});
   // Check token expiry
   if(u.tokenCreatedAt&&Date.now()-u.tokenCreatedAt>TOKEN_TTL_MS){
-    withLock(()=>{let db2=DB();let u2=db2.users.find(x=>x.id===u.id);if(u2){u2.token='';SAVE(db2)}});
+    withLock(()=>{let db2=DB();let u2=db2.users.find(x=>x.id===u.id);if(u2&&u2.token===tok){u2.token='';SAVE(db2)}});
     return s.status(401).json({error:'登录已过期，请重新登录'});
   }
   r.user=u;r.db=db;
@@ -154,7 +154,7 @@ app.post('/api/moments',auth,(r,s)=>{
     if(!r.user.last_upload_date){r.user.consecutive_days=1;r.user.last_upload_date=today}
     else if(r.user.last_upload_date===yesterday){r.user.consecutive_days=(r.user.consecutive_days||0)+1;r.user.last_upload_date=today}
     else if(r.user.last_upload_date!==today){r.user.consecutive_days=1;r.user.last_upload_date=today}
-    SAVE(r.db);
+    if(!SAVE(r.db))return s.status(500).json({error:'保存失败'});
     s.json({id:m.id,imageUrl:imgUrl(imagePath||m.dataUrl||dataUrl)});
   });
 });
@@ -188,7 +188,7 @@ app.get('/api/explore',(r,s)=>{
     var u=userMap[m.userId];
     return {id:m.id,imageUrl:imgUrl(m.imagePath||m.dataUrl),thought:m.thought||'',created_at:m.created_at,like_count:m.like_count||0,author_phone_masked:mask(u?u.phone:'')};
   });
-  s.json({moments,hasMore:moments.length===lim,total:pub.length});
+  s.json({moments,hasMore:(pg*lim)<pub.length,total:pub.length});
 });
 
 // Stranger (random public moment) — respect photo_public
@@ -336,6 +336,7 @@ app.post('/api/user/avatar',auth,(r,s)=>{
 // Account deletion
 app.post('/api/account/delete',auth,(r,s)=>{
   dbWrite(r,s,()=>{
+    if(r.user.id===1)return s.status(400).json({error:'管理员账号不可注销'});
     var uid=r.user.id;
     // Clean up user's uploaded images
     r.db.moments.filter(function(m){return m.userId===uid}).forEach(function(m){

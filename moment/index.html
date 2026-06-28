@@ -107,7 +107,7 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 .section-title{color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:24px 0 8px}
 .wf-card{break-inside:avoid;margin-bottom:8px;background-color:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:150px;background-size:cover;background-position:center;box-shadow:var(--card-shadow,none)}
 .wf-card:active{opacity:.85}
-.wf-card img{width:100%;display:block;background:#111}
+.wf-card img{width:100%;display:block;background:var(--card,#2c2c2e)}
 .wf-card .wf-info{padding:8px 10px}
 .wf-card .wf-time{font-size:11px;color:var(--muted)}
 .wf-card .wf-thought{font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;margin-top:2px;line-height:1.3}
@@ -121,11 +121,11 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 .film-track{display:flex;gap:14px;position:absolute;left:0;top:0;height:170px;will-change:transform;align-items:center}
 .film-track.left{animation:scroll-left 35s linear infinite}
 .film-track.right{animation:scroll-right 35s linear infinite}
-.film-photo{flex-shrink:0;width:160px;height:160px;border-radius:10px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.15);cursor:pointer;position:relative;transition:transform .2s ease;border:.5px solid rgba(255,255,255,.1);background:#1a1a1d}
+.film-photo{flex-shrink:0;width:160px;height:160px;border-radius:10px;overflow:hidden;box-shadow:var(--card-shadow,0 1px 2px rgba(0,0,0,.15));cursor:pointer;position:relative;transition:transform .2s ease;border:.5px solid var(--nav-border,rgba(255,255,255,.1));background:var(--card,#1a1a1d)}
 .film-photo:active{transform:scale(.97);opacity:.85}
 .film-photo img{width:100%;height:100%;display:block;object-fit:cover;border-radius:8px}
-.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.5));color:rgba(255,255,255,.6);font-size:10px;font-weight:500;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
-.film-photo .film-time-label{color:#8E8E93;font-size:10px;flex-shrink:0;font-weight:400}
+.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.45));color:rgba(255,255,255,.75);font-size:10px;font-weight:500;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
+.film-photo .film-time-label{color:var(--muted,#8E8E93);font-size:10px;flex-shrink:0;font-weight:400}
 /* Pulse dot */
 @keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
 
@@ -137,15 +137,16 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 .custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
 .custom-dialog .btn-ok{background:#D4A373;color:#fff;font-weight:600}
 /* ====== Light Mode Sky System ====== */
-.world-stars[data-mode="light"]{background:url(/sky-bg.jpg) center/cover no-repeat;background-attachment:fixed}
+.world-stars[data-mode="light"]{background:linear-gradient(180deg,#3a87cc 0%,#418ed0 18%,#5aa6de 42%,#8fc8ef 68%,#bfe3f7 88%,#dcf0fb 100%);background-attachment:fixed}
 .world-stars[data-mode="light"]::before{display:none}
 .world-stars[data-mode="light"] canvas{display:none}
-.world-stars[data-mode="dawn"]{background:url(/dawn-bg.jpg) center/cover no-repeat;background-attachment:fixed}
+.world-stars[data-mode="dawn"]{background:linear-gradient(180deg,#635075 0%,#7a5a84 18%,#a46e94 36%,#e06d76 56%,#f5826a 72%,#fc9361 86%,#ffc569 100%);background-attachment:fixed}
 .world-stars[data-mode="dawn"]::before{display:none}
 .world-stars[data-mode="dawn"] canvas{display:none}
 /* 1.5s crossfade between sky modes */
 .world-stars{transition:opacity 1.5s ease}
 .world-stars[data-mode="light"],.world-stars[data-mode="dawn"]{opacity:1}
+.world-stars:not([data-mode="light"]):not([data-mode="dawn"]) .sky-cloud{display:none}
 /* Drifting cloud overlays */
 .sky-cloud{position:absolute;pointer-events:none;z-index:1;will-change:transform}
 .sky-cloud .cloud-shape{position:absolute;background:radial-gradient(ellipse at 40% 35%,rgba(255,255,255,.55) 0%,rgba(255,255,255,.25) 50%,rgba(255,255,255,.05) 100%);border-radius:50%;filter:blur(3px)}
@@ -153,15 +154,18 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 @keyframes cloudDrift1{0%{transform:translateX(-10vw)}100%{transform:translateX(110vw)}}
 @keyframes cloudDrift2{0%{transform:translateX(110vw)}100%{transform:translateX(-10vw)}}
 @keyframes cloudDrift3{0%{transform:translateX(-20vw)}100%{transform:translateX(120vw)}}
-/* 云1：高速层，70s循环 */
-.sky-cloud:nth-child(1){animation:cloudDrift1 70s linear infinite}
-/* 云2：中速层，85s循环，反向 */
-.sky-cloud:nth-child(2){animation:cloudDrift2 85s linear infinite}
-/* 云3：低速层，95s循环 */
-.sky-cloud:nth-child(3){animation:cloudDrift3 95s linear infinite}
-/* Dawn: dim cloud overlays for fire sky */
-.world-stars[data-mode="dawn"] .sky-cloud .cloud-shape{background:radial-gradient(ellipse at 40% 35%,rgba(255,180,120,.3) 0%,rgba(255,140,80,.15) 50%,rgba(255,100,40,0) 100%)}
-.world-stars[data-mode="dawn"] .sky-cloud .cloud-shape.bs{background:radial-gradient(ellipse at 35% 30%,rgba(255,200,150,.4) 0%,rgba(255,160,100,.2) 50%,rgba(255,120,60,0) 100%)}
+/* 12 朵云分配到 3 种速度层，错开方向与时长，营造自然漂移 */
+.sky-cloud:nth-child(3n+1){animation:cloudDrift1 var(--cd,80s) linear infinite}
+.sky-cloud:nth-child(3n+2){animation:cloudDrift2 var(--cd,95s) linear infinite}
+.sky-cloud:nth-child(3n+3){animation:cloudDrift3 var(--cd,110s) linear infinite}
+.sky-cloud:nth-child(1){--cd:78s}.sky-cloud:nth-child(2){--cd:96s}.sky-cloud:nth-child(3){--cd:112s}
+.sky-cloud:nth-child(4){--cd:84s}.sky-cloud:nth-child(5){--cd:100s}.sky-cloud:nth-child(6){--cd:120s}
+.sky-cloud:nth-child(7){--cd:88s}.sky-cloud:nth-child(8){--cd:104s}.sky-cloud:nth-child(9){--cd:116s}
+.sky-cloud:nth-child(10){--cd:92s}.sky-cloud:nth-child(11){--cd:108s}.sky-cloud:nth-child(12){--cd:124s}
+/* Dawn: 紫蓝→玫红→金橙朝霞渐变叠加 + 粉橙染色云朵 */
+.world-stars[data-mode="dawn"]::before{display:block;background:linear-gradient(180deg,rgba(60,40,80,.35) 0%,rgba(140,50,90,.3) 30%,rgba(220,100,60,.25) 60%,rgba(255,180,100,.2) 100%);z-index:1}
+.world-stars[data-mode="dawn"] .sky-cloud .cloud-shape{background:radial-gradient(ellipse at 40% 35%,rgba(255,180,140,.45) 0%,rgba(255,150,100,.3) 40%,rgba(255,120,70,.1) 70%,rgba(255,80,40,0) 100%)}
+.world-stars[data-mode="dawn"] .sky-cloud .cloud-shape.bs{background:radial-gradient(ellipse at 35% 30%,rgba(255,200,160,.55) 0%,rgba(255,170,120,.35) 40%,rgba(255,140,80,.15) 70%,rgba(255,100,50,0) 100%)}
 /* Dawn 文字提亮 */
 html.dawn-sky .topbar span{color:#fff !important;text-shadow:0 1px 4px rgba(0,0,0,.35)}
 html.dawn-sky .topbar button{color:#fff !important;text-shadow:0 1px 4px rgba(0,0,0,.35)}
@@ -370,7 +374,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
 </div>
 
 <!-- Starry World Background -->
-<div id="starryWorld" class="world-stars" style="display:none"><div class="sky-cloud" style="top:12vh;width:55vw;height:22vw"><div class="cloud-shape bs" style="width:65%;height:60%;top:0;left:5%"></div><div class="cloud-shape" style="width:50%;height:55%;top:30%;left:35%"></div><div class="cloud-shape" style="width:40%;height:50%;top:10%;left:50%"></div></div><div class="sky-cloud" style="top:40vh;width:40vw;height:18vw"><div class="cloud-shape bs" style="width:55%;height:65%;top:0;left:10%"></div><div class="cloud-shape" style="width:45%;height:50%;top:25%;left:45%"></div></div><div class="sky-cloud" style="top:65vh;width:48vw;height:20vw"><div class="cloud-shape" style="width:50%;height:60%;top:0;left:15%"></div><div class="cloud-shape bs" style="width:40%;height:55%;top:20%;left:45%"></div></div></div>
+<div id="starryWorld" class="world-stars" style="display:none"><div class="sky-cloud" style="top:4vh;left:-5vw;width:50vw;height:20vw"><div class="cloud-shape bs" style="width:60%;height:60%;top:5%;left:5%"></div><div class="cloud-shape" style="width:48%;height:55%;top:28%;left:38%"></div><div class="cloud-shape" style="width:38%;height:48%;top:8%;left:52%"></div></div><div class="sky-cloud" style="top:2vh;left:42vw;width:44vw;height:18vw"><div class="cloud-shape bs" style="width:58%;height:62%;top:0;left:8%"></div><div class="cloud-shape" style="width:44%;height:50%;top:30%;left:42%"></div></div><div class="sky-cloud" style="top:14vh;left:18vw;width:30vw;height:13vw"><div class="cloud-shape bs" style="width:62%;height:64%;top:5%;left:6%"></div><div class="cloud-shape" style="width:42%;height:48%;top:28%;left:44%"></div></div><div class="sky-cloud" style="top:20vh;left:62vw;width:38vw;height:16vw"><div class="cloud-shape bs" style="width:56%;height:60%;top:3%;left:8%"></div><div class="cloud-shape" style="width:46%;height:52%;top:30%;left:40%"></div></div><div class="sky-cloud" style="top:30vh;left:-3vw;width:34vw;height:14vw"><div class="cloud-shape bs" style="width:60%;height:62%;top:4%;left:6%"></div><div class="cloud-shape" style="width:44%;height:50%;top:30%;left:42%"></div></div><div class="sky-cloud" style="top:36vh;left:40vw;width:42vw;height:17vw"><div class="cloud-shape bs" style="width:54%;height:58%;top:2%;left:10%"></div><div class="cloud-shape" style="width:46%;height:52%;top:28%;left:42%"></div><div class="cloud-shape" style="width:36%;height:44%;top:6%;left:56%"></div></div><div class="sky-cloud" style="top:46vh;left:14vw;width:28vw;height:12vw"><div class="cloud-shape bs" style="width:64%;height:64%;top:5%;left:5%"></div><div class="cloud-shape" style="width:42%;height:48%;top:30%;left:46%"></div></div><div class="sky-cloud" style="top:52vh;left:66vw;width:32vw;height:13vw"><div class="cloud-shape bs" style="width:60%;height:60%;top:4%;left:8%"></div><div class="cloud-shape" style="width:42%;height:48%;top:30%;left:44%"></div></div><div class="sky-cloud" style="top:62vh;left:2vw;width:38vw;height:15vw"><div class="cloud-shape bs" style="width:56%;height:58%;top:3%;left:8%"></div><div class="cloud-shape" style="width:46%;height:52%;top:30%;left:40%"></div></div><div class="sky-cloud" style="top:68vh;left:50vw;width:30vw;height:12vw"><div class="cloud-shape bs" style="width:60%;height:62%;top:5%;left:6%"></div><div class="cloud-shape" style="width:42%;height:48%;top:30%;left:44%"></div></div><div class="sky-cloud" style="top:78vh;left:24vw;width:34vw;height:13vw"><div class="cloud-shape bs" style="width:58%;height:60%;top:4%;left:8%"></div><div class="cloud-shape" style="width:44%;height:50%;top:30%;left:42%"></div></div><div class="sky-cloud" style="top:84vh;left:70vw;width:26vw;height:11vw"><div class="cloud-shape bs" style="width:62%;height:62%;top:5%;left:6%"></div></div></div>
 <!-- Main App -->
 <div class="app">
   
@@ -426,11 +430,11 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
     <div style="padding:0 8px 60px">
     <div id="wf-grid" style="column-count:2;column-gap:8px"></div>
     <div id="wf-loading" style="display:none;text-align:center;padding:16px;color:var(--muted);font-size:12px">加载中...</div>
-    <div id="wf-end" style="display:none;text-align:center;padding:16px;color:rgba(255,255,255,.15);font-size:11px">— 已经到底了 —</div>
-    <div id="wf-stats" style="text-align:center;padding:4px 0 8px;font-size:11px;color:rgba(255,255,255,.12)"></div>
+    <div id="wf-end" style="display:none;text-align:center;padding:16px;color:var(--muted);font-size:11px">— 已经到底了 —</div>
+    <div id="wf-stats" style="text-align:center;padding:4px 0 8px;font-size:11px;color:var(--muted)"></div>
   </div>
   </div>
-  <div id="wf-backTop" onclick="scrollToTop()" style="display:none;position:fixed;bottom:100px;right:16px;width:44px;height:44px;background:rgba(28,28,30,.9);border:1px solid rgba(255,255,255,.15);border-radius:50%;color:#fff;font-size:20px;cursor:pointer;z-index:200;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4);transition:opacity .2s">⬆</div>
+  <div id="wf-backTop" onclick="scrollToTop()" style="display:none;position:fixed;bottom:100px;right:16px;width:44px;height:44px;background:var(--card);border:1px solid var(--nav-border);border-radius:50%;color:var(--text);font-size:20px;cursor:pointer;z-index:200;align-items:center;justify-content:center;box-shadow:var(--card-shadow);transition:opacity .2s">⬆</div>
 
   <!-- Photo Zoom Overlay -->
 <div id="photoZoom" onclick="closeZoom()" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:6000;align-items:center;justify-content:center">
@@ -568,23 +572,27 @@ function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=
 function showLogin(){document.getElementById('loginScreen').style.display='flex';var btn=document.getElementById('loginBtn');if(btn){btn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}}
 function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI();if(starryWorldEnabled&&typeof initStarryWorld==='function'){setTimeout(initStarryWorld,400)}}
 function fetchTimeout(url,opts,ms){ms=ms||10000;return new Promise(function(resolve,reject){var t=setTimeout(function(){reject(new Error('timeout'))},ms);fetch(url,opts).then(function(r){clearTimeout(t);resolve(r)}).catch(function(e){clearTimeout(t);reject(e)})})}
-var _loggingIn=false;
+var _sendingSMS=false,_smsTimer=null;
 function sendSMS(){
+  var btn=document.getElementById('smsBtn');
+  if(_sendingSMS||(btn&&btn.disabled))return;
   var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
   var msg=document.getElementById('loginMsg');
   if(ph.length<11){msg.textContent='请输入11位手机号';return}
-  msg.textContent='';
-  var btn=document.getElementById('smsBtn');
+  _sendingSMS=true;msg.textContent='';
   if(!btn)return;
   btn.disabled=true;btn.textContent='发送中...';
-  fetchTimeout(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})},15000)
+  clearInterval(_smsTimer);
+  fetchTimeout(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})},10000)
   .then(function(r){return r.json()}).then(function(d){
-    if(d.error){msg.textContent=d.error;btn.disabled=false;btn.textContent='获取验证码';return}
+    if(d.error){msg.textContent=d.error;resetSMSBtn(btn);return}
     msg.textContent='验证码已发送';
     var sec=60;btn.textContent=sec+'s';
-    var t=setInterval(function(){sec--;if(sec<=0){clearInterval(t);btn.disabled=false;btn.textContent='重新获取'}else{btn.textContent=sec+'s'}},1000);
-  }).catch(function(){msg.textContent='网络错误';btn.disabled=false;btn.textContent='获取验证码'})
+    _smsTimer=setInterval(function(){sec--;if(sec<=0){clearInterval(_smsTimer);resetSMSBtn(btn)}else{btn.textContent=sec+'s'}},1000);
+  }).catch(function(){msg.textContent='网络错误，请重试';resetSMSBtn(btn)})
 }
+function resetSMSBtn(btn){_sendingSMS=false;clearInterval(_smsTimer);btn.disabled=false;btn.textContent='获取验证码'}
+var _loggingIn=false;
 function doLogin(){
   if(_loggingIn)return;_loggingIn=true;
   var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
@@ -592,10 +600,12 @@ function doLogin(){
   var msg=document.getElementById('loginMsg');
   if(ph.length<11){msg.textContent='请输入11位手机号';_loggingIn=false;return}
   if(code.length!==6){msg.textContent='请输入6位验证码';_loggingIn=false;return}
-  msg.textContent='登录中...';
-  fetchTimeout(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})},15000)
+  var loginBtn=document.getElementById('loginBtn');
+  if(loginBtn){loginBtn.disabled=true;loginBtn.textContent='登录中...'}
+  msg.textContent='';
+  fetchTimeout(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})},10000)
   .then(function(r){return r.json()}).then(function(d){
-    if(d.error){msg.textContent=d.error;_loggingIn=false;return}
+    if(d.error){msg.textContent=d.error;_loggingIn=false;if(loginBtn){loginBtn.disabled=false;loginBtn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}return}
     AUTH.token=d.token;AUTH.tokenCreatedAt=d.tokenCreatedAt||Date.now();AUTH.userId=d.userId;saveAuth();localStorage.setItem('mv_has_logged_in','1');
     if(d.nickname){localStorage.setItem('user_nickname',d.nickname)}
     if(d.avatar){localStorage.setItem('user_avatar',d.avatar);applyAvatar(d.avatar)}
@@ -606,7 +616,7 @@ function doLogin(){
     _loggingIn=false;document.getElementById('loginScreen').style.display='none';
     updateSideMenuUser();updateAllUI();
     if(starryWorldEnabled&&typeof initStarryWorld==='function'){setTimeout(initStarryWorld,400)}
-  }).catch(function(e){msg.textContent='网络错误，请重试';_loggingIn=false})
+  }).catch(function(e){msg.textContent='网络错误，请重试';_loggingIn=false;if(loginBtn){loginBtn.disabled=false;loginBtn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}})
 }
 function handleAuthExpired(){
   if(!AUTH.token)return;
@@ -1064,7 +1074,8 @@ function formatTimeAgo(dateStr){
 }
 function viewStrangerMoment(m){
   stopCountdown();document.getElementById('countdownBadge').style.display='none';
-  document.getElementById('ph').src=imgUrl(m.imageUrl);
+  var phEl2=document.getElementById('ph');phEl2.onerror=function(){this.style.display='none'};
+  phEl2.src=imgUrl(m.imageUrl);
   document.getElementById('viewText').textContent=m.thought||'(无文字)';
   document.getElementById('viewDate').textContent=formatTimeAgo(m.created_at);
   document.getElementById('publishUI').style.display='none';
@@ -1537,7 +1548,7 @@ function renderGallery(){
       if(item.m.status==='rejected'){statusTag='<span style="color:rgba(255,80,80,.6);font-size:10px;margin-left:6px">已被移除</span>';clickable=false}
       if(item.m.status==='hidden'){statusTag='<span style="color:rgba(255,80,80,.5);font-size:10px;margin-left:6px">审核中</span>'}
       html+='<div '+(clickable?'onclick="view('+item.i+')"':'')+' style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card);border-radius:12px;margin-bottom:6px;'+(clickable?'cursor:pointer;':'opacity:.5;')+'-webkit-tap-highlight-color:transparent">';
-      html+='<img src="'+(item.m.u||'data:image/svg+xml,'+encodeURIComponent('<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22><rect fill=%22%23222%22 width=%2252%22 height=%2252%22/><text fill=%22%23555%22 x=%2226%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2212%22>🚫</text></svg>'))+'" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#111">';
+      html+='<img src="'+(item.m.u||'data:image/svg+xml,'+encodeURIComponent('<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22><rect fill=%22%23222%22 width=%2252%22 height=%2252%22/><text fill=%22%23555%22 x=%2226%22 y=%2230%22 text-anchor=%22middle%22 font-size=%2212%22>🚫</text></svg>'))+'" onerror="this.style.display=\'none\'" style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#111">';
       html+='<div style="flex:1;min-width:0"><div style="color:var(--text);font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.2px">'+escapeHtml(item.m.t||'无文字')+statusTag+'</div><div style="color:var(--muted);font-size:12px;margin-top:3px">'+item.time+'</div></div>';
       if(clickable)html+='<div style="color:var(--muted);font-size:12px">›</div>';
       html+='</div>'})});

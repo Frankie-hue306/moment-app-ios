@@ -16,12 +16,28 @@ function toggleStarryWorld(){
   if(starryWorldEnabled){initStarryWorld()}else{destroyStarryWorld()}
 }
 var _initRunning=false;
+function setupAutoTimer(){
+  clearInterval(_autoDarkTimer);
+  _autoDarkTimer=setInterval(function(){
+    var hr=new Date().getHours();
+    var cur=getDarkMode();
+    var eff=effectiveDarkMode();
+    if(cur==='auto'){
+      if(hr>=7&&hr<19&&eff!=='light'){applyDarkMode('light')}
+      else if((hr<7||hr>=19)&&eff!=='dark'){applyDarkMode('dark')}
+    }
+    if(eff==='light'&&hr>=17&&hr<19&&starryWorldEnabled){
+      var c=document.getElementById('starryWorld');
+      if(c&&c.getAttribute('data-mode')!=='dawn')initStarryWorld()
+    }
+  },60000);
+}
 function initStarryWorld(){
   if(_initRunning)return;
   _initRunning=true;
   var c=document.getElementById('starryWorld');
   if(!c)return;
-  c.style.display='block';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_autoDarkTimer);
+  c.style.display='block';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
   // 只清除动态生成的星空元素（canvas/star/meteor/nebula），保留静态云朵 HTML
   var dynEls=c.querySelectorAll('canvas,.star,.meteor,.nebula');
   for(var de=0;de<dynEls.length;de++){dynEls[de].parentNode.removeChild(dynEls[de])}
@@ -33,6 +49,7 @@ function initStarryWorld(){
     var isDusk=(hr>=17&&hr<19);
     if(isDusk&&getDarkMode()==='auto'){} // auto模式不管，到19点自动切
     var skyMode=isDusk?'dawn':'light';
+    if(isDusk){document.documentElement.classList.add('dawn-sky')}else{document.documentElement.classList.remove('dawn-sky')}
     c.setAttribute('data-mode',skyMode);c.style.display='block';
     document.body.style.background=isDusk?'#E8785A':'#87CEEB';
     var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
@@ -48,22 +65,7 @@ function initStarryWorld(){
     var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
     var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
   }
-  // 按时段自动切换 + dusk 检测（仅 auto 模式）
-  clearInterval(_autoDarkTimer);
-  _autoDarkTimer=setInterval(function(){
-    var hr=new Date().getHours();
-    var cur=getDarkMode();
-    var eff=effectiveDarkMode();
-    if(cur==='auto'){
-      if(hr>=7&&hr<19&&eff!=='light'){setDarkMode('light')}
-      else if((hr<7||hr>=19)&&eff!=='dark'){setDarkMode('dark')}
-    }
-    // Dusk refresh: if in light mode during 17-19, re-init for sunset bg
-    if(eff==='light'&&hr>=17&&hr<19&&starryWorldEnabled){
-      var c=document.getElementById('starryWorld');
-      if(c&&c.getAttribute('data-mode')!=='dawn'){initStarryWorld()}
-    }
-  },60000);
+  setupAutoTimer();
 
   _stars=[];_nebulaEls=[];
   var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
@@ -121,7 +123,7 @@ function startStarDrift(){
 }
 function destroyStarryWorld(){
   var c=document.getElementById('starryWorld');
-  if(c){c.style.display='none';c.innerHTML='';c.removeAttribute('data-mode')}
+  if(c){c.style.display='none';var dynEls=c.querySelectorAll('canvas,.star,.meteor,.nebula');for(var de=0;de<dynEls.length;de++){dynEls[de].parentNode.removeChild(dynEls[de])}c.removeAttribute('data-mode')}
   _stars=[];_nebulaEls=[];
   clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);clearInterval(_autoDarkTimer);
   document.body.style.background='';
@@ -188,3 +190,5 @@ function dimStarsForPhoto(dim){
 }
 // Init starry world on load if enabled
 if(starryWorldEnabled){setTimeout(initStarryWorld,300)}
+// Auto dark/light timer always active (works even without starry world)
+setTimeout(setupAutoTimer,500);
