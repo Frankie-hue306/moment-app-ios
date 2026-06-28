@@ -136,7 +136,32 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 .custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
 .custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
 .custom-dialog .btn-ok{background:#D4A373;color:#fff;font-weight:600}
-.world-stars[data-mode="light"]::before{background:#F5F0EB}
+/* Daytime cloud sky for light mode */
+.world-stars[data-mode="light"]{background:linear-gradient(180deg,#E8F4FD 0%,#F5F9FF 100%)}
+.world-stars[data-mode="light"]::before{background:linear-gradient(180deg,rgba(232,244,253,.5) 0%,rgba(245,249,255,0) 100%)}
+.world-stars[data-mode="light"] canvas{display:none}
+.day-cloud{position:absolute;pointer-events:none;z-index:1;opacity:.55;filter:blur(8px);background:#fff;border-radius:50%;transition:transform .2s linear}
+.day-cloud:nth-child(1){width:45vw;height:22vw;top:6vh;left:-30vw}
+.day-cloud:nth-child(2){width:35vw;height:18vw;top:26vh;left:10vw;opacity:.45;filter:blur(10px)}
+.day-cloud:nth-child(3){width:50vw;height:24vw;top:48vh;left:-10vw;opacity:.4;filter:blur(7px)}
+.day-cloud::before{content:'';position:absolute;background:#fff;border-radius:50%}
+.day-cloud:nth-child(1)::before{width:60%;height:70%;top:-30%;left:20%}
+.day-cloud:nth-child(2)::before{width:50%;height:60%;top:-20%;right:10%}
+.day-cloud:nth-child(3)::before{width:55%;height:65%;bottom:-20%;left:15%}
+/* Dawn 火烧云 (5:00-7:00) */
+.world-stars[data-mode="dawn"]{background:linear-gradient(180deg,#3E3A6E 0%,#8E5A9E 28%,#E8616E 55%,#FF9356 78%,#FFCB6B 100%)}
+.world-stars[data-mode="dawn"]::before{background:linear-gradient(180deg,rgba(62,58,110,.3) 0%,rgba(232,97,110,.15) 50%,rgba(255,203,107,0) 100%)}
+.world-stars[data-mode="dawn"] canvas{display:none}
+.day-cloud.dawn-cloud{background:linear-gradient(135deg,#FF7E5F 0%,#FEB47B 60%,#FFD194 100%);opacity:.7;mix-blend-mode:screen}
+.day-cloud.dawn-cloud::before{background:linear-gradient(135deg,#FF6F61 0%,#FFA45B 100%)}
+.day-cloud.dawn-cloud:nth-child(2){opacity:.6}
+.day-cloud.dawn-cloud:nth-child(3){opacity:.55}
+/* Dawn 文字提亮：朝霞天空偏深，文字用白色+阴影保证可读 */
+html.dawn-sky .topbar span{color:#fff !important;text-shadow:0 1px 4px rgba(0,0,0,.35)}
+html.dawn-sky .topbar button{color:#fff !important;text-shadow:0 1px 4px rgba(0,0,0,.35)}
+html.dawn-sky #todayStatus,html.dawn-sky #reminderHint,html.dawn-sky #todayDate{color:rgba(255,255,255,.92) !important;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+html.dawn-sky .nav-item .nav-label{color:rgba(255,255,255,.85) !important;text-shadow:0 1px 3px rgba(0,0,0,.3)}
+html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
 /* 此刻 Starry World Engine - v284 */
 /* ====== Starry World ====== */
 .world-stars{position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;height:-webkit-fill-available;z-index:0;pointer-events:none;overflow:hidden}
@@ -149,8 +174,8 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 @keyframes twinkle{0%,100%{opacity:var(--lo,.3)}50%{opacity:var(--hi,.9)}}
 .meteor{position:fixed;z-index:2;pointer-events:none;animation:meteor var(--mDur,.7s) linear forwards}
 .meteor::before{content:'';position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(255,255,255,.9),0 0 24px 8px rgba(200,210,255,.5);z-index:1}
-.meteor-trail{position:absolute;top:0;left:0;width:100px;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.95) 0%,rgba(200,180,255,.5) 40%,rgba(167,139,250,.2) 70%,transparent 100%);border-radius:1px;filter:blur(.5px);transform-origin:left center}
-.meteor-trail::after{content:'';position:absolute;top:-3px;left:0;width:100%;height:8px;background:linear-gradient(90deg,rgba(255,255,255,.3) 0%,rgba(167,139,250,.1) 50%,transparent 100%);filter:blur(4px);border-radius:4px}
+.meteor-trail{position:absolute;top:0;left:-100px;width:100px;height:2px;background:linear-gradient(270deg,rgba(255,255,255,.95) 0%,rgba(200,180,255,.5) 40%,rgba(167,139,250,.2) 70%,transparent 100%);border-radius:1px;filter:blur(.5px);transform-origin:right center}
+.meteor-trail::after{content:'';position:absolute;top:-3px;left:0;width:100%;height:8px;background:linear-gradient(270deg,rgba(255,255,255,.3) 0%,rgba(167,139,250,.1) 50%,transparent 100%);filter:blur(4px);border-radius:4px}
 @keyframes meteor{0%{transform:translate(0,0) rotate(var(--ang,135deg));opacity:1}15%{opacity:1}70%{opacity:.2}100%{transform:translate(var(--dx,500px),var(--dy,500px)) rotate(var(--ang,135deg));opacity:0}}
 .nebula{position:fixed;border-radius:50%;z-index:0;filter:blur(80px);animation:nebulaDrift var(--nd,75s) ease-in-out infinite alternate}
 @keyframes nebulaDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--nx,15px),var(--ny,20px)) scale(1.05)}}
@@ -158,9 +183,9 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 @keyframes sparkleFlash{0%{opacity:1;transform:scale(1);box-shadow:0 0 4px 2px rgba(255,255,255,.9),0 0 16px 6px rgba(180,200,255,.6)}50%{opacity:1;transform:scale(2.5);box-shadow:0 0 6px 3px rgba(255,255,255,1),0 0 24px 10px rgba(200,220,255,.8)}100%{opacity:var(--lo,.3);transform:scale(1);box-shadow:0 0 0px 0px transparent}}
 .pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4CD964;margin-left:4px;vertical-align:middle;animation:pulse-dot 1s ease-in-out infinite}
 
-#mainActionBtn.taken.light-glass{background:rgba(212,163,115,.15);color:#1C1C1E;border-color:rgba(212,163,115,.25)}
-#mainActionBtn.light-glass{color:#1C1C1E;border-color:rgba(0,0,0,.15);background:rgba(0,0,0,.06)}
-#mainActionBtn.light-glass:active{background:rgba(0,0,0,.12)}
+#mainActionBtn.taken.light-glass{background:rgba(59,158,220,.15);color:#1C2B36;border-color:rgba(59,158,220,.30)}
+#mainActionBtn.light-glass{color:#1C2B36;border-color:rgba(59,158,220,.30);background:rgba(255,255,255,.45);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 16px rgba(60,158,220,.18)}
+#mainActionBtn.light-glass:active{background:rgba(59,158,220,.18)}
 
 
 </style>
@@ -230,7 +255,7 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
   <div style="flex:1"></div>
   <div style="display:flex;gap:12px;padding:16px 0;border-bottom:none">
     <span class="menu-row danger" onclick="doLogout()" style="flex:1;border-bottom:none;padding:0">退出登录</span>
-    <span style="color:rgba(255,80,80,.5);cursor:pointer;font-size:14px;white-space:nowrap" onclick="deleteAccount()">注销账号</span>
+    <span style="color:#D63031;cursor:pointer;font-size:14px;white-space:nowrap" onclick="deleteAccount()">注销账号</span>
   </div>
 </div>
 <!-- Settings Page -->
@@ -339,7 +364,7 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 </div>
 
 <!-- Starry World Background -->
-<div id="starryWorld" class="world-stars" style="display:none"></div>
+<div id="starryWorld" class="world-stars" style="display:none"><div class="day-cloud"></div><div class="day-cloud"></div><div class="day-cloud"></div></div>
 <!-- Main App -->
 <div class="app">
   
@@ -523,7 +548,7 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
 var API=(localStorage.getItem('mv_api')||'').replace(/\/+$/,'')||(location.protocol==='https:'?'https://cikemoment.cn':'http://124.156.163.213:3000');var AUTH={token:'',tokenCreatedAt:0,userId:0};
-function imgUrl(path){if(!path)return'';return path.indexOf('http')===0?path:API+path}
+function imgUrl(path){if(!path)return'';if(path.indexOf('http')===0||path.indexOf('data:')===0)return path;return API+path}
 function escapeHtml(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function safeId(v){var n=parseInt(v,10);return isNaN(n)?0:n}
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
@@ -536,6 +561,7 @@ function onboardPrev(){if(onboardPage<=0)return;var t=document.getElementById('o
 function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext();else if(dx>0)onboardPrev()}},{passive:true})}
 function showLogin(){document.getElementById('loginScreen').style.display='flex';var btn=document.getElementById('loginBtn');if(btn){btn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}}
 function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
+function fetchTimeout(url,opts,ms){ms=ms||10000;return new Promise(function(resolve,reject){var t=setTimeout(function(){reject(new Error('timeout'))},ms);fetch(url,opts).then(function(r){clearTimeout(t);resolve(r)}).catch(function(e){clearTimeout(t);reject(e)})})}
 var _loggingIn=false;
 function sendSMS(){
   var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
@@ -545,7 +571,7 @@ function sendSMS(){
   var btn=document.getElementById('smsBtn');
   if(!btn)return;
   btn.disabled=true;btn.textContent='发送中...';
-  fetch(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})})
+  fetchTimeout(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})},15000)
   .then(function(r){return r.json()}).then(function(d){
     if(d.error){msg.textContent=d.error;btn.disabled=false;btn.textContent='获取验证码';return}
     msg.textContent='验证码已发送';
@@ -561,7 +587,7 @@ function doLogin(){
   if(ph.length<11){msg.textContent='请输入11位手机号';_loggingIn=false;return}
   if(code.length!==6){msg.textContent='请输入6位验证码';_loggingIn=false;return}
   msg.textContent='登录中...';
-  fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})})
+  fetchTimeout(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})},15000)
   .then(function(r){return r.json()}).then(function(d){
     if(d.error){msg.textContent=d.error;_loggingIn=false;return}
     AUTH.token=d.token;AUTH.tokenCreatedAt=d.tokenCreatedAt||Date.now();AUTH.userId=d.userId;saveAuth();localStorage.setItem('mv_has_logged_in','1');
@@ -621,7 +647,7 @@ function navTo(tab){
   }
   currentTab=tab;
   updateNavActive(tab);
-  if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#f5f5f7':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#f5f5f7':'#1c1c1e')}}
+  if(tab==='photos'){refreshGallery();if(!starryWorldEnabled){var dm=effectiveDarkMode();document.body.style.background=dm==='light'?'#E8F4FD':'#1c1c1e';document.documentElement.style.setProperty('--bg',dm==='light'?'#E8F4FD':'#1c1c1e')}}
   if(tab==='home')updateHomeUI();
   document.getElementById('captured').style.display='none';if(starryWorldEnabled)dimStarsForPhoto(false);
   document.getElementById('collage').style.display='none';stopCountdown();
@@ -663,13 +689,6 @@ function toggleDailyPick(){
   }else{
     localStorage.setItem('daily_pick_enabled',next?'1':'0');
   }
-}
-function toggleNotify(){
-  var current=localStorage.getItem('notify_enabled')==='1';
-  var next=!current;
-  localStorage.setItem('notify_enabled',next?'1':'0');
-  document.getElementById('notifyState').textContent=next?'已开启':'已关闭';
-  document.getElementById('notifyState').style.color=next?'var(--accent)':'var(--muted)';
 }
 function restoreBackup(){
   var bk=localStorage.getItem('mv21_backup');
@@ -723,6 +742,8 @@ function setDarkMode(mode){
   var label=mode==='auto'?'跟随系统':(mode==='light'?'浅色模式':'深色模式');
   document.getElementById('darkModeState').textContent=label;
   applyDarkMode(mode);
+  // 切换模式后重建星空：清空旧元素（深色星星/浅色云朵），按新模式重新生成
+  if(starryWorldEnabled&&typeof initStarryWorld==='function'){initStarryWorld()}
   closeDarkModeSheet();
 }
 function applyDarkMode(mode){
@@ -731,27 +752,27 @@ function applyDarkMode(mode){
   // Update starry world bg if enabled
   if(starryWorldEnabled){
     var sw=document.getElementById('starryWorld');
-    document.body.style.background=mode==='light'?'#F8F6F3':'#0B0E1A';
+    document.body.style.background=mode==='light'?'#E8F4FD':'#0B0E1A';
     document.body.style.transition='background .3s ease';
-    if(sw){sw.setAttribute('data-mode',mode);sw.style.display=mode==='light'?'none':'block'}
+    if(sw){sw.setAttribute('data-mode',mode);sw.style.display='block'}
   }
   if(mode==='light'){
-    r.setProperty('--bg','#f5f5f7');r.setProperty('--accent','#D4A373');
+    r.setProperty('--bg','#E8F4FD');r.setProperty('--accent','#1E6FA8');
     r.setProperty('--card','#fff');
-    r.setProperty('--text','#1c1c1e');
-    r.setProperty('--muted','#8e8e93');
+    r.setProperty('--text','#1c2b36');
+    r.setProperty('--muted','#5a7384');
     r.setProperty('--overlay-bg','rgba(255,255,255,.95)');
-    r.setProperty('--panel-bg','#f5f5f7');
-    r.setProperty('--nav-bg','rgba(255,255,255,.85)');
-    r.setProperty('--nav-border','rgba(0,0,0,.08)');
+    r.setProperty('--panel-bg','#EAF4FC');
+    r.setProperty('--nav-bg','rgba(232,244,253,.85)');
+    r.setProperty('--nav-border','rgba(0,40,80,.10)');
     r.setProperty('--menu-bg','#fff');
-    r.setProperty('--menu-sep','rgba(0,0,0,.08)');
-    r.setProperty('--tab-bg','#f5f5f7');
+    r.setProperty('--menu-sep','rgba(0,40,80,.08)');
+    r.setProperty('--tab-bg','#E8F4FD');
     r.setProperty('--sheet-bg','#fff');
     r.setProperty('--overlay-alpha','rgba(0,0,0,.3)');
-    r.setProperty('--card-shadow','0 2px 4px rgba(0,0,0,.06)');
-    if(!starryWorldEnabled){document.body.style.background='#f5f5f7';var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.add('light-glass')}
-    else{var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.remove('light-glass')}
+    r.setProperty('--card-shadow','0 2px 8px rgba(60,158,220,.10)');
+    if(!starryWorldEnabled){document.body.style.background='#E8F4FD';var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.add('light-glass')}
+    else{var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.add('light-glass')}
     r.setProperty('--world-bg','#0B0E1A');
   }else{
     r.setProperty('--bg','#000');r.setProperty('--accent','#D4A373');
@@ -1051,7 +1072,7 @@ function viewStrangerMoment(m){
   var actions=document.createElement('div');
   actions.id='strangerDetailActions';
   var _mid=safeId(m.id);
-  actions.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:center"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_mid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_mid+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;flex-shrink:0">⚠️</button></div>';
+  actions.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:stretch"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_mid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_mid+')" class="btn" style="text-align:center;flex-shrink:0;padding:18px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:rgba(255,255,255,.4);font-size:16px;cursor:pointer">⚠️</button></div>';
   viewUI.appendChild(actions);
   // Fetch like count
   if(m.id&&isLoggedIn()){
@@ -1471,7 +1492,7 @@ function toggle3D(){
   if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D开';if(b2)b2.style.background='var(--accent)'}
   else{img.classList.remove('depth3d');btn.textContent='✨ 3D景深';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D景深';if(b2)b2.style.background='var(--accent)'}
 }
-function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=1200;if(w<=maxDim&&h<=maxDim){cb(dataUrl);return}var r=Math.min(maxDim/w,maxDim/h);var cw=Math.round(w*r),ch=Math.round(h*r);var c=document.createElement('canvas');c.width=cw;c.height=ch;var ctx=c.getContext('2d');ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,cw,ch);ctx.drawImage(img,0,0,cw,ch);cb(c.toDataURL('image/jpeg',0.85))};img.src=dataUrl}
+function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=2048;var needResize=w>maxDim||h>maxDim;var cw=needResize?Math.round(w*Math.min(maxDim/w,maxDim/h)/2)*2:w;var ch=needResize?Math.round(h*Math.min(maxDim/w,maxDim/h)/2)*2:h;var c=document.createElement('canvas');c.width=cw;c.height=ch;var ctx=c.getContext('2d');ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,cw,ch);ctx.drawImage(img,0,0,cw,ch);var id=ctx.getImageData(0,0,cw,ch);var px=id.data;var topDark=0;for(var y=0;y<ch;y++){var sum=0;for(var x=0;x<Math.min(cw,20);x++){var i=(y*cw+x)*4;sum+=px[i]+px[i+1]+px[i+2]}if(sum/(Math.min(cw,20)*3)<30)topDark=y;else break}var finalH=ch-topDark;if(topDark>10&&topDark<ch*.25&&finalH>100){var c2=document.createElement('canvas');c2.width=cw;c2.height=finalH;var ctx2=c2.getContext('2d');ctx2.fillStyle='#FFFFFF';ctx2.fillRect(0,0,cw,finalH);ctx2.drawImage(c,0,topDark,cw,finalH,0,0,cw,finalH);cb(c2.toDataURL('image/jpeg',0.85))}else{cb(c.toDataURL('image/jpeg',0.85))}};img.src=dataUrl}
 
 // ======================== GALLERY ========================
 function refreshGallery(){
@@ -1554,7 +1575,7 @@ function refreshStrangers(){
 }
 function startFilmTime(){
   var tab=document.getElementById('tab-strangers');if(tab){tab.style.display='block';tab.style.opacity='';tab.style.transform='';tab.style.transition='';}
-  if(starryWorldEnabled){setTimeout(welcomeMeteorShower,3000)}
+  if(starryWorldEnabled&&effectiveDarkMode()!=='light'){setTimeout(welcomeMeteorShower,3000)}
 }
 function updateStrangerStats(){} // stub - stats now in filmstrip time header
 function loadFilmPool(){
@@ -1622,7 +1643,7 @@ function viewFilmPhoto(id,rowId){
   var ea=document.getElementById('strangerDetailActions');if(ea)ea.remove();
   var a=document.createElement('div');a.id='strangerDetailActions';
   var _fid=safeId(found.id);
-  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_fid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_fid+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
+  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:stretch"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_fid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_fid+')" class="btn" style="text-align:center;flex-shrink:0;padding:18px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:rgba(255,255,255,.4);font-size:16px;cursor:pointer">⚠️</button></div>';
   viewUI.appendChild(a);
   if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='探索';
@@ -2107,9 +2128,6 @@ setTimeout(function(){
     document.getElementById('dailyPickState').textContent=dp?'已开启':'已关闭';
     document.getElementById('dailyPickState').style.color=dp?'var(--accent)':'var(--muted)';
   }
-  var notifyOn=localStorage.getItem('notify_enabled')==='1';
-  document.getElementById('notifyState').textContent=notifyOn?'已开启':'已关闭';
-  document.getElementById('notifyState').style.color=notifyOn?'var(--accent)':'var(--muted)';
   var photoPublic=localStorage.getItem('photo_public')!=='0';
   document.getElementById('photoPublicState').textContent=photoPublic?'已开启':'已关闭';
   document.getElementById('photoPublicState').style.color=photoPublic?'var(--accent)':'var(--muted)';

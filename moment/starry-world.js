@@ -1,12 +1,11 @@
 // ====================== STARRY WORLD ENGINE ======================
 var starryWorldEnabled=localStorage.getItem('starry_world')!=='0';
 var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null,_driftTimer=null;
-// Apply starry-on class synchronously on first paint to avoid black bar flash before initStarryWorld runs
+// Apply starry-on class synchronously on first paint to avoid bar color flash before initStarryWorld runs
 (function(){
   try{
-    var dm=localStorage.getItem('dark_mode')||'dark';
-    if(dm==='auto'){dm=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}
-    if(starryWorldEnabled&&dm!=='light'){document.documentElement.classList.add('starry-on')}
+    // 星空开启时（无论深浅色）顶栏/底栏都透明，让背景（星空/蓝天）透出，避免黑/白横条闪烁
+    if(starryWorldEnabled){document.documentElement.classList.add('starry-on')}
   }catch(e){}
 })();
 function toggleStarryWorld(){
@@ -22,8 +21,15 @@ function initStarryWorld(){
   c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
   var dm=effectiveDarkMode();
   if(dm==='light'){
-    document.documentElement.classList.remove('starry-on');
-    document.body.style.background='#F8F6F3';c.setAttribute('data-mode','light');c.style.display='none';
+    // 浅色 = 白昼云空主题；5:00-7:00 朝霞火烧云彩蛋
+    document.documentElement.classList.add('starry-on');
+    var hr=new Date().getHours();
+    var isDawn=(hr>=5&&hr<7); // 5:00-6:59 火烧云
+    var skyMode=isDawn?'dawn':'light';
+    if(isDawn){document.documentElement.classList.add('dawn-sky')}else{document.documentElement.classList.remove('dawn-sky')}
+    document.body.style.background=isDawn?'#F6B17A':'#E8F4FD';
+    c.setAttribute('data-mode',skyMode);c.style.display='block';
+    createDayClouds(c,isDawn);
     var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
     var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
     return;
@@ -93,17 +99,51 @@ function destroyStarryWorld(){
   var c=document.getElementById('starryWorld');
   if(c){c.style.display='none';c.innerHTML='';c.removeAttribute('data-mode')}
   _stars=[];_nebulaEls=[];
-  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);
+  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);clearInterval(_cloudTimer);
   document.body.style.background='';
   document.documentElement.classList.remove('starry-on');
+  document.documentElement.classList.remove('dawn-sky');
   // Restore bars
   var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
   var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
   // Re-apply dark mode to restore correct bg
   applyDarkMode(getDarkMode());
 }
+// ====== Day Clouds (light mode) ======
+var _cloudTimer=null;
+function createDayClouds(c,isDawn){
+  clearInterval(_cloudTimer);
+  // 移除旧云朵
+  var olds=c.querySelectorAll('.day-cloud');
+  for(var k=0;k<olds.length;k++){olds[k].parentNode.removeChild(olds[k])}
+  // 创建 3 朵云（朝霞时段染上火烧云色）
+  var clouds=[];
+  for(var i=0;i<3;i++){
+    var cloud=document.createElement('div');
+    cloud.className='day-cloud'+(isDawn?' dawn-cloud':'');
+    c.appendChild(cloud);
+    clouds.push(cloud);
+  }
+  // 缓慢向右飘移（用 CSS left 偏移）
+  var W=screen.width||window.innerWidth;
+  _cloudTimer=setInterval(function(){
+    if(effectiveDarkMode()==='light'&&starryWorldEnabled){
+      for(var j=0;j<clouds.length;j++){
+        var cl=clouds[j];
+        var cur=parseFloat(cl.getAttribute('data-x')||'0');
+        cur+=0.15+j*0.05;
+        if(cur>120)cur=-40;
+        cl.setAttribute('data-x',cur);
+        cl.style.transform='translateX('+cur+'vw)';
+      }
+    }else{
+      clearInterval(_cloudTimer);
+    }
+  },120);
+}
 function createMeteor(){
   if(!starryWorldEnabled)return;
+  if(effectiveDarkMode()==='light')return; // 浅色=蓝天白云，无流星
   var c=document.getElementById('starryWorld');
   if(!c||c.style.display==='none')return;
   var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
