@@ -1499,7 +1499,7 @@ function toggle3D(){
   if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D开';if(b2)b2.style.background='var(--accent)'}
   else{img.classList.remove('depth3d');btn.textContent='✨ 3D景深';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D景深';if(b2)b2.style.background='var(--accent)'}
 }
-function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=1200;if(w<=maxDim&&h<=maxDim){cb(dataUrl);return}var r=Math.min(maxDim/w,maxDim/h);var cw=Math.round(w*r),ch=Math.round(h*r);var c=document.createElement('canvas');c.width=cw;c.height=ch;c.getContext('2d').drawImage(img,0,0,cw,ch);cb(c.toDataURL('image/jpeg',0.85))};img.src=dataUrl}
+function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=1200;if(w<=maxDim&&h<=maxDim){cb(dataUrl);return}var r=Math.min(maxDim/w,maxDim/h);var cw=Math.round(w*r),ch=Math.round(h*r);var c=document.createElement('canvas');c.width=cw;c.height=ch;var ctx=c.getContext('2d');ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,cw,ch);ctx.drawImage(img,0,0,cw,ch);cb(c.toDataURL('image/jpeg',0.85))};img.src=dataUrl}
 
 // ======================== GALLERY ========================
 function refreshGallery(){
