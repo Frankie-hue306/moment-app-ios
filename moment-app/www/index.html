@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v290</title>
+<title>此刻 v291</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -282,6 +282,9 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       <span>✨ 沉浸特效</span>
       <span id="immersiveFXState" style="color:var(--accent);font-size:13px;flex-shrink:0;margin-left:8px">已开启</span>
     </div>
+    <div class="menu-row" onclick="restoreBackup()">
+      <span>♻️ 恢复本地备份</span><span class="menu-arrow">›</span>
+    </div>
     <div class="menu-row" onclick="doClearCache()" style="border-bottom:none">
       <span>🗑️ 清除缓存</span><span class="menu-arrow">›</span>
     </div>
@@ -526,6 +529,8 @@ var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
 var API=(localStorage.getItem('mv_api')||'').replace(/\/+$/,'')||'https://cikemoment.cn';var AUTH={token:'',tokenCreatedAt:0,userId:0};
 function imgUrl(path){if(!path)return'';return path.indexOf('http')===0?path:API+path}
+function escapeHtml(s){if(s==null)return'';return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function safeId(v){var n=parseInt(v,10);return isNaN(n)?0:n}
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
 function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
 function isLoggedIn(){return !!AUTH.token}
@@ -567,7 +572,9 @@ function doLogin(){
     AUTH.token=d.token;AUTH.tokenCreatedAt=d.tokenCreatedAt||Date.now();AUTH.userId=d.userId;saveAuth();
     if(d.nickname){localStorage.setItem('user_nickname',d.nickname)}
     if(d.avatar){localStorage.setItem('user_avatar',d.avatar);applyAvatar(d.avatar)}
-    if(D.m.length>0){if(!confirm('登录将同步服务器数据。本地'+D.m.length+'条记录将被替换。继续？')){msg.textContent='';_loggingIn=false;return}}
+    if(D.m.length>0){if(!confirm('登录将使用服务器数据。本地'+D.m.length+'条记录将被替换（已自动备份，可在设置中恢复）。继续？')){msg.textContent='';_loggingIn=false;return}
+      try{localStorage.setItem('mv21_backup',JSON.stringify(D));localStorage.setItem('mv21_backup_at',String(Date.now()))}catch(e){}
+    }
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
     _loggingIn=false;document.getElementById('loginScreen').style.display='none';
     updateSideMenuUser();updateAllUI();
@@ -583,8 +590,7 @@ function handleAuthExpired(){
 function api(path,opts){
   opts=opts||{};
   var hasQS=path.indexOf('?')>=0;
-  var params='userId='+AUTH.userId;
-  var url=API+path+(hasQS?'&':'?')+params;
+  var url=API+path+(hasQS?'&':'?')+'userId='+AUTH.userId;
   var o={method:opts.method||'GET',headers:{'x-auth-token':AUTH.token}};
   if(opts.body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(opts.body)}
   return fetch(url,o).then(function(r){
@@ -669,6 +675,19 @@ function toggleNotify(){
   localStorage.setItem('notify_enabled',next?'1':'0');
   document.getElementById('notifyState').textContent=next?'已开启':'已关闭';
   document.getElementById('notifyState').style.color=next?'var(--accent)':'var(--muted)';
+}
+function restoreBackup(){
+  var bk=localStorage.getItem('mv21_backup');
+  if(!bk){alert('没有可恢复的本地备份');return}
+  var data;try{data=JSON.parse(bk)}catch(e){alert('备份数据已损坏，无法恢复');return}
+  if(!data||!data.m||!data.m.length){alert('备份为空，无需恢复');return}
+  var at=localStorage.getItem('mv21_backup_at');
+  var when=at?new Date(parseInt(at)).toLocaleString('zh-CN'):'未知时间';
+  if(!confirm('将用备份恢复本地记录（共'+data.m.length+'条，备份于'+when+'）。\n当前本地记录将被覆盖，确定吗？'))return;
+  D={m:data.m,c:typeof data.c==='number'?data.c:data.m.length,i:typeof data.i==='number'?data.i:-1};
+  save();
+  showToast('已恢复'+data.m.length+'条本地记录');
+  updateAllUI();updateSideMenuUser();
 }
 function doClearCache(){
   if(confirm('清除缓存不会删除你的照片和记录，仅清理临时图片。确定清除吗？')){
@@ -801,7 +820,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v290\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv290: 验证码登录、图片存文件、token过期、bug修复');
+  alert('此刻 v291\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv291: 验证码登录、图片存文件、token过期、bug修复');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -1059,7 +1078,8 @@ function viewStrangerMoment(m){
   if(existingActions)existingActions.remove();
   var actions=document.createElement('div');
   actions.id='strangerDetailActions';
-  actions.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:center"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+m.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+m.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;flex-shrink:0">⚠️</button></div>';
+  var _mid=safeId(m.id);
+  actions.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:center"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_mid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_mid+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;flex-shrink:0">⚠️</button></div>';
   viewUI.appendChild(actions);
   // Fetch like count
   if(m.id&&isLoggedIn()){
@@ -1629,7 +1649,8 @@ function viewFilmPhoto(id,rowId){
   var viewUI=document.getElementById('viewUI');
   var ea=document.getElementById('strangerDetailActions');if(ea)ea.remove();
   var a=document.createElement('div');a.id='strangerDetailActions';
-  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+found.id+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+found.id+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
+  var _fid=safeId(found.id);
+  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_fid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_fid+')" style="padding:10px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer">⚠️</button></div>';
   viewUI.appendChild(a);
   if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='探索';
@@ -1744,7 +1765,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v290',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v291',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2162,7 +2183,7 @@ setTimeout(function(){
 function showCustomDialog(msg,onOk,onCancel){
   var overlay=document.createElement('div');overlay.className='custom-dialog-overlay';
   var dlg=document.createElement('div');dlg.className='custom-dialog';
-  dlg.innerHTML='<p>'+msg+'</p><div class="btn-row"><button class="btn-cancel">取消</button><button class="btn-ok">确定</button></div>';
+  dlg.innerHTML='<p>'+escapeHtml(msg)+'</p><div class="btn-row"><button class="btn-cancel">取消</button><button class="btn-ok">确定</button></div>';
   overlay.appendChild(dlg);document.body.appendChild(overlay);
   dlg.querySelector('.btn-ok').onclick=function(){overlay.remove();if(onOk)onOk()};
   dlg.querySelector('.btn-cancel').onclick=function(){overlay.remove();if(onCancel)onCancel()};
@@ -2186,12 +2207,23 @@ function cacheImage(url, blobUrl){
   _imgCacheKeys.push(url);
 }
 function proxyImage(imgEl, url){
-  if(_imgCache[url]){imgEl.src=_imgCache[url];return;}
-  fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}}).then(function(r){return r.blob()}).then(function(blob){
-    var blobUrl=URL.createObjectURL(blob);
-    cacheImage(url,blobUrl);
-    imgEl.src=blobUrl;
-  }).catch(function(){imgEl.style.display='none'});
+  if(_imgCache[url]){
+    // LRU touch: move key to tail
+    var ki=_imgCacheKeys.indexOf(url);if(ki>=0){_imgCacheKeys.splice(ki,1);_imgCacheKeys.push(url)}
+    imgEl.src=_imgCache[url];return;
+  }
+  var _retried=false;
+  function load(){
+    fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}}).then(function(r){return r.blob()}).then(function(blob){
+      var blobUrl=URL.createObjectURL(blob);
+      cacheImage(url,blobUrl);
+      imgEl.src=blobUrl;
+    }).catch(function(){
+      if(!_retried){_retried=true;setTimeout(load,1000);return}
+      imgEl.style.display='none';
+    });
+  }
+  load();
 }
 
 // Listen for system dark mode changes
