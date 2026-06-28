@@ -1608,7 +1608,7 @@ function buildRow(id,photos,dir){
   var all=photos.concat(photos);
   var html='<div class="film-track '+dir+'">';
   all.forEach(function(p,i){
-    var author=getNickname(p.author_phone||'');
+    var author=p.author_phone_masked||getNickname('');
     var timeAgo=formatTimeAgo(p.created_at||'');
     html+='<div class="film-photo" data-row="'+id+'" onclick="viewFilmPhoto('+p.id+',&quot;'+id+'&quot;)"><img src="'+imgUrl(p.imageUrl)+'" loading="lazy"><div class="film-label"><span>'+author+'</span><span class="film-time-label">'+timeAgo+'</span></div></div>';
   });
@@ -1631,17 +1631,11 @@ function viewFilmPhoto(id,rowId){
   var found=null;
   for(var i=0;i<filmPool.length;i++){if(filmPool[i].id===id){found=filmPool[i];break}}
   if(!found)return;
-  // Load full image via blob to bypass ngrok
-  var fullUrl=imgUrl(found.imageUrl); // no thumb param = full size
-  if(_imgCache[fullUrl]){
-    document.getElementById('ph').src=_imgCache[fullUrl];
-  }else{
-    fetch(fullUrl,{headers:{'ngrok-skip-browser-warning':'true'}}).then(function(r){return r.blob()}).then(function(blob){
-      var blobUrl=URL.createObjectURL(blob);
-      cacheImage(fullUrl,blobUrl);
-      document.getElementById('ph').src=blobUrl;
-    }).catch(function(){document.getElementById('ph').src=fullUrl});
-  }
+  // Load full image directly
+  var fullUrl=imgUrl(found.imageUrl);
+  var phEl=document.getElementById('ph');
+  phEl.src=fullUrl;
+  phEl.onerror=function(){this.style.display='none'};
   document.getElementById('viewText').textContent=found.thought||'(无文字)';
   document.getElementById('viewDate').textContent=formatTimeAgo(found.created_at);
   stopCountdown();document.getElementById('countdownBadge').style.display='none';
@@ -2179,9 +2173,6 @@ setTimeout(function(){
   });
 },600);
 
-// ====================== WARM THEME ======================
-
-
 // ====================== CUSTOM DIALOG ======================
 function showCustomDialog(msg,onOk,onCancel){
   var overlay=document.createElement('div');overlay.className='custom-dialog-overlay';
@@ -2209,26 +2200,6 @@ function cacheImage(url, blobUrl){
   _imgCache[url]=blobUrl;
   _imgCacheKeys.push(url);
 }
-function proxyImage(imgEl, url){
-  if(_imgCache[url]){
-    // LRU touch: move key to tail
-    var ki=_imgCacheKeys.indexOf(url);if(ki>=0){_imgCacheKeys.splice(ki,1);_imgCacheKeys.push(url)}
-    imgEl.src=_imgCache[url];return;
-  }
-  var _retried=false;
-  function load(){
-    fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}}).then(function(r){return r.blob()}).then(function(blob){
-      var blobUrl=URL.createObjectURL(blob);
-      cacheImage(url,blobUrl);
-      imgEl.src=blobUrl;
-    }).catch(function(){
-      if(!_retried){_retried=true;setTimeout(load,1000);return}
-      imgEl.style.display='none';
-    });
-  }
-  load();
-}
-
 // Listen for system dark mode changes
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){if(getDarkMode()==='auto')applyDarkMode('auto')});
 </script>

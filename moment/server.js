@@ -87,7 +87,7 @@ app.post('/api/login',(r,s)=>{
   if(!code)return s.status(400).json({error:'请输入验证码'});
   // In dev mode, allow any 6-digit code
   const cached=SMS_CODES[ph];
-  const isDev=(process.env.NODE_ENV!=='production');
+  const isDev=(process.env.MOMENT_DEV_LOGIN==='1');
   if(isDev&&code.length===6&&code!=='000000'){
     // Dev bypass: accept any code that was sent
     if(!cached){genSMSCode(ph);}
@@ -146,7 +146,6 @@ app.post('/api/moments',auth,(r,s)=>{
   const {dataUrl,thought}=r.body;
   if(!dataUrl)return s.status(400).json({error:'缺少照片'});
   const imagePath=saveImage(dataUrl);
-  const imageForDb=imagePath||dataUrl;
   dbWrite(r,s,()=>{
     const m={id:r.db.nextId++,userId:r.user.id,imagePath:imagePath||'',dataUrl:imagePath?'':dataUrl,thought:(thought||'').slice(0,500),created_at:new Date().toISOString(),status:'approved',like_count:0};
     r.db.moments.unshift(m);
@@ -245,7 +244,7 @@ app.delete('/api/moment/:id',auth,(r,s)=>{
     if(idx<0)return s.status(404).json({error:'不存在'});
     var delM=r.db.moments[idx];
     if(delM&&delM.imagePath&&delM.imagePath.startsWith('/uploads/')){
-      try{fs.unlinkSync(require('path').join(UPLOADS_DIR,require('path').basename(delM.imagePath)))}catch(e){}
+      try{fs.unlinkSync(path.join(UPLOADS_DIR,path.basename(delM.imagePath)))}catch(e){}
     }
     r.db.moments.splice(idx,1);
     r.db.likes=r.db.likes.filter(l=>l.momentId!==mid);
