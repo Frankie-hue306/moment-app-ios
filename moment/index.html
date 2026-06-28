@@ -690,13 +690,17 @@ function restoreBackup(){
   updateAllUI();updateSideMenuUser();
 }
 function doClearCache(){
-  if(confirm('清除缓存不会删除你的照片和记录，仅清理临时图片。确定清除吗？')){
-    // Clear non-essential caches
+  if(confirm('清除缓存不会删除你的照片和记录。\n将清理：图片缓存、临时数据。\n确定清除吗？')){
     try{
-      var keys=Object.keys(localStorage);
-      keys.forEach(function(k){
-        if(k.indexOf('cache')>=0||k.indexOf('temp')>=0)localStorage.removeItem(k);
-      });
+      // Clear image blob cache
+      for(var k in _imgCache){try{URL.revokeObjectURL(_imgCache[k])}catch(e){}}
+      _imgCache={};_imgCacheKeys=[];
+      // Clear waterfall cached data
+      wfMoments=[];wfPage=1;wfHasMore=true;
+      // Clear film pool cached data
+      filmPool=[];
+      // Clear collage cached data
+      collageAvailable=[];collageCanvas=null;
     }catch(e){}
     showToast('缓存已清除');
   }
@@ -1506,7 +1510,7 @@ function refreshGallery(){
   var g=document.getElementById('gr');
   if(isLoggedIn()){
     api('/api/gallery').then(function(r){
-      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){var matched=false;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id||((sm.imageUrl||sm.dataUrl)&&D.m[k].u===(sm.imageUrl||sm.dataUrl)&&Math.abs(D.m[k].d-new Date(sm.created_at+'Z').getTime())<5000)||(D.m[k]._localId&&sm.imageUrl)){existsIdx=k;matched=true;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage;D.m[existsIdx].id=sm.id;D.m[existsIdx]._localId=null}});D.c=D.m.length;save()}
+      if(r.moments&&r.moments.length){r.moments.forEach(function(sm){var existsIdx=-1;for(var k=0;k<D.m.length;k++){if(D.m[k].id===sm.id||((sm.imageUrl||sm.dataUrl)&&D.m[k].u===(sm.imageUrl||sm.dataUrl)&&Math.abs(D.m[k].d-new Date(sm.created_at+'Z').getTime())<5000)||(D.m[k]._localId&&sm.imageUrl)){existsIdx=k;break}};if(existsIdx>=0){D.m[existsIdx].status=sm.status;D.m[existsIdx].u=sm.dataUrl||D.m[existsIdx].u;D.m[existsIdx].rejectedMessage=sm.rejectedMessage;D.m[existsIdx].id=sm.id;D.m[existsIdx]._localId=null}});D.c=D.m.length;save()}
       renderGallery();
     }).catch(renderGallery)
   }else{renderGallery()}
@@ -1543,7 +1547,7 @@ function renderGallery(){
       html+='</div>'})});
   g.innerHTML=html;
 }
-function view(i){D.i=i;var m=D.m[i];
+function view(i){D.i=i;var m=D.m[i];var phEl=document.getElementById('ph');phEl.onerror=function(){this.style.display='none'};
   if(m.status==='rejected'){
     document.getElementById('ph').src='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><rect fill="#1c1c1e" width="180" height="180" rx="20"/><text fill="#555" x="90" y="85" text-anchor="middle" font-size="40">🚫</text><text fill="#666" x="90" y="115" text-anchor="middle" font-size="12">已被移除</text></svg>');
     document.getElementById('viewText').textContent=m.rejectedMessage||'该内容因违反社区规范已被移除';
@@ -1618,7 +1622,10 @@ function buildRow(id,photos,dir){
   var track=row.querySelector('.film-track');
   if(track&&row.getAttribute('data-paused')==='1')track.style.animationPlayState='paused';
 }
+var _filmLastTouch=0;
 function toggleFilmRow(el){
+  if(Date.now()-_filmLastTouch<500)return;
+  _filmLastTouch=Date.now();
   if(el.getAttribute('data-paused')==='1'){el.setAttribute('data-paused','0');var t=el.querySelector('.film-track');if(t)t.style.animationPlayState='running'}
   else{el.setAttribute('data-paused','1');var t=el.querySelector('.film-track');if(t)t.style.animationPlayState='paused'}
 }

@@ -10,12 +10,12 @@ const DATA=process.env.MOMENT_DATA_DIR||'/opt/moment/data';
 const DB_LOCK_FILE=DATA+'/.dblock';
 
 // File-based mutex for DB write safety
-function dbLock(){for(let i=0;i<50;i++){try{fs.writeFileSync(DB_LOCK_FILE,JSON.stringify({pid:process.pid,ts:Date.now()}),{flag:'wx'});return true}catch(e){try{const data=JSON.parse(fs.readFileSync(DB_LOCK_FILE,'utf8'));if(Date.now()-data.ts>30000){try{fs.unlinkSync(DB_LOCK_FILE)}catch(_){}} }catch(_){}}const d=require('child_process');d.spawnSync('sleep',['0.05'])}return false}
+function dbLock(){for(let i=0;i<50;i++){try{fs.writeFileSync(DB_LOCK_FILE,JSON.stringify({pid:process.pid,ts:Date.now()}),{flag:'wx'});return true}catch(e){try{const data=JSON.parse(fs.readFileSync(DB_LOCK_FILE,'utf8'));if(Date.now()-data.ts>30000){try{process.kill(data.pid,0)}catch(ex){try{fs.unlinkSync(DB_LOCK_FILE)}catch(_){}}}}catch(_){}}const d=require('child_process');d.spawnSync('sleep',['0.05'])}return false}
 function dbUnlock(){try{fs.unlinkSync(DB_LOCK_FILE)}catch(e){}}
 function withLock(fn){const ok=dbLock();if(!ok)throw new Error('DB_LOCK_FAILED');try{fn()}finally{dbUnlock()}}
 
 const DB=()=>{try{return JSON.parse(fs.readFileSync(DATA+'/db.json','utf8'))}catch(e){return {users:[],moments:[],likes:[],reports:[],nextId:1}}};
-const SAVE=(d)=>{try{mkdir(DATA);fs.writeFileSync(DATA+'/db.json',JSON.stringify(d,null,2));return true}catch(e){console.error('[ERROR] Failed to save db.json:',e.message);return false}};
+const SAVE=(d)=>{try{mkdir(DATA);var tmp=DATA+'/db.json.tmp';fs.writeFileSync(tmp,JSON.stringify(d,null,2));fs.renameSync(tmp,DATA+'/db.json');return true}catch(e){console.error('[ERROR] Failed to save db.json:',e.message);return false}};
 mkdir(DATA);mkdir(DATA+'/uploads');
 
 function mkdir(d){try{fs.mkdirSync(d,{recursive:true})}catch(e){}}
@@ -117,7 +117,7 @@ app.post('/api/login',(r,s)=>{
 
 // Auth middleware
 function auth(r,s,next){
-  const tok=r.headers['x-auth-token']||r.query.token||r.body.token||'';
+  const tok=r.headers['x-auth-token']||'';
   const db=DB();
   const u=db.users.find(u=>u.token===tok);
   if(!u)return s.status(401).json({error:'请先登录'});
@@ -150,10 +150,10 @@ app.post('/api/moments',auth,(r,s)=>{
     const m={id:r.db.nextId++,userId:r.user.id,imagePath:imagePath||'',dataUrl:imagePath?'':dataUrl,thought:(thought||'').slice(0,500),created_at:new Date().toISOString(),status:'approved',like_count:0};
     r.db.moments.unshift(m);
     const now=new Date();const today=now.toISOString().slice(0,10);
-    if(!r.user.last_upload_date||r.user.last_upload_date!==today){
-      r.user.consecutive_days=(r.user.consecutive_days||0)+1;
-      r.user.last_upload_date=today;
-    }
+    const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+    if(!r.user.last_upload_date){r.user.consecutive_days=1;r.user.last_upload_date=today}
+    else if(r.user.last_upload_date===yesterday){r.user.consecutive_days=(r.user.consecutive_days||0)+1;r.user.last_upload_date=today}
+    else if(r.user.last_upload_date!==today){r.user.consecutive_days=1;r.user.last_upload_date=today}
     SAVE(r.db);
     s.json({id:m.id,imageUrl:imgUrl(imagePath||m.dataUrl||dataUrl)});
   });
@@ -226,8 +226,10 @@ app.get('/api/like',auth,(r,s)=>{
 // Report
 app.post('/api/report',auth,(r,s)=>{
   dbWrite(r,s,()=>{
+    if(!r.body.momentId||isNaN(parseInt(r.body.momentId)))return s.status(400).json({error:'缺少momentId'});
     const mid=parseInt(r.body.momentId);
     const reason=r.body.reason||'其他';
+    if(r.db.reports.some(function(x){return x.momentId===mid&&x.userId===r.user.id}))return s.status(400).json({error:'已举报过'});
     r.db.reports.push({id:uid(),momentId:mid,userId:r.user.id,reason,created_at:new Date().toISOString()});
     const cnt=r.db.reports.filter(r=>r.momentId===mid).length;
     if(cnt>=3){const m=r.db.moments.find(m=>m.id===mid);if(m)m.status='hidden'}
@@ -271,6 +273,7 @@ app.get('/api/image/:id',(r,s)=>{
   const db=DB();
   const m=db.moments.find(m=>m.id===parseInt(r.params.id));
   if(!m)return s.status(404).end();
+  if(!isPublicMoment(m,db.users))return s.status(404).end();
   if(m.imagePath&&m.imagePath.startsWith('/uploads/')){
     const filePath=path.join(UPLOADS_DIR,path.basename(m.imagePath));
     if(fs.existsSync(filePath)){
@@ -345,4 +348,5 @@ app.use((r,s)=>{
   s.status(404).sendFile(require("path").join(PUBLIC_DIR,"index.html"));
 });
 
+app.use(function(err,req,res,next){console.error('[ERROR]',err.message);res.status(500).json({error:'服务器内部错误'})});
 app.listen(3000,()=>console.log('Moment JSON Server on 3000'));
