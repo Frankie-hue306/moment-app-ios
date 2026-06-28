@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="此刻">
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
@@ -51,6 +51,9 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 /* New layout styles */
 .topbar{position:sticky;top:0;z-index:200}
 .bottom-nav{position:sticky;bottom:0;z-index:100}
+/* Starry mode: make bars transparent via CSS so there is no black bar flash before JS runs */
+html.starry-on .topbar{background:transparent !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-bottom:none !important}
+html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-top:none !important}
 .nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;position:relative}
 .nav-item.active{opacity:1}
 .nav-item .nav-icon{font-size:24px;width:24px;height:24px;line-height:24px;text-align:center;transition:transform .2s}
@@ -255,24 +258,16 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       <span id="photoPublicState" style="color:var(--muted);font-size:13px">已开启</span>
     </div>
   </div>
-  <!-- Group 3: 背景定制 -->
-  <div style="margin-bottom:24px">
-    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">背景定制</div>
-    <div class="menu-row" onclick="toggleStarryWorld()">
-      <span>🌌 星空背景</span>
-      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
-    </div>
-    <div class="menu-row" onclick="togglePureBlack()">
-      <span>⬛ 纯黑模式</span>
-      <span id="pureBlackState" style="color:var(--muted);font-size:13px;flex-shrink:0;margin-left:8px">已关闭</span>
-    </div>
-  </div>
-  <!-- Group 4: 通用 -->
+  <!-- Group 3: 通用 -->
   <div style="margin-bottom:24px">
     <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">通用</div>
     <div class="menu-row" onclick="openDarkModeSheet()">
       <span>🌓 深色模式</span>
       <span id="darkModeState" style="color:var(--muted);font-size:13px">跟随系统</span>
+    </div>
+    <div class="menu-row" onclick="toggleStarryWorld()">
+      <span>🌌 星空背景</span>
+      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
     </div>
     <div class="menu-row" onclick="toggleImageQuality()">
       <span>📶 图片加载策略</span>
@@ -785,33 +780,6 @@ function toggleImmersiveFX(){
   document.getElementById('immersiveFXState').textContent=next?'已开启':'已关闭';
   document.getElementById('immersiveFXState').style.color=next?'var(--accent)':'var(--muted)';
   showToast(next?'已开启：呼吸动画 + 涟漪触感':'已关闭沉浸特效');
-}
-function togglePureBlack(){
-  var current=localStorage.getItem('pure_black')!=='0';
-  var next=!current;
-  localStorage.setItem('pure_black',next?'1':'0');
-  document.getElementById('pureBlackState').textContent=next?'已开启':'已关闭';
-  document.getElementById('pureBlackState').style.color=next?'var(--accent)':'var(--muted)';
-  applyPureBlack(next);
-}
-function applyPureBlack(on){
-  var r=document.documentElement.style;
-  if(on){
-    r.setProperty('--bg','#000');r.setProperty('--accent','#D4A373');
-    r.setProperty('--tab-bg','#000');
-    document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
-  }else{
-    var dm=effectiveDarkMode();
-    if(dm==='light'){
-      r.setProperty('--bg','#f5f5f7');r.setProperty('--accent','#D4A373');
-      r.setProperty('--tab-bg','#f5f5f7');
-      document.body.style.background='#f5f5f7';r.setProperty('--world-bg','#EAE8F0');
-    }else{
-      r.setProperty('--bg','#1c1c1e');
-      r.setProperty('--tab-bg','#1c1c1e');
-      document.body.style.background='#1c1c1e';r.setProperty('--world-bg','#0B0E1A');
-    }
-  }
 }
 function toggleImageQuality(){
   var current=localStorage.getItem('img_quality')||'compressed';
@@ -2155,11 +2123,7 @@ setTimeout(function(){
   var ifx=localStorage.getItem('immersive_fx')!=='0';
   document.getElementById('immersiveFXState').textContent=ifx?'已开启':'已关闭';
   document.getElementById('immersiveFXState').style.color=ifx?'var(--accent)':'var(--muted)';
-  var pb=localStorage.getItem('pure_black')!=='0';
-  document.getElementById('pureBlackState').textContent=pb?'已开启':'已关闭';
-  document.getElementById('pureBlackState').style.color=pb?'var(--accent)':'var(--muted)';
   applyDarkMode(dm);
-  applyPureBlack(pb);
 },100);
 // Haptic click feedback
 var _clickAudio=null;

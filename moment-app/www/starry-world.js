@@ -1,6 +1,14 @@
 // ====================== STARRY WORLD ENGINE ======================
 var starryWorldEnabled=localStorage.getItem('starry_world')!=='0';
 var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null,_driftTimer=null;
+// Apply starry-on class synchronously on first paint to avoid black bar flash before initStarryWorld runs
+(function(){
+  try{
+    var dm=localStorage.getItem('dark_mode')||'dark';
+    if(dm==='auto'){dm=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}
+    if(starryWorldEnabled&&dm!=='light'){document.documentElement.classList.add('starry-on')}
+  }catch(e){}
+})();
 function toggleStarryWorld(){
   starryWorldEnabled=!starryWorldEnabled;
   localStorage.setItem('starry_world',starryWorldEnabled?'1':'0');
@@ -14,6 +22,7 @@ function initStarryWorld(){
   c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
   var dm=effectiveDarkMode();
   if(dm==='light'){
+    document.documentElement.classList.remove('starry-on');
     document.body.style.background='#F8F6F3';c.setAttribute('data-mode','light');c.style.display='none';
     var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
     var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
@@ -21,10 +30,11 @@ function initStarryWorld(){
   }
   document.body.style.background='#0B0E1A';
   c.setAttribute('data-mode',dm);
-  // Make bars transparent in dark mode so stars show through
+  // Make bars transparent in dark mode so stars show through (CSS class handles it without flash)
   if(dm!=='light'){
-    var tb=document.querySelector('.topbar');if(tb){tb.style.background='transparent';tb.style.backdropFilter='none';tb.style.webkitBackdropFilter='none';tb.style.borderBottom='none'}
-    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='transparent';bn.style.backdropFilter='none';bn.style.webkitBackdropFilter='none';bn.style.borderTop='none'}
+    document.documentElement.classList.add('starry-on');
+    var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
+    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
   }
   _stars=[];_nebulaEls=[];
   var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
@@ -85,6 +95,7 @@ function destroyStarryWorld(){
   _stars=[];_nebulaEls=[];
   clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);
   document.body.style.background='';
+  document.documentElement.classList.remove('starry-on');
   // Restore bars
   var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
   var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}

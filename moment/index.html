@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="此刻">
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
@@ -51,6 +51,9 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 /* New layout styles */
 .topbar{position:sticky;top:0;z-index:200}
 .bottom-nav{position:sticky;bottom:0;z-index:100}
+/* Starry mode: make bars transparent via CSS so there is no black bar flash before JS runs */
+html.starry-on .topbar{background:transparent !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-bottom:none !important}
+html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;border-top:none !important}
 .nav-item{opacity:.4;transition:all .2s;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;position:relative}
 .nav-item.active{opacity:1}
 .nav-item .nav-icon{font-size:24px;width:24px;height:24px;line-height:24px;text-align:center;transition:transform .2s}
@@ -146,8 +149,8 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 @keyframes twinkle{0%,100%{opacity:var(--lo,.3)}50%{opacity:var(--hi,.9)}}
 .meteor{position:fixed;z-index:2;pointer-events:none;animation:meteor var(--mDur,.7s) linear forwards}
 .meteor::before{content:'';position:absolute;top:-3px;left:-3px;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 12px 4px rgba(255,255,255,.9),0 0 24px 8px rgba(200,210,255,.5);z-index:1}
-.meteor-trail{position:absolute;top:0;left:0;width:100px;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.95) 0%,rgba(200,180,255,.5) 40%,rgba(167,139,250,.2) 70%,transparent 100%);border-radius:1px;filter:blur(.5px);transform-origin:left center}
-.meteor-trail::after{content:'';position:absolute;top:-3px;left:0;width:100%;height:8px;background:linear-gradient(90deg,rgba(255,255,255,.3) 0%,rgba(167,139,250,.1) 50%,transparent 100%);filter:blur(4px);border-radius:4px}
+.meteor-trail{position:absolute;top:0;left:-100px;width:100px;height:2px;background:linear-gradient(270deg,rgba(255,255,255,.95) 0%,rgba(200,180,255,.5) 40%,rgba(167,139,250,.2) 70%,transparent 100%);border-radius:1px;filter:blur(.5px);transform-origin:right center}
+.meteor-trail::after{content:'';position:absolute;top:-3px;left:0;width:100%;height:8px;background:linear-gradient(270deg,rgba(255,255,255,.3) 0%,rgba(167,139,250,.1) 50%,transparent 100%);filter:blur(4px);border-radius:4px}
 @keyframes meteor{0%{transform:translate(0,0) rotate(var(--ang,135deg));opacity:1}15%{opacity:1}70%{opacity:.2}100%{transform:translate(var(--dx,500px),var(--dy,500px)) rotate(var(--ang,135deg));opacity:0}}
 .nebula{position:fixed;border-radius:50%;z-index:0;filter:blur(80px);animation:nebulaDrift var(--nd,75s) ease-in-out infinite alternate}
 @keyframes nebulaDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--nx,15px),var(--ny,20px)) scale(1.05)}}
@@ -255,24 +258,16 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
       <span id="photoPublicState" style="color:var(--muted);font-size:13px">已开启</span>
     </div>
   </div>
-  <!-- Group 3: 背景定制 -->
-  <div style="margin-bottom:24px">
-    <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">背景定制</div>
-    <div class="menu-row" onclick="toggleStarryWorld()">
-      <span>🌌 星空背景</span>
-      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
-    </div>
-    <div class="menu-row" onclick="togglePureBlack()">
-      <span>⬛ 纯黑模式</span>
-      <span id="pureBlackState" style="color:var(--muted);font-size:13px;flex-shrink:0;margin-left:8px">已关闭</span>
-    </div>
-  </div>
-  <!-- Group 4: 通用 -->
+  <!-- Group 3: 通用 -->
   <div style="margin-bottom:24px">
     <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">通用</div>
     <div class="menu-row" onclick="openDarkModeSheet()">
       <span>🌓 深色模式</span>
       <span id="darkModeState" style="color:var(--muted);font-size:13px">跟随系统</span>
+    </div>
+    <div class="menu-row" onclick="toggleStarryWorld()">
+      <span>🌌 星空背景</span>
+      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
     </div>
     <div class="menu-row" onclick="toggleImageQuality()">
       <span>📶 图片加载策略</span>
@@ -541,6 +536,7 @@ function onboardPrev(){if(onboardPage<=0)return;var t=document.getElementById('o
 function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext();else if(dx>0)onboardPrev()}},{passive:true})}
 function showLogin(){document.getElementById('loginScreen').style.display='flex';var btn=document.getElementById('loginBtn');if(btn){btn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}}
 function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
+function fetchTimeout(url,opts,ms){ms=ms||10000;return new Promise(function(resolve,reject){var t=setTimeout(function(){reject(new Error('timeout'))},ms);fetch(url,opts).then(function(r){clearTimeout(t);resolve(r)}).catch(function(e){clearTimeout(t);reject(e)})})}
 var _loggingIn=false;
 function sendSMS(){
   var ph=document.getElementById('loginPhone').value.replace(/\s/g,'');
@@ -550,7 +546,7 @@ function sendSMS(){
   var btn=document.getElementById('smsBtn');
   if(!btn)return;
   btn.disabled=true;btn.textContent='发送中...';
-  fetch(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})})
+  fetchTimeout(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})},15000)
   .then(function(r){return r.json()}).then(function(d){
     if(d.error){msg.textContent=d.error;btn.disabled=false;btn.textContent='获取验证码';return}
     msg.textContent='验证码已发送';
@@ -566,7 +562,7 @@ function doLogin(){
   if(ph.length<11){msg.textContent='请输入11位手机号';_loggingIn=false;return}
   if(code.length!==6){msg.textContent='请输入6位验证码';_loggingIn=false;return}
   msg.textContent='登录中...';
-  fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})})
+  fetchTimeout(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})},15000)
   .then(function(r){return r.json()}).then(function(d){
     if(d.error){msg.textContent=d.error;_loggingIn=false;return}
     AUTH.token=d.token;AUTH.tokenCreatedAt=d.tokenCreatedAt||Date.now();AUTH.userId=d.userId;saveAuth();localStorage.setItem('mv_has_logged_in','1');
@@ -785,33 +781,6 @@ function toggleImmersiveFX(){
   document.getElementById('immersiveFXState').textContent=next?'已开启':'已关闭';
   document.getElementById('immersiveFXState').style.color=next?'var(--accent)':'var(--muted)';
   showToast(next?'已开启：呼吸动画 + 涟漪触感':'已关闭沉浸特效');
-}
-function togglePureBlack(){
-  var current=localStorage.getItem('pure_black')!=='0';
-  var next=!current;
-  localStorage.setItem('pure_black',next?'1':'0');
-  document.getElementById('pureBlackState').textContent=next?'已开启':'已关闭';
-  document.getElementById('pureBlackState').style.color=next?'var(--accent)':'var(--muted)';
-  applyPureBlack(next);
-}
-function applyPureBlack(on){
-  var r=document.documentElement.style;
-  if(on){
-    r.setProperty('--bg','#000');r.setProperty('--accent','#D4A373');
-    r.setProperty('--tab-bg','#000');
-    document.body.style.background='#000';r.setProperty('--world-bg','#0B0E1A');
-  }else{
-    var dm=effectiveDarkMode();
-    if(dm==='light'){
-      r.setProperty('--bg','#f5f5f7');r.setProperty('--accent','#D4A373');
-      r.setProperty('--tab-bg','#f5f5f7');
-      document.body.style.background='#f5f5f7';r.setProperty('--world-bg','#EAE8F0');
-    }else{
-      r.setProperty('--bg','#1c1c1e');
-      r.setProperty('--tab-bg','#1c1c1e');
-      document.body.style.background='#1c1c1e';r.setProperty('--world-bg','#0B0E1A');
-    }
-  }
 }
 function toggleImageQuality(){
   var current=localStorage.getItem('img_quality')||'compressed';
@@ -1503,7 +1472,7 @@ function toggle3D(){
   if(is3D){img.classList.add('depth3d');btn.textContent='✨ 3D开';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D开';if(b2)b2.style.background='var(--accent)'}
   else{img.classList.remove('depth3d');btn.textContent='✨ 3D景深';btn.style.background='var(--accent)';if(b2)b2.textContent='✨ 3D景深';if(b2)b2.style.background='var(--accent)'}
 }
-function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=1200;if(w<=maxDim&&h<=maxDim){cb(dataUrl);return}var r=Math.min(maxDim/w,maxDim/h);var cw=Math.round(w*r),ch=Math.round(h*r);var c=document.createElement('canvas');c.width=cw;c.height=ch;var ctx=c.getContext('2d');ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,cw,ch);ctx.drawImage(img,0,0,cw,ch);cb(c.toDataURL('image/jpeg',0.85))};img.src=dataUrl}
+function resizeImage(dataUrl,cb){var img=new Image();img.onload=function(){var w=img.width,h=img.height;var maxDim=2048;var needResize=w>maxDim||h>maxDim;var cw=needResize?Math.round(w*Math.min(maxDim/w,maxDim/h)/2)*2:w;var ch=needResize?Math.round(h*Math.min(maxDim/w,maxDim/h)/2)*2:h;var c=document.createElement('canvas');c.width=cw;c.height=ch;var ctx=c.getContext('2d');ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,cw,ch);ctx.drawImage(img,0,0,cw,ch);var id=ctx.getImageData(0,0,cw,ch);var px=id.data;var topDark=0;for(var y=0;y<ch;y++){var sum=0;for(var x=0;x<Math.min(cw,20);x++){var i=(y*cw+x)*4;sum+=px[i]+px[i+1]+px[i+2]}if(sum/(Math.min(cw,20)*3)<30)topDark=y;else break}var finalH=ch-topDark;if(topDark>10&&topDark<ch*.25&&finalH>100){var c2=document.createElement('canvas');c2.width=cw;c2.height=finalH;var ctx2=c2.getContext('2d');ctx2.fillStyle='#FFFFFF';ctx2.fillRect(0,0,cw,finalH);ctx2.drawImage(c,0,topDark,cw,finalH,0,0,cw,finalH);cb(c2.toDataURL('image/jpeg',0.85))}else{cb(c.toDataURL('image/jpeg',0.85))}};img.src=dataUrl}
 
 // ======================== GALLERY ========================
 function refreshGallery(){
@@ -2155,11 +2124,7 @@ setTimeout(function(){
   var ifx=localStorage.getItem('immersive_fx')!=='0';
   document.getElementById('immersiveFXState').textContent=ifx?'已开启':'已关闭';
   document.getElementById('immersiveFXState').style.color=ifx?'var(--accent)':'var(--muted)';
-  var pb=localStorage.getItem('pure_black')!=='0';
-  document.getElementById('pureBlackState').textContent=pb?'已开启':'已关闭';
-  document.getElementById('pureBlackState').style.color=pb?'var(--accent)':'var(--muted)';
   applyDarkMode(dm);
-  applyPureBlack(pb);
 },100);
 // Haptic click feedback
 var _clickAudio=null;
