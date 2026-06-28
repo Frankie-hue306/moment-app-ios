@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v291</title>
+<title>此刻 v292</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -192,7 +192,7 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
     <input id="loginCode" type="tel" maxlength="6" placeholder="验证码" style="width:160px;padding:14px 8px;border:none;border-radius:14px;background:var(--card);color:var(--text);font-size:18px;text-align:center;outline:none;letter-spacing:4px">
     <button id="smsBtn" onclick="sendSMS()" style="flex-shrink:0;padding:14px 12px;border:none;border-radius:14px;background:var(--card);color:var(--accent);font-size:13px;cursor:pointer;white-space:nowrap">获取验证码</button>
   </div>
-  <button class="btn" onclick="doLogin()" style="width:280px;text-align:center;background:var(--accent);color:#fff;font-size:17px">登录 / 注册</button>
+  <button class="btn" id="loginBtn" onclick="doLogin()" style="width:280px;text-align:center;background:var(--accent);color:#fff;font-size:17px">注册</button>
   <button class="btn" onclick="skipLogin()" style="width:280px;text-align:center;background:transparent;color:var(--muted);font-size:15px;margin-top:8px">跳过，先体验</button>
   <div id="loginMsg" style="color:#ff6b6b;font-size:13px;margin-top:16px"></div>
 </div>
@@ -539,7 +539,7 @@ function startApp(){document.getElementById('onboarding').style.display='none';l
 function onboardNext(){var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage++;if(onboardPage>=3){startApp();return}t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
 function onboardPrev(){if(onboardPage<=0)return;var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage--;t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
 function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext();else if(dx>0)onboardPrev()}},{passive:true})}
-function showLogin(){document.getElementById('loginScreen').style.display='flex'}
+function showLogin(){document.getElementById('loginScreen').style.display='flex';var btn=document.getElementById('loginBtn');if(btn){btn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}}
 function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
 var _loggingIn=false;
 function sendSMS(){
@@ -569,7 +569,7 @@ function doLogin(){
   fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph,code:code})})
   .then(function(r){return r.json()}).then(function(d){
     if(d.error){msg.textContent=d.error;_loggingIn=false;return}
-    AUTH.token=d.token;AUTH.tokenCreatedAt=d.tokenCreatedAt||Date.now();AUTH.userId=d.userId;saveAuth();
+    AUTH.token=d.token;AUTH.tokenCreatedAt=d.tokenCreatedAt||Date.now();AUTH.userId=d.userId;saveAuth();localStorage.setItem('mv_has_logged_in','1');
     if(d.nickname){localStorage.setItem('user_nickname',d.nickname)}
     if(d.avatar){localStorage.setItem('user_avatar',d.avatar);applyAvatar(d.avatar)}
     if(D.m.length>0){if(!confirm('登录将使用服务器数据。本地'+D.m.length+'条记录将被替换（已自动备份，可在设置中恢复）。继续？')){msg.textContent='';_loggingIn=false;return}
@@ -820,7 +820,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v291\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv291: 验证码登录、图片存文件、token过期、bug修复');
+  alert('此刻 v292\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv292: 验证码登录、图片存文件、token过期、bug修复');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -1765,7 +1765,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v291',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v292',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
