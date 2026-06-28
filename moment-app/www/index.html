@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v284</title>
+<title>此刻 v285</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -125,6 +125,16 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 .film-photo .film-time-label{color:#8E8E93;font-size:10px;flex-shrink:0;font-weight:400}
 /* Pulse dot */
 @keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
+
+.custom-dialog-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center}
+.custom-dialog{background:#2c2c2e;border-radius:14px;padding:24px 20px 20px;max-width:300px;width:80%;text-align:center;color:#f5f5f7}
+.custom-dialog p{font-size:16px;line-height:1.5;margin-bottom:20px;white-space:pre-wrap}
+.custom-dialog .btn-row{display:flex;gap:10px}
+.custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
+.custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
+.custom-dialog .btn-ok{background:#D4A373;color:#fff;font-weight:600}
+.world-stars[data-mode="light"]::before{background:#F5F0EB}
+// 此刻 Starry World Engine - v284
 /* ====== Starry World ====== */
 .world-stars{position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;height:-webkit-fill-available;z-index:0;pointer-events:none;overflow:hidden}
 .world-stars::before{content:"";position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;height:-webkit-fill-available;background:radial-gradient(ellipse at 30% 20%,rgba(20,40,80,.3) 0%,transparent 55%),radial-gradient(ellipse at 70% 60%,rgba(15,25,45,.2) 0%,transparent 50%);z-index:0;pointer-events:none}
@@ -148,14 +158,8 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
 #mainActionBtn.taken.light-glass{background:rgba(212,163,115,.15);color:#1C1C1E;border-color:rgba(212,163,115,.25)}
 #mainActionBtn.light-glass{color:#1C1C1E;border-color:rgba(0,0,0,.15);background:rgba(0,0,0,.06)}
 #mainActionBtn.light-glass:active{background:rgba(0,0,0,.12)}
-.custom-dialog-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;display:flex;align-items:center;justify-content:center}
-.custom-dialog{background:#2c2c2e;border-radius:14px;padding:24px 20px 20px;max-width:300px;width:80%;text-align:center;color:#f5f5f7}
-.custom-dialog p{font-size:16px;line-height:1.5;margin-bottom:20px;white-space:pre-wrap}
-.custom-dialog .btn-row{display:flex;gap:10px}
-.custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
-.custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
-.custom-dialog .btn-ok{background:#D4A373;color:#fff;font-weight:600}
-.world-stars[data-mode="light"]::before{background:#F5F0EB}
+
+
 </style>
 </head>
 <body>
@@ -516,10 +520,11 @@ img.pv{max-width:90vw;max-height:50vh;object-fit:contain;background:var(--card);
   </nav>
 </div>
 
+<script src="starry-world.js"></script>
 <script>
 var D={m:[],c:0,i:-1};
 try{var s=localStorage.getItem('mv21');if(s){D=JSON.parse(s);if(!D.m)D.m=[];if(typeof D.c!='number')D.c=D.m.length;if(typeof D.i!='number')D.i=-1}}catch(e){}
-var API=(localStorage.getItem('mv_api')||'').replace(/\/+$/,'')||'http://81.70.102.36:3000';var AUTH={token:'',tokenCreatedAt:0,userId:0};
+var API=(localStorage.getItem('mv_api')||'').replace(/\/+$/,'')||'https://momentnow.xyz';var AUTH={token:'',tokenCreatedAt:0,userId:0};
 function imgUrl(path){if(!path)return'';return path.indexOf('http')===0?path:API+path}
 try{var as=localStorage.getItem('mv_auth');if(as)AUTH=JSON.parse(as)}catch(e){}
 function saveAuth(){localStorage.setItem('mv_auth',JSON.stringify(AUTH))}
@@ -568,6 +573,14 @@ function doLogin(){
     updateSideMenuUser();updateAllUI();
   }).catch(function(e){msg.textContent='网络错误，请重试';_loggingIn=false})
 }
+function handleAuthExpired(){
+  if(!AUTH.token)return;
+  AUTH={token:'',tokenCreatedAt:0,userId:0};saveAuth();
+  D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
+  updateSideMenuUser();updateAllUI();
+  showToast('登录已过期，请重新登录');
+  setTimeout(showLogin,1500);
+}
 function api(path,opts){
   opts=opts||{};
   var hasQS=path.indexOf('?')>=0;
@@ -575,7 +588,14 @@ function api(path,opts){
   var url=API+path+(hasQS?'&':'?')+params;
   var o={method:opts.method||'GET',headers:{'x-auth-token':AUTH.token}};
   if(opts.body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(opts.body)}
-  return fetch(url,o).then(function(r){return r.json()})
+  return fetch(url,o).then(function(r){
+    if(r.status===401){handleAuthExpired();return Promise.reject('auth_expired')}
+    return r.json();
+  }).then(function(d){
+    if(d.code==='AUTH_EXPIRED'||d.code==='AUTH_INVALID'){handleAuthExpired();return Promise.reject('auth_expired')}
+    if(d.tokenExpired){handleAuthExpired();return Promise.reject('auth_expired')}
+    return d;
+  })
 }
 function logout(){if(confirm('退出登录？本地数据保留。')){AUTH={token:'',tokenCreatedAt:0,userId:0};saveAuth();updateSideMenuUser();updateAllUI()}}
 
@@ -782,7 +802,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v284\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv284: 验证码登录、图片存文件、token过期、bug修复');
+  alert('此刻 v285\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv285: 验证码登录、图片存文件、token过期、bug修复');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -1725,7 +1745,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v284',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v285',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){
@@ -2173,150 +2193,7 @@ function showCustomDialog(msg,onOk,onCancel){
   overlay.onclick=function(e){if(e.target===overlay){overlay.remove();if(onCancel)onCancel()}};
 }
 
-// ====================== STARRY WORLD ENGINE ======================
-var starryWorldEnabled=localStorage.getItem('starry_world')!=='0';
-var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null,_driftTimer=null;
-function toggleStarryWorld(){
-  starryWorldEnabled=!starryWorldEnabled;
-  localStorage.setItem('starry_world',starryWorldEnabled?'1':'0');
-  document.getElementById('starryWorldState').textContent=starryWorldEnabled?'已开启':'已关闭';
-  document.getElementById('starryWorldState').style.color=starryWorldEnabled?'var(--accent)':'var(--muted)';
-  if(starryWorldEnabled){initStarryWorld()}else{destroyStarryWorld()}
-}
-function initStarryWorld(){
-  var c=document.getElementById('starryWorld');
-  if(!c)return;
-  c.style.display='block';c.innerHTML='';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
-  var dm=effectiveDarkMode();
-  if(dm==='light'){
-    document.body.style.background='#F8F6F3';c.setAttribute('data-mode','light');c.style.display='none';
-    var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
-    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
-    return;
-  }
-  document.body.style.background='#0B0E1A';
-  c.setAttribute('data-mode',dm);
-  // Make bars transparent in dark mode so stars show through
-  if(dm!=='light'){
-    var tb=document.querySelector('.topbar');if(tb){tb.style.background='transparent';tb.style.backdropFilter='none';tb.style.webkitBackdropFilter='none';tb.style.borderBottom='none'}
-    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='transparent';bn.style.backdropFilter='none';bn.style.webkitBackdropFilter='none';bn.style.borderTop='none'}
-  }
-  _stars=[];_nebulaEls=[];
-  var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
-  // Create nebulae (1-2 bands)
-  var nebulaColors=[['rgba(80,60,180,.06)','rgba(60,40,140,.04)'],['rgba(180,120,60,.05)','rgba(140,80,40,.03)']];
-  var nebCount=1+Math.floor(Math.random()*2);
-  for(var n=0;n<nebCount;n++){
-    var neb=document.createElement('div');
-    neb.className='nebula';
-    var nSize=Math.min(W,H)*(.25+Math.random()*.15);
-    neb.style.cssText='width:'+nSize+'px;height:'+nSize+'px;top:'+(Math.random()*H*.6)+'px;left:'+(Math.random()*W*.6)+'px;background:radial-gradient(ellipse at center,'+nebulaColors[n][0]+','+nebulaColors[n][1]+',transparent 70%);--nd:'+(60+Math.random()*30)+'s;--nx:'+(10+Math.random()*30)+'px;--ny:'+(10+Math.random()*30)+'px';
-    c.appendChild(neb);_nebulaEls.push(neb);
-  }
-  // Create stars (80-100)
-  var total=80+Math.floor(Math.random()*21);
-  // Tier: 10-15 bright, 30-40 mid, rest dim
-  var brightCount=10+Math.floor(Math.random()*6);
-  var midCount=30+Math.floor(Math.random()*11);
-  for(var i=0;i<total;i++){
-    var tier=i<brightCount?'bright':(i<brightCount+midCount?'mid':'dim');
-    var size=tier==='bright'?2+Math.random()*2:(tier==='mid'?1+Math.random()*1.5:.5+Math.random()*.7);
-    var lo=tier==='bright'?.6+Math.random()*.2:(tier==='mid'?.3+Math.random()*.2:.05+Math.random()*.1);
-    var hi=tier==='bright'?.85+Math.random()*.15:(tier==='mid'?.5+Math.random()*.2:.2+Math.random()*.15);
-    var dur=1+Math.random()*4;
-    var delay=Math.random()*5;
-    var s=document.createElement('div');
-    s.className='star tier-'+tier;
-    s.style.cssText='width:'+size+'px;height:'+size+'px;top:'+(Math.random()*H)+'px;left:'+(Math.random()*W)+'px;--lo:'+lo+';--hi:'+hi+';--d:'+dur+'s;--delay:'+delay+'s';
-    s.setAttribute('data-tier',tier);s.setAttribute('data-lo',lo);s.setAttribute('data-hi',hi);
-    c.appendChild(s);_stars.push(s);
-  }
-  // Start meteor shower
-  startMeteorShower();
-  // Start sparkle effect
-  startSparkles();
-  // Start slow drift
-  startStarDrift();
-}
-function startStarDrift(){
-  clearInterval(_driftTimer);
-  if(!starryWorldEnabled)return;
-  var W=screen.width||window.innerWidth;
-  var speed=.5+Math.random()*.5;
-  _driftTimer=setInterval(function(){
-    if(!starryWorldEnabled){clearInterval(_driftTimer);return}
-    for(var i=0;i<_stars.length;i++){
-      var s=_stars[i];
-      var l=parseFloat(s.style.left)||0;
-      l-=speed;
-      if(l<-10)l=W+10+Math.random()*50;
-      s.style.left=l+'px';
-    }
-  },500);
-}
-function destroyStarryWorld(){
-  var c=document.getElementById('starryWorld');
-  if(c){c.style.display='none';c.innerHTML='';c.removeAttribute('data-mode')}
-  _stars=[];_nebulaEls=[];
-  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);
-  document.body.style.background='';
-  // Restore bars
-  var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
-  var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
-  // Re-apply dark mode to restore correct bg
-  applyDarkMode(getDarkMode());
-}
-function createMeteor(){
-  if(!starryWorldEnabled)return;
-  var c=document.getElementById('starryWorld');
-  if(!c||c.style.display==='none')return;
-  var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
-  // Angle: 40-50 deg from horizontal, moving down-left (右上→左下)
-  var angle=40+Math.random()*10;
-  var rad=angle*Math.PI/180;
-  var diag=Math.sqrt(W*W+H*H);
-  var dist=diag*(.4+Math.random()*.25);
-  var dx=-(dist*Math.cos(rad)),dy=dist*Math.sin(rad);
-  // Always spawn from top-right area
-  var sx=W*.7+Math.random()*W*.35;
-  var sy=Math.random()*H*.2;
-  var m=document.createElement('div');m.className='meteor';
-  m.style.cssText='left:'+sx+'px;top:'+sy+'px;--ang:135deg;--dx:'+dx+'px;--dy:'+dy+'px;--mDur:'+(.6+Math.random()*.2)+'s';
-  var trail=document.createElement('div');trail.className='meteor-trail';m.appendChild(trail);
-  c.appendChild(m);
-  setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m)},900);
-}
-function startMeteorShower(){
-  clearTimeout(_meteorTimer);
-  createMeteor();
-  _meteorTimer=setTimeout(startMeteorShower,8000+Math.random()*22000);
-}
-function welcomeMeteorShower(){
-  var count=3+Math.floor(Math.random()*3);
-  for(var i=0;i<count;i++){setTimeout(createMeteor,i*200+Math.random()*200)}
-}
-function startSparkles(){
-  clearTimeout(_sparkleTimer);
-  if(!starryWorldEnabled)return;
-  var brightStars=_stars.filter(function(s){return s.getAttribute('data-tier')==='bright'});
-  if(brightStars.length>0){
-    var target=brightStars[Math.floor(Math.random()*brightStars.length)];
-    target.classList.add('star-sparkle');
-    setTimeout(function(){target.classList.remove('star-sparkle')},350);
-  }
-  _sparkleTimer=setTimeout(startSparkles,10000+Math.random()*5000);
-}
-// Photo-star interaction: dim stars near photo overlay
-function dimStarsForPhoto(dim){
-  _stars.forEach(function(s){
-    if(dim){s.classList.add('dimmed')}else{s.classList.remove('dimmed')}
-  });
-  _nebulaEls.forEach(function(n){
-    if(dim){n.style.opacity='.02'}else{n.style.opacity=''}
-  });
-}
-// Init starry world on load if enabled
-if(starryWorldEnabled){setTimeout(initStarryWorld,300)}
+
 // ====================== IMAGE PROXY ======================
 // Image proxy cache with LRU limit (max 30 entries)
 var _imgCache={};
@@ -2341,6 +2218,7 @@ function proxyImage(imgEl, url){
   }).catch(function(){imgEl.style.display='none'});
 }
 
+var _starryLoaded=true;
 // Listen for system dark mode changes
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(e){if(getDarkMode()==='auto')applyDarkMode('auto')});
 </script>

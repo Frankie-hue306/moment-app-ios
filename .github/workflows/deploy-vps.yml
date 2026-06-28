@@ -11,7 +11,7 @@ jobs:
         env:
           VP: ${{ secrets.VPS_PASSWORD }}
         run: |
-          tar czf /tmp/frontend.tar.gz moment/index.html moment/manifest.json moment/sw.js moment/privacy.html moment/terms.html
+          tar czf /tmp/frontend.tar.gz moment/index.html moment/manifest.json moment/sw.js moment/privacy.html moment/terms.html moment/starry-world.js
           sshpass -p "$VP" scp -o StrictHostKeyChecking=accept-new /tmp/frontend.tar.gz root@81.70.102.36:/tmp/
           sshpass -p "$VP" ssh -o StrictHostKeyChecking=accept-new root@81.70.102.36 "bash -s" << 'REMOTE'
           set -e
