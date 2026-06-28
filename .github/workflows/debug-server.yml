@@ -1,0 +1,41 @@
+name: Debug Server
+on: [workflow_dispatch]
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+      - name: Debug Nginx and Server
+        env:
+          VP: ${{ secrets.VPS_PASSWORD }}
+        run: |
+          sshpass -p "$VP" ssh -o StrictHostKeyChecking=accept-new root@81.70.102.36 "bash -s" << 'REMOTE'
+          set -e
+          echo "=== Nginx status ==="
+          systemctl status nginx 2>&1 || service nginx status 2>&1 || echo "nginx not running"
+          echo ""
+          echo "=== Nginx config test ==="
+          nginx -t 2>&1 || true
+          echo ""
+          echo "=== Nginx sites-enabled ==="
+          ls -la /etc/nginx/sites-enabled/ 2>&1 || true
+          echo ""
+          echo "=== Nginx site config ==="
+          cat /etc/nginx/sites-enabled/cikemoment 2>&1 || cat /etc/nginx/conf.d/cikemoment.conf 2>&1 || echo "no config found"
+          echo ""
+          echo "=== SSL cert files ==="
+          ls -la /etc/nginx/ssl/ 2>&1 || echo "no ssl dir"
+          echo ""
+          echo "=== Server.js process ==="
+          ps aux | grep server.js | grep -v grep || echo "server.js not running"
+          echo ""
+          echo "=== Server.js code ==="
+          cat /opt/moment/server.js 2>&1 || echo "no server.js"
+          echo ""
+          echo "=== Test API via localhost ==="
+          curl -s http://localhost:3000/api/moments 2>&1 | head -5 || echo "FAIL"
+          echo ""
+          echo "=== Nginx error log (last 20 lines) ==="
+          tail -20 /var/log/nginx/error.log 2>&1 || true
+          REMOTE
