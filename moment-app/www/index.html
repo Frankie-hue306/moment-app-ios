@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v292</title>
+<title>此刻 v298</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
@@ -136,27 +136,33 @@ html.starry-on .bottom-nav{background:transparent !important;backdrop-filter:non
 .custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
 .custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
 .custom-dialog .btn-ok{background:#D4A373;color:#fff;font-weight:600}
-/* Daytime cloud sky for light mode */
-.world-stars[data-mode="light"]{background:linear-gradient(180deg,#E8F4FD 0%,#F5F9FF 100%)}
-.world-stars[data-mode="light"]::before{background:linear-gradient(180deg,rgba(232,244,253,.5) 0%,rgba(245,249,255,0) 100%)}
+/* ====== Light Mode Sky System ====== */
+.world-stars[data-mode="light"]{background:url(/sky-bg.jpg) center/cover no-repeat;background-attachment:fixed}
+.world-stars[data-mode="light"]::before{display:none}
 .world-stars[data-mode="light"] canvas{display:none}
-.day-cloud{position:absolute;pointer-events:none;z-index:1;opacity:.55;filter:blur(8px);background:#fff;border-radius:50%;transition:transform .2s linear}
-.day-cloud:nth-child(1){width:45vw;height:22vw;top:6vh;left:-30vw}
-.day-cloud:nth-child(2){width:35vw;height:18vw;top:26vh;left:10vw;opacity:.45;filter:blur(10px)}
-.day-cloud:nth-child(3){width:50vw;height:24vw;top:48vh;left:-10vw;opacity:.4;filter:blur(7px)}
-.day-cloud::before{content:'';position:absolute;background:#fff;border-radius:50%}
-.day-cloud:nth-child(1)::before{width:60%;height:70%;top:-30%;left:20%}
-.day-cloud:nth-child(2)::before{width:50%;height:60%;top:-20%;right:10%}
-.day-cloud:nth-child(3)::before{width:55%;height:65%;bottom:-20%;left:15%}
-/* Dawn 火烧云 (5:00-7:00) */
-.world-stars[data-mode="dawn"]{background:linear-gradient(180deg,#3E3A6E 0%,#8E5A9E 28%,#E8616E 55%,#FF9356 78%,#FFCB6B 100%)}
-.world-stars[data-mode="dawn"]::before{background:linear-gradient(180deg,rgba(62,58,110,.3) 0%,rgba(232,97,110,.15) 50%,rgba(255,203,107,0) 100%)}
+.world-stars[data-mode="dawn"]{background:url(/dawn-bg.jpg) center/cover no-repeat;background-attachment:fixed}
+.world-stars[data-mode="dawn"]::before{display:none}
 .world-stars[data-mode="dawn"] canvas{display:none}
-.day-cloud.dawn-cloud{background:linear-gradient(135deg,#FF7E5F 0%,#FEB47B 60%,#FFD194 100%);opacity:.7;mix-blend-mode:screen}
-.day-cloud.dawn-cloud::before{background:linear-gradient(135deg,#FF6F61 0%,#FFA45B 100%)}
-.day-cloud.dawn-cloud:nth-child(2){opacity:.6}
-.day-cloud.dawn-cloud:nth-child(3){opacity:.55}
-/* Dawn 文字提亮：朝霞天空偏深，文字用白色+阴影保证可读 */
+/* 1.5s crossfade between sky modes */
+.world-stars{transition:opacity 1.5s ease}
+.world-stars[data-mode="light"],.world-stars[data-mode="dawn"]{opacity:1}
+/* Drifting cloud overlays */
+.sky-cloud{position:absolute;pointer-events:none;z-index:1;will-change:transform}
+.sky-cloud .cloud-shape{position:absolute;background:radial-gradient(ellipse at 40% 35%,rgba(255,255,255,.55) 0%,rgba(255,255,255,.25) 50%,rgba(255,255,255,.05) 100%);border-radius:50%;filter:blur(3px)}
+.sky-cloud .cloud-shape.bs{background:radial-gradient(ellipse at 35% 30%,rgba(255,255,255,.65) 0%,rgba(255,255,255,.3) 50%,rgba(255,255,255,0) 100%);filter:blur(5px)}
+@keyframes cloudDrift1{0%{transform:translateX(-10vw)}100%{transform:translateX(110vw)}}
+@keyframes cloudDrift2{0%{transform:translateX(110vw)}100%{transform:translateX(-10vw)}}
+@keyframes cloudDrift3{0%{transform:translateX(-20vw)}100%{transform:translateX(120vw)}}
+/* 云1：高速层，70s循环 */
+.sky-cloud:nth-child(1){animation:cloudDrift1 70s linear infinite}
+/* 云2：中速层，85s循环，反向 */
+.sky-cloud:nth-child(2){animation:cloudDrift2 85s linear infinite}
+/* 云3：低速层，95s循环 */
+.sky-cloud:nth-child(3){animation:cloudDrift3 95s linear infinite}
+/* Dawn: dim cloud overlays for fire sky */
+.world-stars[data-mode="dawn"] .sky-cloud .cloud-shape{background:radial-gradient(ellipse at 40% 35%,rgba(255,180,120,.3) 0%,rgba(255,140,80,.15) 50%,rgba(255,100,40,0) 100%)}
+.world-stars[data-mode="dawn"] .sky-cloud .cloud-shape.bs{background:radial-gradient(ellipse at 35% 30%,rgba(255,200,150,.4) 0%,rgba(255,160,100,.2) 50%,rgba(255,120,60,0) 100%)}
+/* Dawn 文字提亮 */
 html.dawn-sky .topbar span{color:#fff !important;text-shadow:0 1px 4px rgba(0,0,0,.35)}
 html.dawn-sky .topbar button{color:#fff !important;text-shadow:0 1px 4px rgba(0,0,0,.35)}
 html.dawn-sky #todayStatus,html.dawn-sky #reminderHint,html.dawn-sky #todayDate{color:rgba(255,255,255,.92) !important;text-shadow:0 1px 3px rgba(0,0,0,.3)}
@@ -364,7 +370,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
 </div>
 
 <!-- Starry World Background -->
-<div id="starryWorld" class="world-stars" style="display:none"><div class="day-cloud"></div><div class="day-cloud"></div><div class="day-cloud"></div></div>
+<div id="starryWorld" class="world-stars" style="display:none"><div class="sky-cloud" style="top:12vh;width:55vw;height:22vw"><div class="cloud-shape bs" style="width:65%;height:60%;top:0;left:5%"></div><div class="cloud-shape" style="width:50%;height:55%;top:30%;left:35%"></div><div class="cloud-shape" style="width:40%;height:50%;top:10%;left:50%"></div></div><div class="sky-cloud" style="top:40vh;width:40vw;height:18vw"><div class="cloud-shape bs" style="width:55%;height:65%;top:0;left:10%"></div><div class="cloud-shape" style="width:45%;height:50%;top:25%;left:45%"></div></div><div class="sky-cloud" style="top:65vh;width:48vw;height:20vw"><div class="cloud-shape" style="width:50%;height:60%;top:0;left:15%"></div><div class="cloud-shape bs" style="width:40%;height:55%;top:20%;left:45%"></div></div></div>
 <!-- Main App -->
 <div class="app">
   
@@ -560,7 +566,7 @@ function onboardNext(){var t=document.getElementById('onboard-track');var d=docu
 function onboardPrev(){if(onboardPage<=0)return;var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage--;t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
 function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext();else if(dx>0)onboardPrev()}},{passive:true})}
 function showLogin(){document.getElementById('loginScreen').style.display='flex';var btn=document.getElementById('loginBtn');if(btn){btn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}}
-function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI()}
+function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI();if(starryWorldEnabled&&typeof initStarryWorld==='function'){setTimeout(initStarryWorld,400)}}
 function fetchTimeout(url,opts,ms){ms=ms||10000;return new Promise(function(resolve,reject){var t=setTimeout(function(){reject(new Error('timeout'))},ms);fetch(url,opts).then(function(r){clearTimeout(t);resolve(r)}).catch(function(e){clearTimeout(t);reject(e)})})}
 var _loggingIn=false;
 function sendSMS(){
@@ -599,6 +605,7 @@ function doLogin(){
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
     _loggingIn=false;document.getElementById('loginScreen').style.display='none';
     updateSideMenuUser();updateAllUI();
+    if(starryWorldEnabled&&typeof initStarryWorld==='function'){setTimeout(initStarryWorld,400)}
   }).catch(function(e){msg.textContent='网络错误，请重试';_loggingIn=false})
 }
 function handleAuthExpired(){
@@ -730,7 +737,7 @@ function closeDarkModeSheet(){
   document.getElementById('darkModeSheet').style.transform='translateY(100%)';
 }
 function getDarkMode(){
-  return localStorage.getItem('dark_mode')||'dark';
+  return localStorage.getItem('dark_mode')||(new Date().getHours()>=7&&new Date().getHours()<19?'light':'dark');
 }
 function effectiveDarkMode(){
   var dm=getDarkMode();
@@ -752,7 +759,7 @@ function applyDarkMode(mode){
   // Update starry world bg if enabled
   if(starryWorldEnabled){
     var sw=document.getElementById('starryWorld');
-    document.body.style.background=mode==='light'?'#E8F4FD':'#0B0E1A';
+    document.body.style.background=mode==='light'?'#87CEEB':'#0B0E1A';
     document.body.style.transition='background .3s ease';
     if(sw){sw.setAttribute('data-mode',mode);sw.style.display='block'}
   }
@@ -771,7 +778,7 @@ function applyDarkMode(mode){
     r.setProperty('--sheet-bg','#fff');
     r.setProperty('--overlay-alpha','rgba(0,0,0,.3)');
     r.setProperty('--card-shadow','0 2px 8px rgba(60,158,220,.10)');
-    if(!starryWorldEnabled){document.body.style.background='#E8F4FD';var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.add('light-glass')}
+    if(!starryWorldEnabled){document.body.style.background='#87CEEB';var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.add('light-glass')}
     else{var btn=document.getElementById('mainActionBtn');if(btn)btn.classList.add('light-glass')}
     r.setProperty('--world-bg','#0B0E1A');
   }else{
@@ -813,7 +820,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v292\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv292: 验证码登录、图片存文件、token过期、bug修复');
+  alert('此刻 v298\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv298: 白昼云空·深色星空·香港免备案、图片存文件、token过期、bug修复');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -1758,7 +1765,7 @@ function renderCollageCanvas(imgs,moments,monthInfo){
   }
   var footerY=HH+rows*(cellSize+captionH+GAP)+14;
   ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(CW*.25,footerY);ctx.lineTo(CW*.75,footerY);ctx.stroke();
-  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v292',CW/2,footerY+20);
+  ctx.fillStyle='#666';ctx.font='11px -apple-system,"PingFang SC",sans-serif';ctx.fillText('此刻 MOMENT v298',CW/2,footerY+20);
   return canvas;
 }
 function downloadCollage(){

@@ -186,7 +186,7 @@ app.get('/api/explore',(r,s)=>{
   var pub=db.moments.filter(function(m){return isPublicMoment(m,userMap)});
   var moments=pub.slice((pg-1)*lim,pg*lim).map(function(m){
     var u=userMap[m.userId];
-    return {imageUrl:imgUrl(m.imagePath||m.dataUrl),like_count:m.like_count||0,author_phone_masked:mask(u?u.phone:'')};
+    return {id:m.id,imageUrl:imgUrl(m.imagePath||m.dataUrl),thought:m.thought||'',created_at:m.created_at,like_count:m.like_count||0,author_phone_masked:mask(u?u.phone:'')};
   });
   s.json({moments,hasMore:moments.length===lim,total:pub.length});
 });
@@ -260,6 +260,11 @@ app.delete('/api/moment/:id',auth,(r,s)=>{
 app.get('/api/image/uploads/:name',(r,s)=>{
   const name=r.params.name;
   if(name!==path.basename(name))return s.status(400).json({error:'非法文件名'});
+  // Privacy: check if this image belongs to a public moment
+  var imgPath='/uploads/'+name;
+  var db=DB();
+  var moment=db.moments.find(function(m){return m.imagePath===imgPath});
+  if(moment&&!isPublicMoment(moment,db.users))return s.status(404).end();
   const filePath=path.join(UPLOADS_DIR,name);
   if(!fs.existsSync(filePath))return s.status(404).end();
   const ext=path.extname(name).toLowerCase();
@@ -325,6 +330,25 @@ app.post('/api/user/avatar',auth,(r,s)=>{
     if(ap){r.user.avatar=ap}else{r.user.avatar=(r.body.avatar||"").slice(0,200000)}
     SAVE(r.db);
     s.json({avatar:imgUrl(r.user.avatar)});
+  });
+});
+
+// Account deletion
+app.post('/api/account/delete',auth,(r,s)=>{
+  dbWrite(r,s,()=>{
+    var uid=r.user.id;
+    // Clean up user's uploaded images
+    r.db.moments.filter(function(m){return m.userId===uid}).forEach(function(m){
+      if(m.imagePath&&m.imagePath.startsWith('/uploads/')){
+        try{fs.unlinkSync(require('path').join(UPLOADS_DIR,require('path').basename(m.imagePath)))}catch(e){}
+      }
+    });
+    r.db.moments=r.db.moments.filter(function(m){return m.userId!==uid});
+    r.db.likes=r.db.likes.filter(function(l){return l.userId!==uid});
+    r.db.reports=r.db.reports.filter(function(r){return r.userId!==uid});
+    r.db.users=r.db.users.filter(function(u){return u.id!==uid});
+    SAVE(r.db);
+    s.json({message:'账号已注销'});
   });
 });
 
