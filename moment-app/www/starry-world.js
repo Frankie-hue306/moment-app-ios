@@ -37,8 +37,8 @@ function initStarryWorld(){
   // 深色模式：星空背景 + 透明导航栏
   document.documentElement.classList.add('starry-on');
   c.style.display='block';c.setAttribute('data-mode',dm);
-  var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
-  var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
+  var tb=document.querySelector('.topbar');if(tb){tb.style.background='transparent';tb.style.backdropFilter='none';tb.style.webkitBackdropFilter='none';tb.style.borderBottom='none'}
+  var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='transparent';bn.style.backdropFilter='none';bn.style.webkitBackdropFilter='none';bn.style.borderTop='none'}
   var tabs=document.querySelectorAll('[id^=tab-]');for(var ti=0;ti<tabs.length;ti++){tabs[ti].style.background='transparent'}
 
   _stars=[];_nebulaEls=[];

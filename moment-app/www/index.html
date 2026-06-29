@@ -12,7 +12,7 @@
 <title>此刻 v298</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html{background:var(--world-bg)}
+html{background:var(--bg)}html.starry-on{background:radial-gradient(ellipse at 30% 20%,rgba(20,40,80,.3) 0%,transparent 55%),radial-gradient(ellipse at 70% 60%,rgba(15,25,45,.2) 0%,transparent 50%),#0B0E1A !important}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
 body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none}html.starry-on body{background:transparent !important}html.starry-on .app{background:transparent !important}
 .app{width:100%;display:flex;flex-direction:column;min-height:100vh}
@@ -995,7 +995,7 @@ function initSwipeGestures(){
     if(old)old.remove();
     var tip=document.createElement('div');
     tip.id='swipeHint';
-    tip.style.cssText='position:fixed;bottom:25%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:13px;padding:8px 20px;border-radius:20px;z-index:5000;opacity:0;transition:opacity .4s;pointer-events:none;letter-spacing:0px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)';
+    tip.style.cssText='position:fixed;bottom:25%;left:50%;transform:translateX(-50%);background:var(--card);color:var(--text);font-size:13px;padding:8px 20px;border-radius:20px;z-index:5000;opacity:0;transition:opacity .4s;pointer-events:none;letter-spacing:0px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:var(--card-shadow)';
     tip.textContent='← 滑动切换模式 →';
     document.body.appendChild(tip);
     requestAnimationFrame(function(){tip.style.opacity='1'});
