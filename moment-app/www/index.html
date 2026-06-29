@@ -135,6 +135,13 @@ html.starry-on [id^=tab-]{background:transparent !important}
 .custom-dialog p{font-size:16px;line-height:1.5;margin-bottom:20px;white-space:pre-wrap}
 .custom-dialog .btn-row{display:flex;gap:10px}
 .custom-dialog .btn-row button{flex:1;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer}
+.cinema-page{flex-shrink:0;width:100vw;height:100%;scroll-snap-align:start;position:relative;background:#000;display:flex;align-items:center;justify-content:center}
+.cinema-page img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.cinema-heart{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:80px;pointer-events:none;z-index:5;transition:transform .3s cubic-bezier(.17,.89,.32,1.28)}
+.cinema-heart.show{transform:translate(-50%,-50%) scale(1)}
+.cinema-heart.hide{transform:translate(-50%,-50%) scale(0);transition:transform .2s ease-in}
+@keyframes vignetteBreathe{0%,100%{opacity:.75}50%{opacity:1}}
+@keyframes noiseBreathe{0%,100%{opacity:.05}50%{opacity:.08}}
 .custom-dialog .btn-cancel{background:rgba(255,255,255,.1);color:#f5f5f7}
 .custom-dialog .btn-ok{background:#D4A373;color:#fff;font-weight:600}
 /* ====== Light Mode Sky System ====== */
@@ -406,7 +413,58 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
     <div id="gr"></div>
   </div>
 
-  <!-- Strangers Tab (Immersive / Filmstrip) -->
+  <!-- Strangers Tab (Cinema Mode) -->
+  <div id="tab-cinema" style="display:none;flex:1;overflow:hidden;background:#000;position:relative">
+    <div id="cinemaTrack" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;height:100%" onscroll="onCinemaScroll()"></div>
+    <div id="cinemaTop" style="position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;z-index:10">
+      <div id="cinemaBackBtn" onclick="cinemaBack()" style="padding:6px 12px;background:rgba(0,0,0,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:20px;color:#fff;font-size:13px;cursor:pointer;pointer-events:auto">← 返回</div>
+      <span id="cinemaTimePill" style="padding:6px 12px;background:rgba(0,0,0,.35);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:20px;color:#fff;font-size:13px;letter-spacing:.5px">世界正在记录</span>
+      <div style="width:56px"></div>
+    </div>
+    <!-- Film overlay: vignette + noise -->
+    <div id="filmOverlay" style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:2;overflow:hidden">
+      <div id="filmVignette" style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.45) 100%);animation:vignetteBreathe 4.4s ease-in-out infinite"></div>
+      <div id="filmNoise" style="position:absolute;top:0;left:0;right:0;bottom:0;opacity:.06;background-image:url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%22.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');animation:noiseBreathe 4.4s ease-in-out infinite"></div>
+    </div>
+    <!-- City Toast -->
+    <div id="cinemaCityToast" style="position:absolute;top:110px;left:50%;transform:translate(-50%,6px);z-index:8;pointer-events:none;opacity:0;transition:opacity .22s,transform .22s">
+      <span style="color:rgba(255,255,255,.92);font-size:16px;letter-spacing:1px;background:rgba(0,0,0,.25);padding:6px 12px;border-radius:20px;white-space:nowrap"></span>
+    </div>
+    <!-- Time Stamp Corner -->
+    <div id="cinemaTimeCorner" style="position:absolute;right:14px;bottom:98px;z-index:8;pointer-events:none;background:rgba(0,0,0,.22);padding:6px 10px;border-radius:10px;color:rgba(255,255,255,.85);font-size:12px;letter-spacing:.5px"></div>
+    <!-- TimeGate Intro Overlay -->
+    <div id="cinemaTimeGate" style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:50;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .42s ease">
+      <div style="color:#fff;font-size:18px;letter-spacing:1px;margin-bottom:10px" id="cinemaGateTitle">同刻正在发生</div>
+      <div style="color:rgba(255,255,255,.65);font-size:13px" id="cinemaGateSub">±15分钟内的瞬间</div>
+    </div>
+        <div id="cinemaBottom" style="position:absolute;bottom:0;left:0;right:0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,rgba(0,0,0,.5));z-index:10">
+      <div style="display:flex;align-items:flex-end;gap:12px">
+        <div style="flex:1;min-width:0">
+          <div id="cinemaThought" style="color:#fff;font-size:16px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+          <div id="cinemaSub" style="color:rgba(255,255,255,.7);font-size:12px;margin-top:4px"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div id="cinemaLikeBtn" onclick="cinemaLike()" style="width:44px;height:44px;border-radius:22px;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;color:#fff">♥</div>
+          <div id="cinemaMenuBtn" onclick="openCinemaMenu()" style="width:44px;height:44px;border-radius:22px;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:#fff">⋯</div>
+        </div>
+      </div>
+    </div>
+    <div id="cinemaSheet" style="position:absolute;bottom:0;left:0;right:0;background:#111;border-radius:20px 20px 0 0;padding:16px 20px calc(30px + env(safe-area-inset-bottom,0px));z-index:20;transform:translateY(100%);transition:transform .3s ease">
+      <div style="width:36px;height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin:0 auto 16px"></div>
+      <div id="cinemaSheetTime" style="color:rgba(255,255,255,.7);font-size:13px;margin-bottom:8px"></div>
+      <div id="cinemaSheetThought" style="color:#fff;font-size:18px;line-height:1.5;margin-bottom:16px"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <div id="cinemaSheetLike" onclick="cinemaLike()" style="padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-size:14px;cursor:pointer">♡ 点赞</div>
+        <div id="cinemaSheetReport" onclick="cinemaReport()" style="padding:10px 16px;border-radius:10px;background:rgba(255,77,109,.12);color:#ff4d6d;font-size:14px;cursor:pointer">⚠️ 举报</div>
+      </div>
+    </div>
+    <div id="cinemaMenu" style="display:none;position:absolute;bottom:100px;right:16px;background:#1a1a1a;border-radius:14px;padding:8px;z-index:30;min-width:120px">
+      <div onclick="cinemaReport();closeCinemaMenu()" style="padding:12px 16px;color:#ff4d6d;font-size:15px;cursor:pointer;border-radius:10px">举报</div>
+      <div onclick="closeCinemaMenu()" style="padding:12px 16px;color:rgba(255,255,255,.6);font-size:15px;cursor:pointer;border-radius:10px">取消</div>
+    </div>
+  </div>
+
+    <!-- Strangers Tab (Immersive / Filmstrip) -->
   <div id="tab-strangers" style="display:none;flex:1;overflow:visible;background:var(--tab-bg)">
     <!-- World Header -->
     <div style="position:relative;padding:32px 16px 12px;text-align:center;z-index:10">
@@ -649,17 +707,14 @@ var tabOrder=['photos','home','strangers'];
 function navTo(tab){
   if(tab===currentTab)return;
   // Hide all tabs
-  ['tab-home','tab-photos','tab-strangers','tab-strangers-waterfall'].forEach(function(x){
+  ['tab-home','tab-photos','tab-strangers','tab-strangers-waterfall','tab-cinema'].forEach(function(x){
     var el=document.getElementById(x);if(el){el.style.display='none';el.style.transform='';el.style.opacity='';el.style.transition=''}
   });
   // Clean up old tab timers
   clearTimeout(wfIdleTimer);clearTimeout(filmTimer);
   // Show target tab
   if(tab==='strangers'){
-    var m=getWatchMode();
-    if(m==='waterfall'){refreshWaterfall(true)}
-    else{document.getElementById('tab-strangers').style.display='block';refreshStrangers()}
-    if(window.showSwipeHint)window.showSwipeHint();
+    startCinema();
   }else{
     document.getElementById('tab-'+tab).style.display=tab==='home'?'flex':'block';
   }
@@ -1676,6 +1731,28 @@ function doWorldLike(btn,momentId){
     btn.disabled=false
   }).catch(function(){btn.textContent='❤️ LIKE';btn.disabled=false})
 }
+
+// ======================== CINEMA MODE ========================
+var cinemaMoments=[],cinemaIndex=0,cinemaLikes={},cinemaUIHidden=false,cinemaLastTap=0,cinemaSheetOpen=false;
+function hhmm(iso){var d=new Date(iso);return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+function cinemaBack(){closeCinemaSheet();closeCinemaMenu();navTo('home')}
+function startCinema(){var tab=document.getElementById('tab-cinema');if(!tab)return;tab.style.display='block';cinemaIndex=0;if(cinemaMoments.length===0)loadCinemaData();else renderCinema();showTimeGate()}
+function loadCinemaData(){fetchTimeout(API+'/api/explore?limit=50&sort=recent',null,15000).then(function(r){return r.json()}).then(function(d){if(d.moments&&d.moments.length){cinemaMoments=d.moments;cinemaIndex=0;renderCinema()}}).catch(function(){})}
+function renderCinema(){var track=document.getElementById('cinemaTrack');if(!track)return;track.innerHTML='';track.scrollLeft=0;cinemaMoments.forEach(function(m,i){var page=document.createElement('div');page.className='cinema-page';page.innerHTML='<img src="'+imgUrl(m.imageUrl)+'" loading="'+(i<5?'eager':'lazy')+'"><div class="cinema-heart" id="cinemaHeart'+i+'">❤️</div>';page.onclick=function(e){onCinemaTap(e,i)};var lpTimer=null;page.addEventListener('touchstart',function(){lpTimer=setTimeout(function(){cinemaIndex=i;updateCinemaUI();openCinemaMenu()},600)},{passive:true});page.addEventListener('touchend',function(){clearTimeout(lpTimer)});page.addEventListener('touchmove',function(){clearTimeout(lpTimer)});track.appendChild(page)});updateCinemaUI()}
+function onCinemaTap(e,i){var now=Date.now();if(now-cinemaLastTap<280){cinemaIndex=i;cinemaLike();var heart=document.getElementById('cinemaHeart'+i);if(heart){heart.classList.remove('hide');heart.classList.add('show');setTimeout(function(){heart.classList.remove('show');heart.classList.add('hide')},600)}cinemaLastTap=0;return}cinemaLastTap=now;setTimeout(function(){if(cinemaLastTap===now){cinemaUIHidden=!cinemaUIHidden;updateCinemaUI();cinemaLastTap=0}},290)}
+function onCinemaScroll(){var track=document.getElementById('cinemaTrack');if(!track)return;var idx=Math.round(track.scrollLeft/window.innerWidth);if(idx!==cinemaIndex&&idx>=0&&idx<cinemaMoments.length){cinemaIndex=idx;updateCinemaUI();closeCinemaSheet();showCityToast()}}
+function updateCinemaUI(){var m=cinemaMoments[cinemaIndex];if(!m)return;var d=cinemaUIHidden?'none':'';var top=document.getElementById('cinemaTop');var bottom=document.getElementById('cinemaBottom');if(top)top.style.display=d;if(bottom)bottom.style.display=d;var pill=document.getElementById('cinemaTimePill');if(pill)pill.textContent='同刻 '+hhmm(m.created_at)+' (±15m) · '+formatTimeAgo(m.created_at);var thought=document.getElementById('cinemaThought');if(thought)thought.textContent=m.thought||'(无感想)';var sub=document.getElementById('cinemaSub');if(sub)sub.textContent=(m.author_phone_masked||'')+' · '+(cinemaIndex+1)+'/'+cinemaMoments.length;var lb=document.getElementById('cinemaLikeBtn');if(lb){lb.textContent=cinemaLikes[m.id]?'❤️':'♥';lb.style.color=cinemaLikes[m.id]?'#ff4d6d':'#fff'}var st=document.getElementById('cinemaSheetTime');if(st)st.textContent='同刻 '+hhmm(m.created_at)+' (±15m) · '+formatTimeAgo(m.created_at);var sth=document.getElementById('cinemaSheetThought');if(sth)sth.textContent=m.thought||'(无感想)';var sl=document.getElementById('cinemaSheetLike');if(sl)sl.textContent=cinemaLikes[m.id]?'❤️ 已点赞':'♡ 点赞';updateTimeCorner()}
+function cinemaLike(){var m=cinemaMoments[cinemaIndex];if(!m||!isLoggedIn()){showToast('登录后才能点赞');return}var liked=!cinemaLikes[m.id];cinemaLikes[m.id]=liked;updateCinemaUI();api('/api/like',{method:'POST',body:{userId:AUTH.userId,momentId:parseInt(m.id)}}).catch(function(){cinemaLikes[m.id]=!liked;updateCinemaUI()})}
+function cinemaReport(){var m=cinemaMoments[cinemaIndex];if(!m||!isLoggedIn()){showToast('登录后才能举报');return}if(confirm('确定要举报这条内容吗？')){api('/api/report',{method:'POST',body:{userId:AUTH.userId,momentId:parseInt(m.id),reason:'其他'}}).then(function(){showToast('举报已提交')}).catch(function(){showToast('举报失败')})}}
+function openCinemaSheet(){var sheet=document.getElementById('cinemaSheet');if(sheet){sheet.style.transform='translateY(0)';cinemaSheetOpen=true}}
+function closeCinemaSheet(){var sheet=document.getElementById('cinemaSheet');if(sheet){sheet.style.transform='translateY(100%)';cinemaSheetOpen=false}}
+function openCinemaMenu(){var menu=document.getElementById('cinemaMenu');if(menu){menu.style.display='block'}}
+function closeCinemaMenu(){var menu=document.getElementById('cinemaMenu');if(menu){menu.style.display='none'}}
+function showTimeGate(){var gate=document.getElementById('cinemaTimeGate');if(!gate)return;var m=cinemaMoments[0];var title=document.getElementById('cinemaGateTitle');var sub=document.getElementById('cinemaGateSub');if(m&&title)title.textContent='同刻 '+hhmm(m.created_at)+' · 全球正在发生';if(sub)sub.textContent='±15分钟内的瞬间';gate.style.display='flex';gate.style.opacity='1';setTimeout(function(){gate.style.opacity='0';setTimeout(function(){gate.style.display='none'},420)},1800)}
+function showCityToast(){var m=cinemaMoments[cinemaIndex];var toast=document.getElementById('cinemaCityToast');if(!toast||!m)return;var span=toast.querySelector('span');var city=m.author_phone_masked||'';if(!city)return;span.textContent=city;toast.style.opacity='1';toast.style.transform='translate(-50%,0)';setTimeout(function(){toast.style.opacity='0';toast.style.transform='translate(-50%,-4px)'},1200)}
+function updateTimeCorner(){var m=cinemaMoments[cinemaIndex];var corner=document.getElementById('cinemaTimeCorner');if(!corner||!m)return;corner.textContent=hhmm(m.created_at)+' · '+formatTimeAgo(m.created_at)}
+
+setTimeout(function(){var tab=document.getElementById('tab-cinema');if(tab){var tsY=0;tab.addEventListener('touchstart',function(e){tsY=e.touches[0].clientY},{passive:true});tab.addEventListener('touchend',function(e){var dy=tsY-e.changedTouches[0].clientY;if(dy>60&&!cinemaSheetOpen)openCinemaSheet();else if(dy<-60&&cinemaSheetOpen)closeCinemaSheet()},{passive:true})}},600);
 
 // ======================== UPDATE ALL UI ========================
 function updateAllUI(){
