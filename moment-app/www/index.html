@@ -12,6 +12,7 @@
 <title>此刻 v298</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--world-bg)}
 :root{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--muted:#98989d;--accent:#D4A373;--sep:rgba(84,84,88,.65);--nav-bg:rgba(28,28,30,.85);--nav-border:rgba(255,255,255,.06);--menu-bg:#1c1c1e;--menu-sep:rgba(255,255,255,.06);--overlay-alpha:rgba(0,0,0,.55);--tab-bg:#1c1c1e;--sheet-bg:#2c2c2e;--overlay-bg:rgba(0,0,0,.85);--world-bg:#0B0E1A}
 body{font-family:-apple-system,'SF Pro Display','PingFang SC',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;justify-content:center;-webkit-font-smoothing:antialiased;overscroll-behavior:none}html.starry-on body{background:transparent !important}html.starry-on .app{background:transparent !important}
 .app{width:100%;display:flex;flex-direction:column;min-height:100vh}
@@ -106,7 +107,7 @@ html.starry-on [id^=tab-]{background:transparent !important}
 .menu-row.danger{color:rgba(255,80,80,.8)}
 .menu-row .menu-arrow{color:var(--muted);font-size:14px}
 .section-title{color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin:24px 0 8px}
-.wf-card{break-inside:avoid;margin-bottom:8px;background-color:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:150px;background-size:cover;background-position:center;box-shadow:var(--card-shadow,none)}
+.wf-card{break-inside:avoid;margin-bottom:8px;background-color:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;-webkit-tap-highlight-color:transparent;min-height:150px;box-shadow:var(--card-shadow,none)}
 .wf-card:active{opacity:.85}
 .wf-card img{width:100%;display:block;background:var(--card,#2c2c2e)}
 .wf-card .wf-info{padding:8px 10px}
@@ -301,10 +302,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
       <span>🌓 深色模式</span>
       <span id="darkModeState" style="color:var(--muted);font-size:13px">跟随系统</span>
     </div>
-    <div class="menu-row" onclick="toggleStarryWorld()">
-      <span>🌌 星空背景</span>
-      <span id="starryWorldState" style="color:var(--muted);font-size:13px">已关闭</span>
-    </div>
+
     <div class="menu-row" onclick="toggleImageQuality()">
       <span>📶 图片加载策略</span>
       <span id="imgQualityState" style="color:var(--muted);font-size:13px">省流量</span>
@@ -446,7 +444,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
   <div id="captured" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:500;flex-direction:column;align-items:center;padding:calc(60px + env(safe-area-inset-top, 0px)) 24px calc(100px + env(safe-area-inset-bottom, 0px));overflow-y:auto">
     <div id="capturedLabel" style="font-size:12px;color:#888;margin-bottom:8px">已记录</div>
     <div id="countdownBadge" style="font-size:24px;font-weight:700;margin-bottom:12px;letter-spacing:1px">60s</div>
-    <img id="ph" class="pv" src="" alt="" onclick="event.stopPropagation();zoomPhoto()" style="cursor:pointer">
+    <img id="ph" class="pv" src="" alt="" onclick="event.stopPropagation();zoomPhoto()" style="cursor:pointer" ondblclick="event.stopPropagation();doubleTapLike()">
     <div id="st" style="font-size:12px;color:rgba(237,237,239,.4);margin-bottom:16px"></div>
     <div id="publishUI" style="width:100%">
       <input class="ti" id="th" placeholder="此刻想说点什么？(20字)" maxlength="20" oninput="saveTh()">
@@ -571,7 +569,7 @@ function onboardNext(){var t=document.getElementById('onboard-track');var d=docu
 function onboardPrev(){if(onboardPage<=0)return;var t=document.getElementById('onboard-track');var d=document.querySelectorAll('.onboard-dot');onboardPage--;t.style.transform='translateX(-'+(onboardPage*100/3)+'%)';d.forEach(function(dot,i){dot.style.opacity=i===onboardPage?'1':'.4'})}
 function initOnboardSwipe(){var el=document.getElementById('onboarding');var sx=0,sy=0;el.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});el.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;var dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){if(dx<0)onboardNext();else if(dx>0)onboardPrev()}},{passive:true})}
 function showLogin(){document.getElementById('loginScreen').style.display='flex';var btn=document.getElementById('loginBtn');if(btn){btn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}}
-function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI();if(starryWorldEnabled&&typeof initStarryWorld==='function'){setTimeout(initStarryWorld,400)}}
+function skipLogin(){document.getElementById('loginScreen').style.display='none';updateAllUI();setTimeout(function(){if(typeof initStarryWorld==='function')initStarryWorld()},400)}
 function fetchTimeout(url,opts,ms){ms=ms||10000;return new Promise(function(resolve,reject){var t=setTimeout(function(){reject(new Error('timeout'))},ms);fetch(url,opts).then(function(r){clearTimeout(t);resolve(r)}).catch(function(e){clearTimeout(t);reject(e)})})}
 var _sendingSMS=false,_smsTimer=null;
 function sendSMS(){
@@ -615,8 +613,9 @@ function doLogin(){
     }
     D={m:[],c:0,i:-1};localStorage.setItem('mv21','{"m":[],"c":0,"i":-1}');
     _loggingIn=false;document.getElementById('loginScreen').style.display='none';
+    var sw=document.getElementById('starryWorld');if(sw){sw.style.display='block';sw.setAttribute('data-mode','dark')}
     updateSideMenuUser();updateAllUI();
-    if(starryWorldEnabled&&typeof initStarryWorld==='function'){setTimeout(initStarryWorld,400)}
+    setTimeout(function(){if(typeof initStarryWorld==='function')initStarryWorld()},400)
   }).catch(function(e){msg.textContent='网络错误，请重试';_loggingIn=false;if(loginBtn){loginBtn.disabled=false;loginBtn.textContent=localStorage.getItem('mv_has_logged_in')?'登录':'注册'}})
 }
 function handleAuthExpired(){
@@ -632,7 +631,8 @@ function api(path,opts){
   var url=API+path+(hasQS?'&':'?')+'userId='+AUTH.userId;
   var o={method:opts.method||'GET',headers:{'x-auth-token':AUTH.token}};
   if(opts.body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(opts.body)}
-  return fetch(url,o).then(function(r){
+  var ms=opts.body?30000:15000;
+  return fetchTimeout(url,o,ms).then(function(r){
     if(r.status===401){handleAuthExpired();return Promise.reject('auth_expired')}
     return r.json();
   }).then(function(d){
@@ -703,7 +703,7 @@ function toggleDailyPick(){
   el.textContent=next?'已开启':'已关闭';
   el.style.color=next?'var(--accent)':'var(--muted)';
   if(isLoggedIn()){
-    api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,daily_pick_enabled:next}}).catch(function(){});
+    api('/api/user/preferences',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,daily_pick_enabled:next}}).catch(function(){console.log('[Film] Failed to load')});
   }else{
     localStorage.setItem('daily_pick_enabled',next?'1':'0');
   }
@@ -794,7 +794,7 @@ function applyDarkMode(mode){
     r.setProperty('--bg','#000');r.setProperty('--accent','#D4A373');
     r.setProperty('--card','#1c1c1e');
     r.setProperty('--text','#f5f5f7');
-    r.setProperty('--muted','#98989d');
+    r.setProperty('--muted','#aeaeb3');
     r.setProperty('--overlay-bg','rgba(0,0,0,.85)');
     r.setProperty('--panel-bg','#0d0d0f');
     r.setProperty('--nav-bg','rgba(0,0,0,.85)');
@@ -1057,19 +1057,31 @@ function renderWaterfallCards(moments,append){
     img.onerror=function(){this.style.display='none'};
     card.appendChild(img);
     card.appendChild(infoDiv);
+    var _wfTap=0;
+    card.addEventListener('click',function(e){
+      var now=Date.now();
+      if(now-_wfTap<300){e.stopImmediatePropagation();wfDoubleLike(m);_wfTap=0;return}
+      _wfTap=now;setTimeout(function(){if(_wfTap===now)viewStrangerMoment(m)},300);
+    });
     grid.appendChild(card);
   });
 }
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function formatTimeAgo(dateStr){
   if(!dateStr)return '';
-  var d=new Date(dateStr+'Z');if(isNaN(d.getTime()))d=new Date(dateStr);
+  var d=new Date(dateStr);if(isNaN(d.getTime())){d=new Date(dateStr+'Z')}
   var now=new Date(),diff=Math.floor((now-d)/1000);
   if(diff<60)return '刚刚';
   if(diff<3600)return Math.floor(diff/60)+'分钟前';
   if(diff<86400)return Math.floor(diff/3600)+'小时前';
   if(diff<604800)return Math.floor(diff/86400)+'天前';
   return d.toLocaleDateString('zh-CN');
+}
+function wfDoubleLike(m){
+  if(!isLoggedIn()){showToast('登录后才能点赞');return}
+  api('/api/like',{method:'POST',body:{userId:AUTH.userId,momentId:parseInt(m.id)}}).then(function(r){
+    showToast(r.liked?'已点赞':'已取消点赞');
+  }).catch(function(){console.log('[Film] Failed to load')});
 }
 function viewStrangerMoment(m){
   stopCountdown();document.getElementById('countdownBadge').style.display='none';
@@ -1089,7 +1101,7 @@ function viewStrangerMoment(m){
   var actions=document.createElement('div');
   actions.id='strangerDetailActions';
   var _mid=safeId(m.id);
-  actions.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:stretch"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_mid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_mid+')" class="btn" style="text-align:center;flex-shrink:0;padding:18px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:rgba(255,255,255,.4);font-size:16px;cursor:pointer">⚠️</button></div>';
+  actions.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_mid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_mid+')" style="width:48px;height:48px;background:var(--card);border:1px solid var(--nav-border);border-radius:14px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">⚠</button></div>';
   viewUI.appendChild(actions);
   // Fetch like count
   if(m.id&&isLoggedIn()){
@@ -1158,10 +1170,7 @@ setTimeout(function(){
 },500);
 function scrollToTop(){
   var wfEl=document.getElementById('tab-strangers-waterfall');
-  if(wfEl){
-    wfEl.scrollTo({top:0,behavior:'smooth'});
-    setTimeout(function(){refreshWaterfall(true)},400);
-  }
+  if(wfEl){wfEl.scrollTo({top:0,behavior:'smooth'})}
 }
 
 function updateSideMenuUser(){
@@ -1184,7 +1193,7 @@ function updateSideMenuUser(){
     // Sync streak from server
     api('/api/stats').then(function(r){if(!r.error&&r.streak!==undefined){
       document.getElementById('sideMenuStats').innerHTML='🔥 连续'+r.streak+'天 &nbsp; 📷 已记录'+D.c+'张';
-    }}).catch(function(){});
+    }}).catch(function(){console.log('[Film] Failed to load')});
   }else{
     document.getElementById('sideMenuLoginPrompt').style.display='block';
     document.getElementById('sideMenuLoggedIn').style.display='none';
@@ -1198,7 +1207,7 @@ function editNickname(){
     name=name.trim().substring(0,12);
     localStorage.setItem('user_nickname',name);
     document.getElementById('sideMenuNick').textContent=name;
-    api('/api/user/nickname',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,nickname:name}}).then(function(){updateSideMenuUser()}).catch(function(){});
+    api('/api/user/nickname',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,nickname:name}}).then(function(){updateSideMenuUser()}).catch(function(){console.log('[Film] Failed to load')});
   }
 }
 function pickAvatar(){
@@ -1452,13 +1461,12 @@ var savingMoment=false;
 function saveMoment(){
   if(savingMoment)return;
   savingMoment=true;
-  // Disable the publish button
   var publishBtn=document.querySelector('#publishUI div[onclick]');
-  if(publishBtn){publishBtn.style.opacity='.5';publishBtn.style.pointerEvents='none'}
+  if(publishBtn){publishBtn.style.opacity='.5';publishBtn.style.pointerEvents='none';publishBtn.textContent='⏳ 发布中...'}
   var t=document.getElementById('th').value.slice(0,20);
   function done(){
     savingMoment=false;
-    if(publishBtn){publishBtn.style.opacity='';publishBtn.style.pointerEvents=''}
+    if(publishBtn){publishBtn.style.opacity='';publishBtn.style.pointerEvents='';publishBtn.textContent='📤 发布'}
   }
   if(isLoggedIn()){
     var dataUrl=document.getElementById('ph').src;
@@ -1531,7 +1539,7 @@ function renderGallery(){
   if(isLoggedIn()){
     api('/api/stats').then(function(r){
       if(!r.error){updateSideMenuUser()}
-    }).catch(function(){});
+    }).catch(function(){console.log('[Film] Failed to load')});
   }
 
   if(!D.m.length){g.innerHTML='<div style="color:#555;font-size:13px;text-align:center;padding:40px 0">还没有记录</div>';return}
@@ -1598,7 +1606,7 @@ function updateStrangerStats(){} // stub - stats now in filmstrip time header
 function loadFilmPool(){
   fetch(API+'/api/explore?limit=50&sort=recent').then(function(r){return r.json()}).then(function(d){
     if(d.moments&&d.moments.length){filmPool=d.moments;renderFilmRows();}
-  }).catch(function(){});
+  }).catch(function(){console.log('[Film] Failed to load')});
   clearTimeout(filmTimer);
   filmTimer=setTimeout(loadFilmPool,30000);
 }
@@ -1618,9 +1626,10 @@ function buildRow(id,photos,dir){
   var all=photos.concat(photos);
   var html='<div class="film-track '+dir+'">';
   all.forEach(function(p,i){
-    var author=p.author_phone_masked||getNickname('');
-    var timeAgo=formatTimeAgo(p.created_at||'');
-    html+='<div class="film-photo" data-row="'+id+'" onclick="viewFilmPhoto('+p.id+',&quot;'+id+'&quot;)"><img src="'+imgUrl(p.imageUrl)+'" loading="lazy"><div class="film-label"><span>'+author+'</span><span class="film-time-label">'+timeAgo+'</span></div></div>';
+    var author=escapeHtml(p.author_phone_masked||getNickname(''));
+    var timeAgo=escapeHtml(formatTimeAgo(p.created_at||''));
+    var mid=parseInt(p.id,10);
+    html+='<div class="film-photo" data-row="'+escapeHtml(id)+'" data-mid="'+mid+'"><img src="'+escapeHtml(imgUrl(p.imageUrl))+'" loading="lazy" onerror="this.style.display=\'none\'"><div class="film-label"><span>'+author+'</span><span class="film-time-label">'+timeAgo+'</span></div></div>';
   });
   html+='</div>';
   row.innerHTML=html;
@@ -1628,7 +1637,34 @@ function buildRow(id,photos,dir){
   var track=row.querySelector('.film-track');
   if(track&&row.getAttribute('data-paused')==='1')track.style.animationPlayState='paused';
 }
-var _filmLastTouch=0;
+var _filmLastTouch=0,_filmTapTimers={};
+// Event delegation on film rows for click/double-tap
+['filmRow1','filmRow2','filmRow3'].forEach(function(rowId){
+  var row=document.getElementById(rowId);
+  if(!row)return;
+  row.addEventListener('click',function(e){
+    var photo=e.target.closest('.film-photo');
+    if(!photo)return;
+    var mid=photo.getAttribute('data-mid');
+    var rId=photo.getAttribute('data-row');
+    if(!mid)return;
+    var now=Date.now();
+    var prev=_filmTapTimers[mid]||0;
+    if(now-prev<300){
+      e.stopPropagation();
+      if(isLoggedIn()){
+        api('/api/like',{method:'POST',body:{userId:AUTH.userId,momentId:parseInt(mid)}}).catch(function(){console.log('[Film] Failed to load')});
+      }
+      showToast(isLoggedIn()?'❤️':'登录后才能点赞');
+      _filmTapTimers[mid]=0;
+    }else{
+      _filmTapTimers[mid]=now;
+      setTimeout(function(){
+        if(_filmTapTimers[mid]===now)viewFilmPhoto(parseInt(mid),rId);
+      },310);
+    }
+  });
+});
 function toggleFilmRow(el){
   if(Date.now()-_filmLastTouch<500)return;
   _filmLastTouch=Date.now();
@@ -1660,19 +1696,29 @@ function viewFilmPhoto(id,rowId){
   var ea=document.getElementById('strangerDetailActions');if(ea)ea.remove();
   var a=document.createElement('div');a.id='strangerDetailActions';
   var _fid=safeId(found.id);
-  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px;align-items:stretch"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_fid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_fid+')" class="btn" style="text-align:center;flex-shrink:0;padding:18px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;color:rgba(255,255,255,.4);font-size:16px;cursor:pointer">⚠️</button></div>';
+  a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_fid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_fid+')" style="width:48px;height:48px;background:var(--card);border:1px solid var(--nav-border);border-radius:14px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">⚠</button></div>';
   viewUI.appendChild(a);
   if(found.id&&isLoggedIn()){api('/api/like?userId='+AUTH.userId+'&momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
   document.getElementById('capturedLabel').textContent='探索';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';if(starryWorldEnabled)dimStarsForPhoto(true);
 }
+var _phLastTap=0;
+function doubleTapLike(){
+  var now=Date.now();
+  if(now-_phLastTap<300){
+    var likeBtn=document.querySelector('#strangerDetailActions button');
+    if(likeBtn){likeBtn.click()}
+    _phLastTap=0;
+  }
+  _phLastTap=now;
+}
 function doWorldLike(btn,momentId){
   if(!momentId){return}
   if(!isLoggedIn()){alert('登录后才能点赞哦');return}
   btn.textContent='❤️ ...';btn.disabled=true;
   api('/api/like',{method:'POST',body:{userId:AUTH.userId,token:AUTH.token,momentId:parseInt(momentId)}}).then(function(r){
-    if(!r.error){btn.textContent='❤️ '+r.count;btn.style.background=r.liked?'rgba(255,80,80,.5)':'rgba(255,107,53,.3)'}
+    if(!r.error){btn.textContent='❤️ '+r.count;btn.style.background=r.liked?'rgba(255,80,80,.5)':'var(--accent)'}
     btn.disabled=false
   }).catch(function(){btn.textContent='❤️ LIKE';btn.disabled=false})
 }
@@ -2139,7 +2185,7 @@ setTimeout(function(){
         document.getElementById('dailyPickState').textContent=dp?'已开启':'已关闭';
         document.getElementById('dailyPickState').style.color=dp?'var(--accent)':'var(--muted)';
       }
-    }).catch(function(){});
+    }).catch(function(){console.log('[Film] Failed to load')});
   }else{
     var dp=localStorage.getItem('daily_pick_enabled')!=='0';
     document.getElementById('dailyPickState').textContent=dp?'已开启':'已关闭';

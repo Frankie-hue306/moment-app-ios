@@ -1,45 +1,20 @@
 // ====================== STARRY WORLD ENGINE ======================
-var starryWorldEnabled=localStorage.getItem('starry_world')!=='0';
-var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null,_driftTimer=null,_autoDarkTimer=null;
-// Apply starry-on class synchronously on first paint
+var starryWorldEnabled=true;
+var _stars=[],_nebulaEls=[],_meteorTimer=null,_sparkleTimer=null,_driftTimer=null;
+// Apply starry-on class synchronously - always dark mode
 (function(){
   try{
-    if(starryWorldEnabled){document.documentElement.classList.add('starry-on')}
+    document.documentElement.classList.add('starry-on')
   }catch(e){}
 })();
-// Also show starry world immediately if in dark mode (before initStarryWorld timer fires)
+// Show starry world immediately
 if(starryWorldEnabled){
-  var dm=localStorage.getItem('dark_mode')||(new Date().getHours()>=7&&new Date().getHours()<19?'light':'dark');
-  if(dm==='auto')dm=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
-  if(dm!=='light'){
-    var swEl=document.getElementById('starryWorld');
-    if(swEl){swEl.style.display='block';swEl.setAttribute('data-mode','dark')}
-  }
+  var swEl=document.getElementById('starryWorld');
+  if(swEl){swEl.style.display='block';swEl.setAttribute('data-mode','dark')}
 }
-function toggleStarryWorld(){
-  starryWorldEnabled=!starryWorldEnabled;
-  localStorage.setItem('starry_world',starryWorldEnabled?'1':'0');
-  document.getElementById('starryWorldState').textContent=starryWorldEnabled?'已开启':'已关闭';
-  document.getElementById('starryWorldState').style.color=starryWorldEnabled?'var(--accent)':'var(--muted)';
-  if(starryWorldEnabled){initStarryWorld()}else{destroyStarryWorld()}
-}
+
 var _initRunning=false;
-function setupAutoTimer(){
-  clearInterval(_autoDarkTimer);
-  _autoDarkTimer=setInterval(function(){
-    var hr=new Date().getHours();
-    var cur=getDarkMode();
-    var eff=effectiveDarkMode();
-    if(cur==='auto'){
-      if(hr>=7&&hr<19&&eff!=='light'){applyDarkMode('light')}
-      else if((hr<7||hr>=19)&&eff!=='dark'){applyDarkMode('dark')}
-    }
-    if(eff==='light'&&hr>=17&&hr<19&&starryWorldEnabled){
-      var c=document.getElementById('starryWorld');
-      if(c&&c.getAttribute('data-mode')!=='dawn')initStarryWorld()
-    }
-  },60000);
-}
+
 function initStarryWorld(){
   if(_initRunning)return;
   _initRunning=true;
@@ -51,31 +26,20 @@ function initStarryWorld(){
   for(var de=0;de<dynEls.length;de++){dynEls[de].parentNode.removeChild(dynEls[de])}
   var dm=effectiveDarkMode();
   if(dm==='light'){
-    // 浅色 = 实拍蓝天白云；17:00-19:00 晚霞火烧云
-    document.documentElement.classList.add('starry-on');
-    // 强制清掉所有tab内联背景
-    var tabs=document.querySelectorAll('[id^=tab-]');for(var ti=0;ti<tabs.length;ti++){tabs[ti].style.background='transparent'}
-    var hr=new Date().getHours();
-    var isDusk=(hr>=17&&hr<19);
-    if(isDusk&&getDarkMode()==='auto'){} // auto模式不管，到19点自动切
-    var skyMode=isDusk?'dawn':'light';
-    if(isDusk){document.documentElement.classList.add('dawn-sky')}else{document.documentElement.classList.remove('dawn-sky')}
-    c.setAttribute('data-mode',skyMode);c.style.display='block';
-    var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
-    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
+    // 浅色模式：不显示星空，恢复毛玻璃导航栏
+    document.documentElement.classList.remove('starry-on');
+    c.style.display='none';
+    var tb=document.querySelector('.topbar');if(tb){tb.style.background='var(--nav-bg)';tb.style.backdropFilter='blur(20px)';tb.style.webkitBackdropFilter='blur(20px)';tb.style.borderBottom=''}
+    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='var(--nav-bg)';bn.style.backdropFilter='blur(20px)';bn.style.webkitBackdropFilter='blur(20px)';bn.style.borderTop=''}
     _initRunning=false;
     return;
   }
-  c.setAttribute('data-mode',dm);
-  // Make bars transparent in dark mode so stars show through (CSS class handles it without flash)
-  if(dm!=='light'){
-    document.documentElement.classList.add('starry-on');
-    var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
-    var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
-    // 强制清掉所有tab内联背景（CSS !important兜底 + JS直清）
-    var tabs=document.querySelectorAll('[id^=tab-]');for(var ti=0;ti<tabs.length;ti++){tabs[ti].style.background='transparent'}
-  }
-  setupAutoTimer();
+  // 深色模式：星空背景 + 透明导航栏
+  document.documentElement.classList.add('starry-on');
+  c.style.display='block';c.setAttribute('data-mode',dm);
+  var tb=document.querySelector('.topbar');if(tb){tb.style.background='';tb.style.backdropFilter='';tb.style.webkitBackdropFilter='';tb.style.borderBottom=''}
+  var bn=document.querySelector('.bottom-nav');if(bn){bn.style.background='';bn.style.backdropFilter='';bn.style.webkitBackdropFilter='';bn.style.borderTop=''}
+  var tabs=document.querySelectorAll('[id^=tab-]');for(var ti=0;ti<tabs.length;ti++){tabs[ti].style.background='transparent'}
 
   _stars=[];_nebulaEls=[];
   var W=screen.width||window.innerWidth,H=screen.height||window.innerHeight;
@@ -135,7 +99,7 @@ function destroyStarryWorld(){
   var c=document.getElementById('starryWorld');
   if(c){c.style.display='none';var dynEls=c.querySelectorAll('canvas,.star,.meteor,.nebula');for(var de=0;de<dynEls.length;de++){dynEls[de].parentNode.removeChild(dynEls[de])}c.removeAttribute('data-mode')}
   _stars=[];_nebulaEls=[];
-  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);clearInterval(_autoDarkTimer);
+  clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);clearInterval(_driftTimer);
   document.documentElement.classList.remove('starry-on');
   document.documentElement.classList.remove('dawn-sky');
   // Restore bars
@@ -198,7 +162,7 @@ function dimStarsForPhoto(dim){
   });
 }
 // Init starry world on load if enabled (run earlier, before login screen appears)
-if(starryWorldEnabled){setTimeout(initStarryWorld,150)}
+setTimeout(initStarryWorld,150)
 // Auto dark/light timer always active
 setTimeout(setupAutoTimer,400);
 // Re-init after login in case login screen covered it (deferred until showLogin exists)
