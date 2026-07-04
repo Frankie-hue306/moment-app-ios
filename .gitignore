@@ -18,3 +18,5 @@ _setup
 stock-investment-knowledge
 .DS_Store
 .gitmodules
+llm-proxy/.env
+.deploy.env

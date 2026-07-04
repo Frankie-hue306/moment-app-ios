@@ -15,9 +15,25 @@ if(starryWorldEnabled){
 
 var _initRunning=false;
 
+var _autoDarkTimer=null;
+
+function setupAutoTimer(){
+  clearInterval(_autoDarkTimer);
+  _autoDarkTimer=setInterval(function(){
+    var hr=new Date().getHours();
+    var cur=getDarkMode();
+    var eff=effectiveDarkMode();
+    if(cur==='auto'){
+      if(hr>=7&&hr<19&&eff!=='light'){applyDarkMode('light')}
+      else if((hr<7||hr>=19)&&eff!=='dark'){applyDarkMode('dark')}
+    }
+  },60000);
+}
+
 function initStarryWorld(){
   if(_initRunning)return;
   _initRunning=true;
+  try{
   var c=document.getElementById('starryWorld');
   if(!c)return;
   c.style.display='block';c.style.width='100vw';c.style.height='100vh';clearTimeout(_meteorTimer);clearTimeout(_sparkleTimer);
@@ -77,7 +93,7 @@ function initStarryWorld(){
   startSparkles();
   // Start slow drift
   startStarDrift();
-  _initRunning=false;
+  }finally{_initRunning=false;}
 }
 function startStarDrift(){
   clearInterval(_driftTimer);
