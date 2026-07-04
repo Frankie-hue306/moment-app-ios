@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#1C1C1E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJyB2aWV3Qm94PScwIDAgMTgwIDE4MCc+CiAgPHJlY3Qgd2lkdGg9JzE4MCcgaGVpZ2h0PScxODAnIHJ4PSc0MCcgZmlsbD0nIzBhODRmZicvPgogIDx0ZXh0IHg9JzkwJyB5PScxMTAnIHRleHQtYW5jaG9yPSdtaWRkbGUnIGZvbnQtc2l6ZT0nODAnPvCfk7g8L3RleHQ+Cjwvc3ZnPg==">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>此刻 v302</title>
+<title>此刻 v303</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{background:var(--bg)}html.starry-on{background:radial-gradient(ellipse at 30% 20%,rgba(20,40,80,.3) 0%,transparent 55%),radial-gradient(ellipse at 70% 60%,rgba(15,25,45,.2) 0%,transparent 50%),#0B0E1A !important}
@@ -255,7 +255,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
   </div>
   <div style="height:1px;background:var(--menu-sep);margin:8px 0 12px"></div>
   <div class="menu-row" onclick="closeAllPanels();navTo('photos')">
-    <span>📁 我的日记</span><span class="menu-arrow">›</span>
+    <span>📁 我的轨迹</span><span class="menu-arrow">›</span>
   </div>
   <div class="menu-row" onclick="closeAllPanels();openTimeFragment()">
     <span>✨ 时光碎片</span><span class="menu-arrow">›</span>
@@ -321,7 +321,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
   <!-- Group 4: 支持 -->
   <div style="margin-bottom:24px">
     <div style="color:var(--muted);font-size:12px;letter-spacing:1px;margin-bottom:8px;padding-left:4px">支持</div>
-    <div class="menu-row" onclick="alert('常见问题：\n1. 如何删除照片？在日记中点照片进入详情，点击删除\n2. 如何切换模式？在探索页面左右滑动\n\n联系开发者：moment.app@163.com')">
+    <div class="menu-row" onclick="alert('常见问题：\n1. 如何删除照片？在轨迹中点照片进入详情，点击删除\n2. 如何切换模式？在奇遇页面左右滑动\n\n联系开发者：moment.app@163.com')">
       <span>❓ 帮助与反馈</span><span class="menu-arrow">›</span>
     </div>
     <div class="menu-row" onclick="showAbout()">
@@ -457,7 +457,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
       <div id="viewDate" style="font-size:12px;color:var(--muted);margin-bottom:20px"></div>
       <button class="btn depth-btn" onclick="toggle3D()" id="btn3dv" style="text-align:center">✨ 3D景深</button>
     </div>
-    <button class="btn" id="capturedBackBtn" onclick="var l=document.getElementById('capturedLabel').textContent;if(l==='探索')backFromStrangerDetail();else if(l==='日记回顾'||l==='已被移除')backToGallery();else afterCaptureBack()" style="text-align:center;background:transparent;color:var(--muted);margin-top:20px">← 返回</button>
+    <button class="btn" id="capturedBackBtn" onclick="var l=document.getElementById('capturedLabel').textContent;if(l==='奇遇')backFromStrangerDetail();else if(l==='轨迹回顾'||l==='已被移除')backToGallery();else afterCaptureBack()" style="text-align:center;background:transparent;color:var(--muted);margin-top:20px">← 返回</button>
   </div>
 
   <!-- Collage Screen (overlay) -->
@@ -541,13 +541,13 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
   <!-- Bottom Nav -->
   <nav class="bottom-nav" style="display:flex;justify-content:space-around;padding:6px 0 calc(18px + env(safe-area-inset-bottom, 0px));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--nav-border)">
     <div class="nav-item" id="nav-photos" onclick="navTo('photos')">
-      <span class="nav-icon">📁</span><span class="nav-label">日记</span>
+      <span class="nav-icon">📁</span><span class="nav-label">轨迹</span>
     </div>
     <div class="nav-item active" id="nav-home" onclick="navTo('home')">
-      <span class="nav-icon">📷</span><span class="nav-label">此刻</span>
+      <span class="nav-icon">📷</span><span class="nav-label">捕影</span>
     </div>
     <div class="nav-item" id="nav-strangers" onclick="navTo('strangers')">
-      <span class="nav-icon">🌍</span><span class="nav-label">探索</span>
+      <span class="nav-icon">🌍</span><span class="nav-label">奇遇</span>
     </div>
   </nav>
 </div>
@@ -845,7 +845,7 @@ function openLink(url){
 }
 function showAbout(){
   closeAllPanels();
-  alert('此刻 v302\n记录真实瞬间，连接世界此刻\n\nAndroid下载:\npgyer.com/cike-android-d\nv302: 全容器透明·瀑布流修复·登录星空同步、图片存文件、token过期、bug修复');
+  alert('此刻 v303\n记录真实瞬间，连接世界此刻\n\n安全加固·登录修复·3x时光碎片·API升级HTTPS\nAndroid下载:\npgyer.com/cike-android-d');
 }
 var _legalTexts={
 terms:"<h2>用户协议</h2><p>更新日期：2026年6月26日</p><h3>1. 服务说明</h3><p>此刻App是一款个人生活记录工具，每天为您提供一次记录当下瞬间的机会。</p><h3>2. 用户行为规范</h3><p>不得上传色情、暴力、骚扰、广告或侵犯他人隐私的内容。违反者内容将被移除，严重者账号注销。</p><h3>3. 内容审核</h3><p>您上传的内容可能经过审核。不符合规范的内容将标记为审核中或已被移除。</p><h3>4. 知识产权</h3><p>您拍摄的内容著作权归您所有。您可随时删除内容。</p><h3>5. 免责声明</h3><p>您对上传内容承担法律责任。因不可抗力导致服务中断我们不承担责任。</p><h3>6. 联系我们</h3><p>moment.app@163.com</p>",
@@ -1125,7 +1125,7 @@ function viewStrangerMoment(m){
       if(b)b.textContent='❤️ '+(r.count||0);
     }).catch(function(){var b=actions.querySelector('button');if(b)b.textContent='❤️ LIKE'})
   }else{var b=actions.querySelector('button');if(b)b.textContent='❤️ 0'}
-  document.getElementById('capturedLabel').textContent='探索';
+  document.getElementById('capturedLabel').textContent='奇遇';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';dimStarsForPhoto(true);
 }
@@ -1594,7 +1594,7 @@ function view(i){D.i=i;var m=D.m[i];var phEl=document.getElementById('ph');phEl.
   document.querySelectorAll('#viewUI > button').forEach(function(b){b.style.display=''});
   // Remove stranger actions
   var sa=document.getElementById('strangerDetailActions');if(sa)sa.remove();
-  document.getElementById('capturedLabel').textContent=m.status==='rejected'?'已被移除':'日记回顾';
+  document.getElementById('capturedLabel').textContent=m.status==='rejected'?'已被移除':'轨迹回顾';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';dimStarsForPhoto(true)}
 function backToGallery(){dimStarsForPhoto(false);document.getElementById('captured').style.display='none';navTo('photos')}
@@ -1716,7 +1716,7 @@ function viewFilmPhoto(id,rowId){
   a.innerHTML='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" onclick="event.stopPropagation();doWorldLike(this,'+_fid+')" style="text-align:center;flex:1">❤️ ...</button><button onclick="event.stopPropagation();openReportSheet('+_fid+')" style="width:48px;height:48px;background:var(--card);border:1px solid var(--nav-border);border-radius:14px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">⚠</button></div>';
   viewUI.appendChild(a);
   if(found.id&&isLoggedIn()){api('/api/like?momentId='+found.id).then(function(r){var b=a.querySelector('button');if(b)b.textContent='❤️ '+(r.count||0)}).catch(function(){var b=a.querySelector('button');if(b)b.textContent='❤️ LIKE'})}else{var b=a.querySelector('button');if(b)b.textContent='❤️ 0'}
-  document.getElementById('capturedLabel').textContent='探索';
+  document.getElementById('capturedLabel').textContent='奇遇';
   document.getElementById('capturedBackBtn').style.display='';
   document.getElementById('captured').style.display='flex';dimStarsForPhoto(true);
 }
