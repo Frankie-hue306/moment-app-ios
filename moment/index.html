@@ -260,9 +260,6 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
   <div class="menu-row" onclick="closeAllPanels();openTimeFragment()">
     <span>✨ 时光碎片</span><span class="menu-arrow">›</span>
   </div>
-  <div class="menu-row" onclick="closeAllPanels();openCollage()">
-    <span>🖼️ 月度拼贴</span><span class="menu-arrow">›</span>
-  </div>
   <div class="menu-row" onclick="toggleDailyPick()" style="border-bottom:none">
     <span>📸 每日精选推送</span>
     <span id="dailyPickState" style="color:var(--accent);font-size:13px">已开启</span>
@@ -388,7 +385,7 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
   </header>
 
   <!-- Home Tab -->
-  <div id="tab-home" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) 24px 40px;background:transparent;overflow:hidden;overscroll-behavior:none;touch-action:manipulation;position:relative">
+  <div id="tab-home" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:18vh 24px 40px;background:transparent;overflow:hidden;overscroll-behavior:none;touch-action:manipulation;position:relative">
     <div id="todayStatus" style="font-size:15px;margin-bottom:20px;color:var(--muted);letter-spacing:-.2px;padding-top:env(safe-area-inset-top,0px)">🌍 今天还没记录</div>
     <div class="btn-shoot-wrap">
   <div class="btn-shoot-glow"></div>
