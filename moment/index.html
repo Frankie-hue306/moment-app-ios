@@ -126,8 +126,9 @@ html.starry-on [id^=tab-]{background:transparent !important}
 .film-photo{flex-shrink:0;width:160px;height:160px;border-radius:10px;overflow:hidden;box-shadow:var(--card-shadow,0 1px 2px rgba(0,0,0,.15));cursor:pointer;position:relative;transition:transform .2s ease;border:.5px solid var(--nav-border,rgba(255,255,255,.1));background:var(--card,#1a1a1d)}
 .film-photo:active{transform:scale(.97);opacity:.85}
 .film-photo img{width:100%;height:100%;display:block;object-fit:cover;border-radius:8px}
-.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.45));color:rgba(255,255,255,.75);font-size:10px;font-weight:500;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:4px;align-items:center}
-.film-photo .film-time-label{color:var(--muted,#8E8E93);font-size:10px;flex-shrink:0;font-weight:400}
+.film-photo .film-label{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.45));color:rgba(255,255,255,.75);font-size:10px;font-weight:500;letter-spacing:-.1px;display:flex;justify-content:space-between;align-items:flex-end}
+.film-photo .film-label .film-author{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+.film-photo .film-time-label{color:rgba(255,255,255,.6);font-size:9px;flex-shrink:0;font-weight:400}
 /* Pulse dot */
 @keyframes pulse-dot{0%,100%{opacity:.2}50%{opacity:1}}
 
@@ -414,9 +415,9 @@ html.dawn-sky .nav-item.active .nav-label{color:#fff !important;font-weight:700}
       </div>
     </div>
     <!-- Film Rows -->
-    <div id="filmRow1" style="overflow:hidden;height:170px;position:relative;margin:14px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
-    <div id="filmRow2" style="overflow:hidden;height:170px;position:relative;margin:14px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
-    <div id="filmRow3" style="overflow:hidden;height:170px;position:relative;margin:14px 0" onmousedown="toggleFilmRow(this)" ontouchstart="toggleFilmRow(this)" data-paused="0"></div>
+    <div id="filmRow1" style="overflow:hidden;height:170px;position:relative;margin:14px 0" ontouchstart="filmRowTouchStart(this,event)" ontouchend="filmRowTouchEnd(this,event)" onmousedown="filmRowTouchStart(this,event)" onmouseup="filmRowTouchEnd(this,event)" data-paused="0"></div>
+    <div id="filmRow2" style="overflow:hidden;height:170px;position:relative;margin:14px 0" ontouchstart="filmRowTouchStart(this,event)" ontouchend="filmRowTouchEnd(this,event)" onmousedown="filmRowTouchStart(this,event)" onmouseup="filmRowTouchEnd(this,event)" data-paused="0"></div>
+    <div id="filmRow3" style="overflow:hidden;height:170px;position:relative;margin:14px 0" ontouchstart="filmRowTouchStart(this,event)" ontouchend="filmRowTouchEnd(this,event)" onmousedown="filmRowTouchStart(this,event)" onmouseup="filmRowTouchEnd(this,event)" data-paused="0"></div>
     <!-- Bottom space -->
     <div style="height:calc(env(safe-area-inset-bottom, 0px) + 70px)"></div>
   </div>
@@ -1643,10 +1644,10 @@ function buildRow(id,photos,dir){
   var all=photos.concat(photos);
   var html='<div class="film-track '+dir+'">';
   all.forEach(function(p,i){
-    var author=escapeHtml(p.author_phone_masked||getNickname(''));
+    var author=escapeHtml(getNickname(p.author_phone_masked||''));
     var timeAgo=escapeHtml(formatTimeAgo(p.created_at||''));
     var mid=parseInt(p.id,10);
-    html+='<div class="film-photo" data-row="'+escapeHtml(id)+'" data-mid="'+mid+'"><img src="'+escapeHtml(imgUrl(p.imageUrl))+'" loading="lazy" onerror="this.style.display=\'none\'"><div class="film-label"><span>'+author+'</span><span class="film-time-label">'+timeAgo+'</span></div></div>';
+    html+='<div class="film-photo" data-row="'+escapeHtml(id)+'" data-mid="'+mid+'"><img src="'+escapeHtml(imgUrl(p.imageUrl))+'" loading="lazy" onerror="this.style.display=\'none\'"><div class="film-label"><span class="film-author">'+author+'</span><span class="film-time-label">'+timeAgo+'</span></div></div>';
   });
   html+='</div>';
   row.innerHTML=html;
@@ -1682,9 +1683,26 @@ var _filmLastTouch=0,_filmTapTimers={};
     }
   });
 });
+var _filmLongPress={timer:null,row:null};
+function filmRowTouchStart(el,e){
+  // Don't trigger on photo clicks — only on row background
+  if(e.target.closest&&e.target.closest('.film-photo'))return;
+  var cx=e.touches?e.touches[0].clientX:e.clientX;
+  var cy=e.touches?e.touches[0].clientY:e.clientY;
+  clearTimeout(_filmLongPress.timer);
+  _filmLongPress={timer:setTimeout(function(){
+    toggleFilmRow(el);
+  },500),row:el,startX:cx,startY:cy};
+}
+function filmRowTouchEnd(el,e){
+  var cx=e.changedTouches?e.changedTouches[0].clientX:e.clientX;
+  var cy=e.changedTouches?e.changedTouches[0].clientY:e.clientY;
+  // Cancel if moved too much (was scrolling)
+  if(_filmLongPress.startX!==undefined&&(Math.abs(cx-_filmLongPress.startX)>10||Math.abs(cy-_filmLongPress.startY)>10)){
+    clearTimeout(_filmLongPress.timer);
+  }
+}
 function toggleFilmRow(el){
-  if(Date.now()-_filmLastTouch<500)return;
-  _filmLastTouch=Date.now();
   if(el.getAttribute('data-paused')==='1'){el.setAttribute('data-paused','0');var t=el.querySelector('.film-track');if(t)t.style.animationPlayState='running'}
   else{el.setAttribute('data-paused','1');var t=el.querySelector('.film-track');if(t)t.style.animationPlayState='paused'}
 }
