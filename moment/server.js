@@ -192,8 +192,12 @@ app.post('/api/sms/send',(r,s)=>{
   }
 
   SMS_PHONE_TIMESTAMPS[ph]=now;
-  genSMSCode(ph);
-  s.json({message:'验证码已发送'});
+  const code=genSMSCode(ph);
+  if(process.env.MOMENT_DEV_LOGIN==='1'){
+    s.json({message:'验证码已发送',devCode:code});
+  }else{
+    s.json({message:'验证码已发送'});
+  }
 });
 
 // ---- Login ----
@@ -671,4 +675,9 @@ app.use(function(err,req,res,next){
 
 // ======================== START ========================
 const PORT=process.env.PORT||3000;
-app.listen(PORT,()=>console.log('Moment Server on port '+PORT+' — '+new Date().toISOString()));
+// ---- Startup ----
+if(process.env.MOMENT_DEV_LOGIN==='1'){
+  console.log('[WARN] MOMENT_DEV_LOGIN is enabled! Any 6-digit code will work. Disable in production.');
+  console.log('[WARN] SMS codes are included in API responses for dev convenience.');
+}
+app.listen(PORT,()=>console.log('Moment Server v303 on port '+PORT+' — '+new Date().toISOString()));

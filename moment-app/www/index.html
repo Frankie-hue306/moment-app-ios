@@ -585,7 +585,14 @@ function sendSMS(){
   fetchTimeout(API+'/api/sms/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:ph})},10000)
   .then(function(r){return r.json()}).then(function(d){
     if(d.error){msg.textContent=d.error;resetSMSBtn(btn);return}
-    msg.textContent='验证码已发送';
+    if(d.devCode){
+      // Dev mode: show code directly + auto-fill
+      msg.textContent='验证码：'+d.devCode;
+      msg.style.color='var(--accent)';
+      document.getElementById('loginCode').value=d.devCode;
+    }else{
+      msg.textContent='验证码已发送';msg.style.color='#ff6b6b';
+    }
     var sec=60;btn.textContent=sec+'s';
     _smsTimer=setInterval(function(){sec--;if(sec<=0){clearInterval(_smsTimer);resetSMSBtn(btn)}else{btn.textContent=sec+'s'}},1000);
   }).catch(function(){msg.textContent='网络错误，请重试';resetSMSBtn(btn)})
