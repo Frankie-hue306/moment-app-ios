@@ -11,7 +11,7 @@ jobs:
       - name: Select Xcode 26
         run: sudo xcode-select -s /Applications/Xcode_26.3.0.app/Contents/Developer
       - uses: actions/setup-node@v4
-        with: {node-version: 22}
+        with: {node-version: 20}
       - name: Install & Build
         working-directory: moment-app
         run: npm install && npm run build && npx cap sync ios
@@ -58,13 +58,8 @@ jobs:
         working-directory: moment-app
         run: |
           cd ios/App
-          PROFILE_UUID=$(security cms -D -i /tmp/profile.mobileprovision 2>/dev/null | /usr/libexec/PlistBuddy -c "Print :UUID" /dev/stdin 2>/dev/null || echo "")
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print :UUID" /dev/stdin <<< $(security cms -D -i /tmp/profile.mobileprovision) 2>/dev/null || echo "")
           echo "Profile UUID: $PROFILE_UUID"
-          if [ -z "$PROFILE_UUID" ]; then
-            echo "ERROR: Could not extract Profile UUID from provisioning profile"
-            security cms -D -i /tmp/profile.mobileprovision 2>/dev/null | head -5
-            exit 1
-          fi
           cat > /tmp/export.plist << PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -81,8 +76,6 @@ jobs:
           </dict>
           </plist>
           PLIST
-          echo "Export options:"
-          cat /tmp/export.plist
           xcodebuild -exportArchive \
             -archivePath $PWD/build/App.xcarchive \
             -exportPath $PWD/build \
