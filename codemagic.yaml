@@ -1,0 +1,31 @@
+workflows:
+  ios-build:
+    name: iOS Build for App Store
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      node: 20.0.0
+      xcode: 16.0
+      cocoapods: default
+      vars:
+        APP_STORE_CONNECT_ISSUER_ID: 0ee2ecb7-2003-4cda-a6d2-493545d5cc5e
+        APP_STORE_CONNECT_KEY_IDENTIFIER: 42KU5BWP3V
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Build web assets (v1.0.1 international)
+        script: npm run build
+      - name: Sync iOS platform
+        script: npx cap sync ios
+      - name: Set up code signing
+        script: xcode-project use-profiles
+      - name: Build IPA
+        script: xcode-project build-ipa --project ios/App/App.xcworkspace --scheme App
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        submit_to_testflight: true
