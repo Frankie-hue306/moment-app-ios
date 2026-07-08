@@ -60,6 +60,11 @@ jobs:
           cd ios/App
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print :UUID" /dev/stdin <<< $(security cms -D -i /tmp/profile.mobileprovision) 2>/dev/null || echo "")
           echo "Profile UUID: $PROFILE_UUID"
+          if [ -z "$PROFILE_UUID" ]; then
+            echo "!!! PROFILE UUID IS EMPTY — signing will fail !!!"
+            echo "Raw profile data (first 200 chars):"
+            security cms -D -i /tmp/profile.mobileprovision 2>/dev/null | head -c 200
+          fi
           cat > /tmp/export.plist << PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
