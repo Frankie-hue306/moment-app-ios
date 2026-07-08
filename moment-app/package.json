@@ -1,8 +1,8 @@
 {
   "name": "moment",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
-    "build": "cp ../moment/index.html www/index.html && cp ../moment/manifest.json www/manifest.json && cp ../moment/sw.js www/sw.js && cp ../moment/starry-world.js www/starry-world.js",
+    "build": "cp -r www-src/* www/",
     "sync:android": "npx cap sync android",
     "open:android": "npx cap open android",
     "sync:ios": "npx cap sync ios",

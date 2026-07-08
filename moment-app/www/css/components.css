@@ -1,0 +1,240 @@
+/* ============================================================
+   此刻 Moment — Component Library
+   Uses design-tokens.css variables. Keep specificity low.
+   ============================================================ */
+
+/* ── Button ── */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.ds-btn:active { transform: scale(0.97); }
+
+/* Variants */
+.ds-btn--primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+.ds-btn--primary:active { background: var(--color-primary-hover); }
+
+.ds-btn--secondary {
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+}
+.ds-btn--secondary:active { background: var(--color-surface); }
+
+.ds-btn--ghost {
+  background: transparent;
+  color: var(--color-text-muted);
+}
+.ds-btn--ghost:active { opacity: 0.7; }
+
+.ds-btn--danger {
+  background: var(--color-error-light);
+  color: var(--color-error);
+}
+.ds-btn--danger:active { background: rgba(255, 107, 107, 0.25); }
+
+/* Sizes */
+.ds-btn--sm  { padding: var(--space-2) var(--space-4); font-size: var(--font-size-sm); border-radius: var(--radius-md); }
+.ds-btn--lg  { padding: var(--space-5) var(--space-6); font-size: var(--font-size-lg); }
+.ds-btn--block{ display: flex; width: 100%; }
+
+/* ── Input ── */
+.ds-input {
+  width: 100%;
+  padding: var(--space-4);
+  border: none;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  outline: none;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+.ds-input:focus   { background: var(--color-surface-raised); }
+.ds-input::placeholder { color: var(--color-text-muted); }
+.ds-input--center { text-align: center; }
+
+/* ── Card ── */
+.ds-card {
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--card-shadow);
+}
+.ds-card--flat   { box-shadow: none; }
+.ds-card--raised { box-shadow: var(--shadow-md); }
+.ds-card--clickable { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.ds-card--clickable:active { opacity: 0.85; transform: scale(0.98); }
+
+/* ── Dialog ── */
+.ds-dialog-backdrop {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+}
+.ds-dialog {
+  background: var(--color-surface-alt);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-4);
+  max-width: 300px;
+  width: 80%;
+  text-align: center;
+  color: var(--color-text);
+}
+.ds-dialog__message {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--space-4);
+  white-space: pre-wrap;
+}
+.ds-dialog__actions {
+  display: flex;
+  gap: var(--space-3);
+}
+.ds-dialog__actions .ds-btn { flex: 1; }
+
+/* ── Modal (fullscreen overlay) ── */
+.ds-modal-backdrop {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-overlay);
+  z-index: 5000;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.ds-modal__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  padding-top: calc(var(--space-4) + env(safe-area-inset-top, 0px));
+}
+.ds-modal__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-text);
+}
+.ds-modal__close {
+  font-size: 22px;
+  background: none; border: none;
+  color: var(--color-text-muted);
+  cursor: pointer; padding: var(--space-2);
+}
+.ds-modal__body {
+  flex: 1;
+  padding: var(--space-5);
+  padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ── Toast ── */
+.ds-toast {
+  position: fixed; bottom: 120px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-xl);
+  z-index: 5000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+.ds-toast--visible { opacity: 1; }
+
+/* ── Loading ── */
+.ds-loading {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  padding: var(--space-10) var(--space-4);
+}
+.ds-spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--color-border-light);
+  border-top-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  animation: ds-spin 0.6s linear infinite;
+}
+@keyframes ds-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Sheet (bottom slide-up) ── */
+.ds-sheet {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--color-surface-alt);
+  z-index: 4100;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 0 0 calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+.ds-sheet--open { transform: translateY(0); }
+.ds-sheet__title {
+  text-align: center;
+  padding: var(--space-4);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+.ds-sheet__row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-4) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  letter-spacing: var(--letter-spacing-normal);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ds-sheet__row:active { opacity: 0.7; }
+.ds-sheet__row--danger { color: var(--color-error); }
+
+/* ── Badge ── */
+.ds-badge {
+  display: inline-flex; align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+.ds-badge--success { background: var(--color-success-light); color: var(--color-success); }
+.ds-badge--warning { background: var(--color-warning-light); color: var(--color-warning); }
+.ds-badge--error   { background: var(--color-error-light);   color: var(--color-error); }
+.ds-badge--info    { background: var(--color-secondary-light); color: var(--color-secondary); }
+
+/* ── Divider ── */
+.ds-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-2) 0;
+}
+
+/* ── Section Header ── */
+.ds-section-title {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  margin: var(--space-5) 0 var(--space-2);
+  padding-left: var(--space-1);
+}

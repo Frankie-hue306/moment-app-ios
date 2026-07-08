@@ -13,7 +13,7 @@ workflows:
     scripts:
       - name: Install dependencies
         script: npm install
-      - name: Build web assets
+      - name: Build web assets (v1.0.1 international)
         script: npm run build
       - name: Sync iOS platform
         script: npx cap sync ios

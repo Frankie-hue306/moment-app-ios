@@ -1,0 +1,154 @@
+/* ============================================================
+   此刻 Moment — Design Tokens
+   ============================================================
+   All visual primitives. Dark/light modes swap values via
+   applyDarkMode() in settings.js which sets these on :root.
+   ============================================================ */
+
+:root {
+  /* ── Color Palette ── */
+  --color-primary:       #D4A373;
+  --color-primary-hover: #c0905e;
+  --color-primary-light: rgba(212, 163, 115, 0.15);
+
+  --color-secondary:     #A78BFA;
+  --color-secondary-light: rgba(167, 139, 250, 0.15);
+
+  --color-success:       #4CD964;
+  --color-success-light: rgba(76, 217, 100, 0.15);
+
+  --color-warning:       #FFB43C;
+  --color-warning-light: rgba(255, 180, 60, 0.15);
+
+  --color-error:         #FF6B6B;
+  --color-error-light:   rgba(255, 107, 107, 0.15);
+
+  /* ── Surfaces ── */
+  --color-bg:            #000000;
+  --color-surface:       #1c1c1e;
+  --color-surface-alt:   #2c2c2e;
+  --color-surface-raised:#0d0d0f;
+  --color-overlay:       rgba(0, 0, 0, 0.85);
+  --color-overlay-light: rgba(0, 0, 0, 0.55);
+
+  /* ── Text ── */
+  --color-text:          #f5f5f7;
+  --color-text-muted:    #98989d;
+  --color-text-inverse:  #ffffff;
+
+  /* ── Borders ── */
+  --color-border:        rgba(255, 255, 255, 0.06);
+  --color-border-light:  rgba(255, 255, 255, 0.10);
+  --color-separator:     rgba(84, 84, 88, 0.65);
+
+  /* ── Legacy alias (keep existing code working) ── */
+  --bg:            var(--color-bg);
+  --card:          var(--color-surface-alt);
+  --text:          var(--color-text);
+  --muted:         var(--color-text-muted);
+  --accent:        var(--color-primary);
+  --sep:           var(--color-separator);
+  --nav-bg:        rgba(28, 28, 30, 0.85);
+  --nav-border:    var(--color-border);
+  --menu-bg:       var(--color-surface);
+  --menu-sep:      var(--color-border);
+  --overlay-alpha: var(--color-overlay-light);
+  --tab-bg:        var(--color-surface);
+  --sheet-bg:      var(--color-surface-alt);
+  --overlay-bg:    var(--color-overlay);
+  --world-bg:      #0B0E1A;
+  --panel-bg:      var(--color-surface-raised);
+  --card-shadow:   none;
+
+  /* ── Typography ── */
+  --font-sans:    -apple-system, 'SF Pro Display', 'PingFang SC', sans-serif;
+  --font-mono:    'SF Mono', 'Menlo', 'Consolas', monospace;
+
+  --font-size-xs:   10px;
+  --font-size-sm:   12px;
+  --font-size-base: 15px;
+  --font-size-md:   17px;
+  --font-size-lg:   20px;
+  --font-size-xl:   24px;
+  --font-size-2xl:  32px;
+  --font-size-3xl:  56px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold:600;
+  --font-weight-bold:   700;
+
+  --line-height-tight:  1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed:1.8;
+
+  --letter-spacing-tight: -0.5px;
+  --letter-spacing-normal:-0.3px;
+  --letter-spacing-wide:  1px;
+  --letter-spacing-phone: 4px;
+
+  /* ── Spacing ── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-8:  40px;
+  --space-10: 60px;
+
+  /* ── Border Radius ── */
+  --radius-sm:   8px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-full: 50%;
+
+  /* ── Shadows ── */
+  --shadow-sm:   0 1px 2px rgba(0, 0, 0, 0.15);
+  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg:   0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 30px rgba(212, 163, 115, 0.08);
+
+  /* ── Animation ── */
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   350ms;
+
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: ease-in-out;
+  --ease-linear: linear;
+}
+
+/* ── Light Mode ── */
+:root[data-theme="light"] {
+  --color-bg:            #E8F4FD;
+  --color-surface:       #ffffff;
+  --color-surface-alt:   #ffffff;
+  --color-surface-raised:#EAF4FC;
+  --color-overlay:       rgba(255, 255, 255, 0.95);
+  --color-overlay-light: rgba(0, 0, 0, 0.3);
+
+  --color-text:          #1c2b36;
+  --color-text-muted:    #5a7384;
+
+  --color-primary:       #1E6FA8;
+  --color-primary-hover: #185d8c;
+  --color-primary-light: rgba(30, 111, 168, 0.12);
+
+  --color-border:        rgba(0, 40, 80, 0.08);
+  --color-border-light:  rgba(0, 40, 80, 0.10);
+  --color-separator:     rgba(0, 40, 80, 0.10);
+
+  --nav-bg:        rgba(232, 244, 253, 0.85);
+  --nav-border:    var(--color-border-light);
+  --menu-bg:       var(--color-surface);
+  --menu-sep:      var(--color-border);
+  --overlay-alpha: var(--color-overlay-light);
+  --tab-bg:        var(--color-bg);
+  --sheet-bg:      var(--color-surface);
+  --overlay-bg:    var(--color-overlay);
+  --panel-bg:      var(--color-surface-raised);
+
+  --card-shadow:   0 2px 8px rgba(60, 158, 220, 0.10);
+}
