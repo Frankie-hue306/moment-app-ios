@@ -1,5 +1,10 @@
 name: iOS Signed IPA + TestFlight
-on: [workflow_dispatch]
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'moment-app/**'
+  workflow_dispatch:
 jobs:
   build:
     runs-on: macos-15
