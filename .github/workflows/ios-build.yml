@@ -82,16 +82,10 @@ jobs:
           <dict>
             <key>method</key><string>app-store</string>
             <key>teamID</key><string>LB37T6L2B3</string>
-            <key>signingStyle</key><string>manual</string>
-            <key>signingCertificate</key><string>Apple Distribution</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.moment.now</key><string>UUID_HERE</string>
-            </dict>
+            <key>signingStyle</key><string>automatic</string>
           </dict>
           </plist>
           PLIST
-          sed -i '' "s/UUID_HERE/$PROFILE_UUID/" /tmp/export.plist
           echo "=== Export Options ==="
           cat /tmp/export.plist
           echo "=== Running xcodebuild -exportArchive ==="
