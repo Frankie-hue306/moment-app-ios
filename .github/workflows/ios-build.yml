@@ -68,7 +68,10 @@ jobs:
         working-directory: moment-app
         run: |
           cd ios/App
-          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print :UUID" /dev/stdin <<< $(security cms -D -i /tmp/profile.mobileprovision) 2>/dev/null || echo "")
+          PROFILE_OUTPUT=$(security cms -D -i /tmp/profile.mobileprovision 2>/dev/null)
+          PROFILE_UUID=$(echo "$PROFILE_OUTPUT" | /usr/libexec/PlistBuddy -c "Print :UUID" /dev/stdin 2>/dev/null)
+          PROFILE_NAME=$(echo "$PROFILE_OUTPUT" | /usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin 2>/dev/null)
+          PROFILE_EXPIRES=$(echo "$PROFILE_OUTPUT" | /usr/libexec/PlistBuddy -c "Print :ExpirationDate" /dev/stdin 2>/dev/null)
           echo "Profile UUID: '$PROFILE_UUID'"
           if [ -z "$PROFILE_UUID" ]; then echo "FATAL: Empty Profile UUID"; exit 1; fi
           cat > /tmp/export.plist << 'PLIST'
